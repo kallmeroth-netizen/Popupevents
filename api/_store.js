@@ -2,7 +2,7 @@
 // reads are never stale behind the CDN cache. Each ticket is a folder:
 //   tickets/<id>/open~<b64url name>~<createdMs>
 //   tickets/<id>/redeemed~<qty>~<redeemedMs>
-const { put, list } = require('@vercel/blob');
+const { put, list, del } = require('@vercel/blob');
 
 const ID_RE = /^[a-z0-9]{10,32}$/;
 
@@ -78,6 +78,22 @@ async function redeemTicket(id, qty) {
   return getTicket(id);
 }
 
+async function deleteBlobs(blobs) {
+  for (let i = 0; i < blobs.length; i += 100) {
+    await del(blobs.slice(i, i + 100).map((b) => b.url));
+  }
+  return blobs.length;
+}
+
+async function deleteTicket(id) {
+  if (!ID_RE.test(id)) return 0;
+  return deleteBlobs(await listAll(`tickets/${id}/`));
+}
+
+async function deleteAllTickets() {
+  return deleteBlobs(await listAll('tickets/'));
+}
+
 async function allTickets() {
   const blobs = await listAll('tickets/');
   const byId = new Map();
@@ -114,4 +130,4 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(x, y);
 }
 
-module.exports = { ID_RE, getTicket, createTicket, redeemTicket, allTickets, json, readBody, safeEqual };
+module.exports = { ID_RE, getTicket, createTicket, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };

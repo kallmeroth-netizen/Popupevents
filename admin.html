@@ -75,6 +75,11 @@
   .stat + .stat{border-left:1px solid var(--rule)}
   .loghead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
   .loghead .lbl{margin:0}
+  .loghead .btns{display:flex;gap:8px}
+  .btn.danger{color:var(--err)}
+  .btn.danger:hover{border-color:var(--err);background:#FBEFEC}
+  .x{appearance:none;background:none;border:0;cursor:pointer;color:var(--faint);font:400 18px/1 var(--body);padding:4px 6px;border-radius:8px}
+  .x:hover{color:var(--err);background:#FBEFEC}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th{font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted);text-align:left;padding:10px 6px;border-bottom:1px solid var(--line)}
   td{padding:13px 6px;border-bottom:1px solid var(--rule);vertical-align:middle;color:var(--ink)}
@@ -122,8 +127,8 @@
       </div>
 
       <div class="card">
-        <div class="loghead"><div class="lbl">Log</div><button class="btn ghost sm" id="refresh">Refresh</button></div>
-        <table><thead><tr><th>Guest</th><th>Status</th><th>Drinks</th><th class="hide-sm">Redeemed</th><th>Link</th></tr></thead><tbody id="rows"><tr><td colspan="5" class="muted">Loading</td></tr></tbody></table>
+        <div class="loghead"><div class="lbl">Log</div><div class="btns"><button class="btn ghost sm" id="refresh">Refresh</button><button class="btn ghost sm danger" id="clear">Clear all</button></div></div>
+        <table><thead><tr><th>Guest</th><th>Status</th><th>Drinks</th><th class="hide-sm">Redeemed</th><th>Link</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="6" class="muted">Loading</td></tr></tbody></table>
       </div>
     </div>
   </div>
@@ -144,7 +149,7 @@
   let key = '';
   try { key = sessionStorage.getItem('nbKey') || ''; } catch {}
   const fmt = (ms) => ms ? new Date(ms).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
-  const api = (method, body) => fetch('/api/tickets', { method, headers: { 'Content-Type': 'application/json', 'x-admin-key': key }, body: body ? JSON.stringify(body) : undefined });
+  const api = (method, body, qs) => fetch('/api/tickets' + (qs || ''), { method, headers: { 'Content-Type': 'application/json', 'x-admin-key': key }, body: body ? JSON.stringify(body) : undefined });
   const linkFor = (id) => location.origin + '/t/' + id;
   const copyBtn = (b, url, idle) => { b.onclick = () => navigator.clipboard.writeText(url).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = idle, 1200); }); };
 
@@ -157,15 +162,18 @@
     for (const t of tickets) {
       if (t.redeemed) { red++; drinks += t.qty; }
       const tr = document.createElement('tr');
-      const cells = [t.name || '(no name)', '', t.redeemed ? String(t.qty) : '', t.redeemed ? fmt(t.redeemedAt) : '', ''];
+      const cells = [t.name || '(no name)', '', t.redeemed ? String(t.qty) : '', t.redeemed ? fmt(t.redeemedAt) : '', '', ''];
       cells.forEach((c, i) => { const td = document.createElement('td'); if (i === 3) td.className = 'hide-sm'; if (i === 2 || i === 3) td.classList.add('muted'); td.textContent = c; tr.appendChild(td); });
+      const x = document.createElement('button'); x.className = 'x'; x.title = 'Delete this ticket'; x.setAttribute('aria-label', 'Delete ' + (t.name || 'ticket')); x.textContent = '\u00d7';
+      x.onclick = async () => { if (!confirm('Delete the ticket for ' + (t.name || 'this guest') + '? The link will stop working.')) return; x.disabled = true; try { await api('DELETE', null, '?id=' + t.id); } catch {} loadLog().catch(() => {}); };
+      tr.children[5].replaceChildren(x);
       const tag = document.createElement('span'); tag.className = 'tag ' + (t.redeemed ? 'done' : ''); tag.append(document.createElement('i'), t.redeemed ? 'Redeemed' : 'Open');
       tr.children[1].replaceChildren(tag);
       const b = document.createElement('button'); b.className = 'btn ghost sm'; b.textContent = 'Copy'; copyBtn(b, linkFor(t.id), 'Copy');
       tr.children[4].replaceChildren(b);
       rows.appendChild(tr);
     }
-    if (!tickets.length) { const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 5; td.className = 'muted'; td.textContent = 'No tickets yet. Make one above.'; tr.appendChild(td); rows.appendChild(tr); }
+    if (!tickets.length) { const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 6; td.className = 'muted'; td.textContent = 'No tickets yet. Make one above.'; tr.appendChild(td); rows.appendChild(tr); }
     $('#sTickets').textContent = tickets.length; $('#sRedeemed').textContent = red; $('#sDrinks').textContent = drinks;
   }
 
@@ -176,6 +184,12 @@
   }
   $('#enter').onclick = enter; $('#key').onkeydown = (e) => { if (e.key === 'Enter') enter(); };
   $('#refresh').onclick = () => loadLog().catch(() => {});
+  $('#clear').onclick = async () => {
+    if (!confirm('Delete every ticket? All existing links will stop working. This cannot be undone.')) return;
+    $('#clear').disabled = true;
+    try { await api('DELETE', null, '?all=1'); } catch {}
+    $('#clear').disabled = false; loadLog().catch(() => {});
+  };
   $('#name').onkeydown = (e) => { if (e.key === 'Enter') $('#make').click(); };
   $('#make').onclick = async () => {
     const name = $('#name').value.trim(); $('#makeErr').textContent = '';
