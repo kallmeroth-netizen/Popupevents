@@ -237,7 +237,8 @@
   }
 
   function showTeamStep() {
-    const note = el('div', 'note', 'Just show the bartender. Please have your valid ID ready.');
+    const note = el('div', 'note');
+    note.append('Just show the bartender.', el('br'), 'Please have your valid ID ready.');
     const b = el('button', 'pill ghost', 'Bartender: redeem');
     b.onclick = openSheet;
     const back = el('button', 'link', 'Flip back');
