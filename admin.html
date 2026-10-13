@@ -55,7 +55,7 @@
   input.key{font-family:var(--mono);letter-spacing:.08em}
   .row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
   .row > .grow{flex:1 1 220px;min-width:0}
-  .btn{appearance:none;cursor:pointer;border-radius:999px;border:0;font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:14px;padding:15px 24px;white-space:nowrap;transition:background .2s,opacity .2s,border-color .2s}
+  .btn{appearance:none;-webkit-tap-highlight-color:transparent;cursor:pointer;border-radius:999px;border:0;font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:14px;padding:15px 24px;white-space:nowrap;transition:background .2s,opacity .2s,border-color .2s}
   .btn.primary{background:var(--orange);color:#fff;box-shadow:0 8px 20px rgba(232,114,66,.28)}
   .btn.primary:hover{background:var(--orange-deep)}
   .btn.primary:disabled{opacity:.45;box-shadow:none;cursor:not-allowed}
@@ -75,22 +75,41 @@
   .stat + .stat{border-left:1px solid var(--rule)}
   .loghead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
   .loghead .lbl{margin:0}
-  .loghead .btns{display:flex;gap:8px}
-  .btn.danger{color:var(--err)}
-  .btn.danger:hover{border-color:var(--err);background:#FBEFEC}
-  .x{appearance:none;background:none;border:0;cursor:pointer;color:var(--faint);font:400 18px/1 var(--body);padding:4px 6px;border-radius:8px}
+  .x{appearance:none;-webkit-tap-highlight-color:transparent;background:none;border:0;cursor:pointer;color:var(--faint);font:400 18px/1 var(--body);padding:4px 6px;border-radius:8px}
   .x:hover{color:var(--err);background:#FBEFEC}
-  table{width:100%;border-collapse:collapse;font-size:14px}
-  th{font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted);text-align:left;padding:10px 6px;border-bottom:1px solid var(--line)}
-  td{padding:13px 6px;border-bottom:1px solid var(--rule);vertical-align:middle;color:var(--ink)}
-  tr:last-child td{border-bottom:0}
-  td.muted{color:var(--muted)}
-  .tag{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);white-space:nowrap}
-  .tag i{width:7px;height:7px;border-radius:999px;background:var(--faint)}
-  .tag.done{color:var(--green)}
-  .tag.done i{background:var(--green)}
+  .list{display:flex;flex-direction:column}
+  .item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--rule)}
+  .item:last-child{border-bottom:0}
+  .item .who{flex:1;min-width:0}
+  .item .name{font-size:15px;color:var(--ink);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item .sub{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-top:2px;min-width:0}
+  .item .sub span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item .sub i{flex:0 0 auto;width:7px;height:7px;border-radius:999px;background:var(--faint)}
+  .item .sub.done{color:var(--green)}
+  .item .sub.done i{background:var(--green)}
+  .item .muted{font-size:13px;color:var(--muted)}
+  .empty{font-size:14px;color:var(--muted);padding:8px 0}
+  .clearall{display:block;margin:14px auto 0;background:none;border:0;cursor:pointer;font:400 13px var(--body);color:var(--faint);text-decoration:underline;text-underline-offset:2px}
+  .clearall:hover{color:var(--err)}
   .hidden{display:none}
-  @media (max-width:520px){.hide-sm{display:none}.card{padding:20px}.stat b{font-size:34px}}
+  @media (max-width:520px){
+    .hdr{background:rgba(245,241,233,.98);backdrop-filter:none;-webkit-backdrop-filter:none}
+    h1{font-size:30px;margin-bottom:8px}
+    .lead{font-size:15px;margin-bottom:18px}
+    .card{padding:16px;border-radius:16px}
+    .grid{gap:12px;margin-bottom:12px}
+    .row{flex-wrap:nowrap;align-items:stretch}
+    .row > .grow{flex:1 1 0}
+    input{padding:12px 14px;font-size:16px}
+    .btn.primary{padding:0 18px;font-size:12px;letter-spacing:.1em}
+    .made{padding:12px;margin-top:12px}
+    .made code{font-size:12px}
+    .stat b{font-size:28px;margin-bottom:6px}
+    .stat span{font-size:10px}
+    .item{padding:10px 0}
+    .ftr img{height:16px}
+    .badge{display:none}
+  }
 </style>
 </head>
 <body>
@@ -127,8 +146,9 @@
       </div>
 
       <div class="card">
-        <div class="loghead"><div class="lbl">Log</div><div class="btns"><button class="btn ghost sm" id="refresh">Refresh</button><button class="btn ghost sm danger" id="clear">Clear all</button></div></div>
-        <table><thead><tr><th>Guest</th><th>Status</th><th>Drinks</th><th class="hide-sm">Redeemed</th><th>Link</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="6" class="muted">Loading</td></tr></tbody></table>
+        <div class="loghead"><div class="lbl">Log</div><button class="btn ghost sm" id="refresh">Refresh</button></div>
+        <div class="list" id="rows"><div class="empty">Loading</div></div>
+        <button class="clearall" id="clear">Clear all tickets</button>
       </div>
     </div>
   </div>
@@ -148,7 +168,7 @@
   const $ = (s) => document.querySelector(s);
   let key = '';
   try { key = sessionStorage.getItem('nbKey') || ''; } catch {}
-  const fmt = (ms) => ms ? new Date(ms).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+  const fmtTime = (ms) => ms ? new Date(ms).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : '';
   const api = (method, body, qs) => fetch('/api/tickets' + (qs || ''), { method, headers: { 'Content-Type': 'application/json', 'x-admin-key': key }, body: body ? JSON.stringify(body) : undefined });
   const linkFor = (id) => location.origin + '/t/' + id;
   const copyBtn = (b, url, idle) => { b.onclick = () => navigator.clipboard.writeText(url).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = idle, 1200); }); };
@@ -161,19 +181,21 @@
     let red = 0, drinks = 0;
     for (const t of tickets) {
       if (t.redeemed) { red++; drinks += t.qty; }
-      const tr = document.createElement('tr');
-      const cells = [t.name || '(no name)', '', t.redeemed ? String(t.qty) : '', t.redeemed ? fmt(t.redeemedAt) : '', '', ''];
-      cells.forEach((c, i) => { const td = document.createElement('td'); if (i === 3) td.className = 'hide-sm'; if (i === 2 || i === 3) td.classList.add('muted'); td.textContent = c; tr.appendChild(td); });
+      const item = document.createElement('div'); item.className = 'item';
+      const who = document.createElement('div'); who.className = 'who';
+      const name = document.createElement('div'); name.className = 'name'; name.textContent = t.name || '(no name)';
+      const sub = document.createElement('div'); sub.className = 'sub' + (t.redeemed ? ' done' : '');
+      const subText = document.createElement('span'); subText.textContent = t.redeemed ? ('Redeemed · ' + t.qty + (t.qty === 1 ? ' drink' : ' drinks') + (t.redeemedAt ? ' · ' + fmtTime(t.redeemedAt) : '')) : 'Open';
+      sub.append(document.createElement('i'), subText);
+      who.append(name, sub);
+      const b = document.createElement('button'); b.className = 'btn ghost sm'; b.textContent = 'Copy'; copyBtn(b, linkFor(t.id), 'Copy');
       const x = document.createElement('button'); x.className = 'x'; x.title = 'Delete this ticket'; x.setAttribute('aria-label', 'Delete ' + (t.name || 'ticket')); x.textContent = '\u00d7';
       x.onclick = async () => { if (!confirm('Delete the ticket for ' + (t.name || 'this guest') + '? The link will stop working.')) return; x.disabled = true; try { await api('DELETE', null, '?id=' + t.id); } catch {} loadLog().catch(() => {}); };
-      tr.children[5].replaceChildren(x);
-      const tag = document.createElement('span'); tag.className = 'tag ' + (t.redeemed ? 'done' : ''); tag.append(document.createElement('i'), t.redeemed ? 'Redeemed' : 'Open');
-      tr.children[1].replaceChildren(tag);
-      const b = document.createElement('button'); b.className = 'btn ghost sm'; b.textContent = 'Copy'; copyBtn(b, linkFor(t.id), 'Copy');
-      tr.children[4].replaceChildren(b);
-      rows.appendChild(tr);
+      item.append(who, b, x);
+      rows.appendChild(item);
     }
-    if (!tickets.length) { const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 6; td.className = 'muted'; td.textContent = 'No tickets yet. Make one above.'; tr.appendChild(td); rows.appendChild(tr); }
+    if (!tickets.length) { const e = document.createElement('div'); e.className = 'empty'; e.textContent = 'No tickets yet. Make one above.'; rows.appendChild(e); }
+    $('#clear').style.display = tickets.length ? '' : 'none';
     $('#sTickets').textContent = tickets.length; $('#sRedeemed').textContent = red; $('#sDrinks').textContent = drinks;
   }
 
