@@ -1,0 +1,9 @@
+{
+  "name": "neighborly-drink-tickets",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Neighborly VIP drink tickets: per-guest links, bartender redemption, admin log.",
+  "dependencies": {
+    "@vercel/blob": "^2.8.1"
+  }
+}

@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f2f2f2">
+<title>Neighborly Drink Ticket</title>
+<style>
+  @font-face{font-family:"Futura Neighborly";src:url(/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600;font-display:swap}
+  @font-face{font-family:"Tuppence";src:url(/fonts/Tuppence-Variable.otf) format("opentype");font-weight:100 900;font-display:swap}
+  @font-face{font-family:"TAYA Maya";src:url(/fonts/TAYAmaya.otf) format("opentype");font-weight:400;font-display:swap}
+  @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+
+  :root{
+    --ink:#1f2328; --ink-2:#1f2328; --muted:#6B7280; --orange:#e87142; --orange-deep:#C25A30; --orange-light:#F2A480;
+    --page:#f2f2f2; --cream:#e5e3d6; --white:#FFFFFF; --blush:#FDF3EC;
+    --futura:"Futura Neighborly","Futura PT",sans-serif; --taya:"TAYA Maya","Oswald",sans-serif; --tup:"Tuppence",Georgia,serif; --body:"Telegraf","DM Sans","Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--page);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+  body{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:0 20px;position:relative}
+  main{flex:1;width:100%;max-width:460px;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:0;padding:0}
+  .brand{flex:1;justify-content:center;width:100%;padding-top:72px;box-sizing:border-box}
+  .ctl{padding-bottom:max(24px,env(safe-area-inset-bottom))}
+
+  .brand{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+  .brand .kicker{font-family:var(--futura);font-weight:600;font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink)}
+  .topbar{position:absolute;top:max(28px,env(safe-area-inset-top));left:0;right:0;display:flex;justify-content:center;pointer-events:none}
+  .topbar img{width:min(34vw,150px);height:auto;display:block}
+  .greet{display:flex;flex-direction:column;align-items:center}
+  .greet .g1{font-family:var(--taya);font-size:clamp(38px,11.5vw,50px);line-height:1;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
+  .g1{min-height:1em}
+  .caret{display:inline-block;width:.08em;height:.95em;background:var(--ink);margin-left:.08em;vertical-align:-.08em;animation:caret 1s steps(1) infinite}
+  @keyframes caret{50%{opacity:0}}
+  .greet .g2{font-family:var(--tup);font-weight:400;font-size:clamp(26px,8vw,32px);white-space:nowrap;line-height:1.1;color:var(--ink);margin-top:10px}
+
+  /* ---------- ticket: landscape raffle ticket, sized in container units (1cqw = 1% of ticket width) ---------- */
+  .stage{width:100%;perspective:1500px;container-type:inline-size}
+  .card{position:relative;width:100%;aspect-ratio:920/440;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.22,1,.36,1)}
+  .card.flipped{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;filter:drop-shadow(0 18px 30px rgba(30,35,41,.22)) drop-shadow(0 2px 5px rgba(30,35,41,.10))}
+  .face.back{transform:rotateY(180deg)}
+  .paper{position:absolute;inset:0;border-radius:2.4cqw;display:grid;grid-template-columns:11.3cqw minmax(0,1fr) 11.3cqw;overflow:hidden;
+    -webkit-mask-image:radial-gradient(circle 1.2cqw at 50% 0,transparent 1.2cqw,#000 1.27cqw),radial-gradient(circle 1.2cqw at 50% 100%,transparent 1.2cqw,#000 1.27cqw);
+    -webkit-mask-size:4.35cqw 100%,4.35cqw 100%;-webkit-mask-repeat:repeat-x,repeat-x;-webkit-mask-composite:source-in;
+    mask-image:radial-gradient(circle 1.2cqw at 50% 0,transparent 1.2cqw,#000 1.27cqw),radial-gradient(circle 1.2cqw at 50% 100%,transparent 1.2cqw,#000 1.27cqw);
+    mask-size:4.35cqw 100%,4.35cqw 100%;mask-repeat:repeat-x,repeat-x;mask-composite:intersect}
+  .front .paper{background:var(--orange);color:#f2f2f2}
+  .back .paper{background:var(--cream);color:var(--ink)}
+  .sheen{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.14) 50%,rgba(255,255,255,0) 65%)}
+  .stub{position:relative;display:flex;align-items:center;justify-content:center}
+  .stub .vert{writing-mode:vertical-rl;white-space:nowrap;font-family:var(--futura);font-weight:600;font-size:2.2cqw;letter-spacing:.4em;text-transform:uppercase}
+  .stub.l .vert{transform:rotate(180deg)}
+  .perf{position:absolute;top:8cqw;bottom:8cqw;width:.22cqw;background-image:repeating-linear-gradient(to bottom,rgba(31,35,40,.45) 0 .87cqw,transparent .87cqw 1.74cqw)}
+  
+  .stub.l .perf{right:0}.stub.r .perf{left:0}
+  .center{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3.2cqw;padding:4.8cqw 2.6cqw;text-align:center}
+  .front .center{gap:2.6cqw}
+  .front .title{line-height:.9;margin:.2cqw 0 -2cqw}
+  .keyline{position:absolute;inset:3.7cqw 2.4cqw;border:.16cqw solid rgba(242,242,242,.7);border-radius:1.1cqw;pointer-events:none}
+  .back .keyline{border-color:rgba(30,35,41,.3)}
+  .eyebrow{font-family:var(--futura);font-weight:600;font-size:1.45cqw;letter-spacing:.34em;text-transform:uppercase}
+  .eyebrow.tup{font-family:var(--tup);font-weight:400;font-size:2.9cqw;letter-spacing:0;text-transform:none;color:#f2f2f2}
+  .back .eyebrow.back-tup{color:var(--ink);margin-bottom:1.6cqw}
+  .title{font-family:var(--taya);font-size:11.8cqw;line-height:.9;letter-spacing:.02em;text-transform:uppercase}
+  .back .title{font-size:9cqw;line-height:.92;margin-bottom:-1.4cqw}
+  .script{font-family:var(--tup);font-weight:400;font-size:4.1cqw;line-height:1}
+  .front .script{color:var(--ink)}
+  .back .script{color:var(--ink-2);margin-top:2.6cqw !important}
+  .no{font-family:var(--futura);font-weight:600;font-size:1.6cqw;letter-spacing:.32em;text-transform:uppercase;opacity:.8}
+
+  /* ---------- stamp ---------- */
+  .front .center,.front .stub{transition:opacity .7s ease}
+  
+  .stamp{position:absolute;z-index:3;left:50%;top:50%;width:54cqw;height:auto;transform:translate(-50%,-52%) rotate(-10deg);opacity:0;pointer-events:none}
+  .stamp.show{animation:stampIn .55s cubic-bezier(.2,1.1,.3,1) forwards}
+  .stamp.still{opacity:1}
+  @keyframes stampIn{0%{opacity:0;transform:translate(-50%,-52%) rotate(-10deg) scale(2)}55%{opacity:1;transform:translate(-50%,-52%) rotate(-10deg) scale(.95)}75%{transform:translate(-50%,-52%) rotate(-10deg) scale(1.03)}100%{opacity:1;transform:translate(-50%,-52%) rotate(-10deg) scale(1)}}
+  @keyframes thump{0%,100%{transform:none}30%{transform:translateY(1.2cqw) scale(.99)}}
+  .card.thump{animation:thump .35s ease-out}
+  @keyframes enter{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+  .enter{animation:enter .9s cubic-bezier(.22,1,.36,1) both}
+  .enter.d1{animation-delay:.08s}.enter.d2{animation-delay:.22s}.enter.d3{animation-delay:.5s}
+
+  /* ---------- controls ---------- */
+  .ctl{display:flex;flex-direction:column;align-items:center;gap:0;flex:1;width:100%;justify-content:space-evenly;text-align:center;padding-bottom:0}
+  .pill{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:16px 32px;font-family:var(--futura);font-weight:600;font-size:13px;letter-spacing:.3em;text-transform:uppercase;transition:transform .15s,box-shadow .2s;min-width:200px}
+  .pill:active{transform:scale(.97)}
+  .pill.primary{background:var(--orange);color:#f2f2f2}
+  .pill.ink{background:var(--ink);color:var(--white)}
+  .pill.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+  .note{font-size:16px;line-height:1.5;color:var(--ink);max-width:340px}
+  .fine{font-family:var(--futura);font-weight:600;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+  .note strong{font-weight:600}
+  .legal{font-size:11px;line-height:1.4;color:var(--muted);max-width:300px}
+  .link{background:none;border:0;font:500 14px var(--body);color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .wait{display:inline-flex;gap:7px;align-items:center;height:56px}
+  .wait i{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:blink 1s infinite}
+  .wait i:nth-child(2){animation-delay:.2s}.wait i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+  .fade{animation:fade .5s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  footer{display:none}
+
+  /* ---------- team member sheet ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(30,35,41,.42);opacity:0;pointer-events:none;transition:opacity .25s}
+  .scrim.open{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;left:0;right:0;bottom:0;background:#f2f2f2;border-radius:24px 24px 0 0;padding:26px 22px max(30px,env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .38s cubic-bezier(.22,1,.36,1);max-width:480px;margin:0 auto;box-shadow:0 -10px 40px rgba(30,35,41,.15)}
+  .sheet.open{transform:none}
+  .sheet .kicker{font-family:var(--futura);font-weight:600;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);text-align:center}
+  .sheet h2{font-family:var(--taya);font-weight:400;font-size:38px;letter-spacing:.01em;text-transform:uppercase;margin:6px 0 6px;text-align:center;line-height:1}
+  .sheet p{margin:0 0 22px;text-align:center;font-family:var(--body);font-weight:400;font-size:16px;line-height:1.5;color:var(--ink-2)}
+  .field{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+  label{font-family:var(--futura);font-weight:600;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-2)}
+  input[type=password]{font:600 26px/1 var(--futura);letter-spacing:.5em;text-align:center;border:1.5px solid rgba(30,35,41,.2);border-radius:16px;padding:16px;background:var(--page);color:var(--ink);width:100%;outline:none}
+  input[type=password]:focus{border-color:var(--orange)}
+  .qty{display:flex;align-items:center;justify-content:center;gap:22px}
+  .qty button{width:54px;height:54px;border-radius:50%;border:1.5px solid rgba(30,35,41,.2);background:var(--page);font:600 24px/1 var(--futura);color:var(--ink);cursor:pointer}
+  .qty output{font-family:var(--taya);font-size:48px;min-width:52px;text-align:center;line-height:1}
+  .check{display:flex;gap:12px;align-items:flex-start;text-align:left;font-family:var(--body);font-weight:400;font-size:14px;letter-spacing:0;text-transform:none;line-height:1.45;color:var(--ink);margin:4px 0 14px;cursor:pointer}
+  .check input{appearance:none;flex:0 0 auto;width:24px;height:24px;margin:1px 0 0;border:1.5px solid rgba(30,35,41,.35);border-radius:7px;background:var(--page);display:grid;place-items:center;cursor:pointer}
+  .check input:checked{background:var(--orange);border-color:var(--orange)}
+  .check input:checked:after{content:"";width:7px;height:12px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+  .pill:disabled{opacity:.4;cursor:not-allowed}
+  .err{color:#B4321C;font-size:14px;text-align:center;min-height:20px;margin-bottom:6px}
+  .sheet .pill{width:100%}
+  .cancel{display:block;margin:14px auto 0;background:none;border:0;font:500 14px var(--body);color:var(--muted);cursor:pointer}
+  @media (prefers-reduced-motion:reduce){.card{transition:none}.stamp.show{animation:none;opacity:1}.enter{animation:none}}
+</style>
+</head>
+<body>
+<header class="topbar enter d1"><img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly"></header>
+<main id="main">
+  <div class="brand enter d1">
+    <div class="greet"><span class="g1"><span id="typed"></span><span class="caret" id="caret"></span></span><span class="g2">first one&#39;s on the house.</span></div>
+  </div>
+
+  <div class="stage enter d2">
+    <div class="card" id="card">
+      <div class="face front">
+        <div class="paper">
+          <div class="stub l"><div class="perf"></div></div>
+          <div class="center">
+            <div class="keyline"></div>
+            <div class="eyebrow tup">Neighbors Only Preview</div>
+            <div>
+              <div class="title">Drink Ticket</div>
+            </div>
+            <div class="eyebrow">One drink per neighbor, on the house.</div>
+          </div>
+          <div class="stub r"><div class="perf"></div></div>
+        </div>
+        <svg class="stamp" id="stamp" viewBox="0 0 600 340" aria-hidden="true">
+          <defs>
+            <filter id="ink" x="-8%" y="-10%" width="116%" height="120%">
+              <feTurbulence type="fractalNoise" baseFrequency=".95" numOctaves="3" seed="7" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="d"/>
+              <feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="2" seed="3" result="w"/>
+              <feColorMatrix in="w" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 2.4 -.25" result="wa"/>
+              <feComposite in="d" in2="wa" operator="in"/>
+            </filter>
+          </defs>
+          <image href="/assets/neighborly-houses-mark-lavender.png" x="0" y="0" width="600" height="311" preserveAspectRatio="xMidYMid meet"/>
+          <text filter="url(#ink)" x="300" y="246" text-anchor="middle" font-family="Tuppence, Georgia, serif" font-weight="600" font-size="100" fill="#1f2328">Redeemed</text>
+        </svg>
+      </div>
+      <div class="face back">
+        <div class="paper">
+          <div class="stub l"><div class="perf"></div></div>
+          <div class="center">
+            <div class="keyline"></div>
+            <div>
+              <div class="eyebrow tup back-tup">your new go-to is</div>
+              <div class="title">Coming<br>right up</div>
+            </div>
+          </div>
+          <div class="stub r"><div class="perf"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctl enter d3" id="ctl">
+    <div class="wait" id="loading"><i></i><i></i><i></i></div>
+  </div>
+</main>
+<footer></footer>
+
+<div class="scrim" id="scrim"></div>
+<form class="sheet" id="sheet" autocomplete="off">
+  <div class="kicker">Neighborly</div>
+  <h2>Team member</h2>
+  <p>Enter your PIN and how many drinks you poured.</p>
+  <div class="field"><label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="••••"></div>
+  <div class="field"><label>Drinks</label>
+    <div class="qty"><button type="button" id="minus" aria-label="Fewer">&minus;</button><output id="qtyOut">1</output><button type="button" id="plus" aria-label="More">+</button></div>
+  </div>
+  <label class="check"><input type="checkbox" id="idok"><span>I checked a valid government-issued ID and this guest is 21 or older.</span></label>
+  <div class="err" id="err"></div>
+  <button class="pill ink" type="submit" id="go" disabled>Redeem</button>
+  <button class="cancel" type="button" id="cancel">Cancel</button>
+</form>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const card = $('#card'), ctl = $('#ctl'), stamp = $('#stamp'), sheet = $('#sheet'), scrim = $('#scrim'), err = $('#err');
+  const id = (location.pathname.match(/^\/t\/([a-z0-9]+)/i) || [, new URLSearchParams(location.search).get('t') || ''])[1].toLowerCase();
+  let ticket = null, qty = 1, busy = false;
+
+  const fmt = (ms) => new Date(ms).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  const setCtl = (...nodes) => { ctl.replaceChildren(...nodes); nodes.forEach(n => n.classList.add('fade')); };
+
+  function typeGreeting(text) {
+    const out = $('#typed'), caret = $('#caret'); out.textContent = ''; caret.style.display = '';
+    let i = 0;
+    const tick = () => {
+      out.textContent = text.slice(0, ++i);
+      if (i < text.length) setTimeout(tick, 70 + Math.random() * 60);
+      else setTimeout(() => { caret.style.display = 'none'; }, 1800);
+    };
+    setTimeout(tick, 500);
+  }
+
+  function render() {
+    typeGreeting('hey, ' + (ticket.name || 'neighbor') + '!');
+    if (ticket.redeemed) { showRedeemed(false); return; }
+    const note = el('div', 'note');
+    note.append('Something new is pouring in the neighborhood. Tap ', el('strong', null, 'I\u2019m here'), ' when you arrive, and show this to your host to redeem.');
+    const b = el('button', 'pill primary', "I'm here");
+    b.onclick = () => { card.classList.add('flipped'); setTimeout(showTeamStep, 420); };
+    const legal = el('div', 'legal', 'Must be 21 or older with a valid government-issued ID to redeem. One per guest. No cash value.');
+    setCtl(note, b, legal);
+  }
+
+  function showTeamStep() {
+    const note = el('div', 'note', 'Just show the bartender. Please have your valid ID ready.');
+    const b = el('button', 'pill ghost', 'Bartender: redeem');
+    b.onclick = openSheet;
+    const back = el('button', 'link', 'Flip back');
+    back.onclick = () => { card.classList.remove('flipped'); setTimeout(render, 420); };
+    setCtl(note, b, back);
+  }
+
+  function showRedeemed(animate) {
+    const line = el('div', 'fine', 'Redeemed · ' + ticket.qty + (ticket.qty === 1 ? ' drink' : ' drinks') + (ticket.redeemedAt ? ' · ' + fmt(ticket.redeemedAt) : ''));
+    const thanks = el('div', 'note', 'Thank you for being the first to try the Neighbors Only bar. Can\u2019t wait to have you back soon!');
+    setCtl(thanks, line);
+    card.classList.add('redeemed');
+    if (animate) {
+      stamp.classList.add('show');
+      setTimeout(() => card.classList.add('thump'), 300);
+      if (navigator.vibrate) setTimeout(() => navigator.vibrate(40), 300);
+    } else {
+      stamp.classList.add('still');
+    }
+  }
+
+  function openSheet() { err.textContent = ''; $('#pin').value = ''; qty = 1; $('#qtyOut').textContent = '1'; $('#idok').checked = false; $('#go').disabled = true; sheet.classList.add('open'); scrim.classList.add('open'); setTimeout(() => $('#pin').focus(), 320); }
+  function closeSheet() { sheet.classList.remove('open'); scrim.classList.remove('open'); }
+  $('#cancel').onclick = closeSheet; scrim.onclick = closeSheet;
+  $('#idok').onchange = () => { $('#go').disabled = !$('#idok').checked; };
+  $('#minus').onclick = () => { qty = Math.max(1, qty - 1); $('#qtyOut').textContent = qty; };
+  $('#plus').onclick = () => { qty = Math.min(6, qty + 1); $('#qtyOut').textContent = qty; };
+
+  sheet.onsubmit = async (e) => {
+    e.preventDefault(); if (busy) return;
+    const pin = $('#pin').value.trim();
+    if (!$('#idok').checked) { err.textContent = 'Please confirm the ID check.'; return; }
+    if (!pin) { err.textContent = 'Enter your PIN.'; return; }
+    busy = true; $('#go').disabled = true; err.textContent = '';
+    try {
+      const r = await fetch('/api/redeem', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, pin, qty, idVerified: true }) });
+      const d = await r.json();
+      if (r.status === 401) { err.textContent = 'That PIN is not right.'; return; }
+      if (r.status === 409) { ticket.redeemed = true; ticket.qty = d.qty; ticket.redeemedAt = d.redeemedAt; closeSheet(); card.classList.remove('flipped'); setTimeout(() => showRedeemed(false), 600); return; }
+      if (!r.ok) { err.textContent = 'Something went wrong. Try again.'; return; }
+      ticket.redeemed = true; ticket.qty = d.qty; ticket.redeemedAt = d.redeemedAt;
+      closeSheet();
+      // three-second beat on the back of the ticket, then flip and stamp
+      const w = el('div', 'wait'); w.append(el('i'), el('i'), el('i'));
+      setCtl(w);
+      setTimeout(() => {
+        card.classList.remove('flipped');
+        setTimeout(() => showRedeemed(true), 620);
+      }, 3000);
+    } catch { err.textContent = 'No connection. Try again.'; }
+    finally { busy = false; $('#go').disabled = !$('#idok').checked; }
+  };
+
+  async function load() {
+    if (!id) { setCtl(el('div', 'note', 'This link is missing its ticket.')); return; }
+    try {
+      const r = await fetch('/api/ticket?id=' + encodeURIComponent(id));
+      if (!r.ok) { setCtl(el('div', 'note', "This ticket link isn't valid.")); return; }
+      ticket = await r.json();
+      render();
+    } catch { setCtl(el('div', 'note', 'No connection. Pull to refresh.')); }
+  }
+  load();
+})();
+</script>
+</body>
+</html>

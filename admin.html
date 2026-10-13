@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Drink Tickets Admin</title>
+<style>
+  @font-face{font-family:'Jost';font-weight:500;font-display:swap;src:url(/fonts/jost-latin-500-normal.woff2) format('woff2')}
+  @font-face{font-family:'Jost';font-weight:600;font-display:swap;src:url(/fonts/jost-latin-600-normal.woff2) format('woff2')}
+  @font-face{font-family:'Instrument Serif';font-weight:400;font-display:swap;src:url(/fonts/instrument-serif-latin-400-normal.woff2) format('woff2')}
+  @font-face{font-family:'DM Sans';font-weight:400;font-display:swap;src:url(/fonts/dm-sans-latin-400-normal.woff2) format('woff2')}
+  @font-face{font-family:'DM Sans';font-weight:500;font-display:swap;src:url(/fonts/dm-sans-latin-500-normal.woff2) format('woff2')}
+  :root{--ink:#1f2328;--orange:#e87142;--cream:#e5e3d6;--off:#f2f2f2;--green:#7bbd91;--sans:'Futura PT','Jost',sans-serif;--body:'Telegraf','DM Sans',sans-serif;--display:'TAY Amaya','Jost',sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--off);color:var(--ink);font-family:var(--body);padding:28px 16px 60px}
+  .wrap{max-width:760px;margin:0 auto}
+  .wordmark{width:160px;display:block;margin:0 auto 24px}
+  h1{font-family:var(--display);font-weight:600;font-synthesis:none;font-size:28px;letter-spacing:.02em;text-transform:uppercase;margin:0 0 4px;text-align:center}
+  .lead{text-align:center;margin:0 0 28px;opacity:.75}
+  .card{background:#fff;border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 10px 30px -18px rgba(31,35,40,.35)}
+  label{display:block;font-family:var(--sans);font-weight:600;font-size:12px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:8px}
+  input{width:100%;font:500 17px var(--body);padding:13px 14px;border:1.5px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink)}
+  .row{display:flex;gap:10px;align-items:flex-end}
+  .row > div{flex:1}
+  .pill{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:14px 22px;font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.28em;text-transform:uppercase;white-space:nowrap}
+  .pill.primary{background:var(--orange);color:var(--off)}
+  .pill.ink{background:var(--ink);color:var(--off)}
+  .pill.ghost{background:none;border:1.5px solid var(--ink);color:var(--ink);padding:10px 16px;font-size:11px}
+  .err{color:#b4321c;min-height:20px;margin-top:8px;font-size:14px}
+  .ok{background:var(--cream);border-radius:12px;padding:14px;margin-top:14px;display:none}
+  .ok.show{display:block}
+  .ok code{display:block;word-break:break-all;font-size:14px;margin:6px 0 10px}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.28em;text-transform:uppercase;text-align:left;padding:0 8px 10px;opacity:.7}
+  td{padding:12px 8px;border-top:1px solid rgba(31,35,40,.12);vertical-align:middle}
+  .tag{display:inline-block;border-radius:999px;padding:5px 11px;font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+  .tag.open{background:var(--cream)}
+  .tag.done{background:var(--green);color:#fff}
+  .stats{display:flex;gap:12px;margin-bottom:18px}
+  .stat{flex:1;background:#fff;border-radius:14px;padding:14px;text-align:center}
+  .stat b{display:block;font-family:var(--display);font-size:30px;font-weight:600;line-height:1}
+  .stat span{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.28em;text-transform:uppercase;opacity:.7}
+  .hidden{display:none}
+  .muted{opacity:.6}
+  @media (max-width:520px){.row{flex-direction:column;align-items:stretch}.hide-sm{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="wordmark" src="/assets/wordmark.png" alt="Neighborly">
+  <h1>Drink Tickets</h1>
+  <p class="lead">Make a ticket link per VIP guest, then watch redemptions land here.</p>
+
+  <div class="card" id="login">
+    <label for="key">Admin key</label>
+    <div class="row"><div><input id="key" type="password" placeholder="Paste your admin key"></div><button class="pill ink" id="enter">Enter</button></div>
+    <div class="err" id="loginErr"></div>
+  </div>
+
+  <div id="app" class="hidden">
+    <div class="stats"><div class="stat"><b id="sTickets">0</b><span>Tickets</span></div><div class="stat"><b id="sRedeemed">0</b><span>Redeemed</span></div><div class="stat"><b id="sDrinks">0</b><span>Drinks</span></div></div>
+
+    <div class="card">
+      <label for="name">New ticket for</label>
+      <div class="row"><div><input id="name" placeholder="Guest first name" maxlength="40"></div><button class="pill primary" id="make">Make link</button></div>
+      <div class="err" id="makeErr"></div>
+      <div class="ok" id="made"><strong id="madeFor"></strong><code id="madeUrl"></code><button class="pill ghost" id="copy">Copy link</button> <a class="pill ghost" id="openLink" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Open</a></div>
+    </div>
+
+    <div class="card">
+      <div class="row" style="align-items:center;margin-bottom:12px"><div><label style="margin:0">Log</label></div><button class="pill ghost" id="refresh">Refresh</button></div>
+      <table><thead><tr><th>Guest</th><th>Status</th><th>Drinks</th><th class="hide-sm">Redeemed</th><th class="hide-sm">Link</th></tr></thead><tbody id="rows"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody></table>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  let key = '';
+  try { key = sessionStorage.getItem('nbKey') || ''; } catch {}
+  const fmt = (ms) => ms ? new Date(ms).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+  const api = (method, body) => fetch('/api/tickets', { method, headers: { 'Content-Type': 'application/json', 'x-admin-key': key }, body: body ? JSON.stringify(body) : undefined });
+  const linkFor = (id) => location.origin + '/t/' + id;
+
+  async function loadLog() {
+    const r = await api('GET');
+    if (r.status === 401) { throw new Error('unauthorized'); }
+    const { tickets } = await r.json();
+    const rows = $('#rows'); rows.replaceChildren();
+    let red = 0, drinks = 0;
+    for (const t of tickets) {
+      if (t.redeemed) { red++; drinks += t.qty; }
+      const tr = document.createElement('tr');
+      const cells = [t.name || '(no name)', '', t.redeemed ? String(t.qty) : '', t.redeemed ? fmt(t.redeemedAt) : '', ''];
+      cells.forEach((c, i) => { const td = document.createElement('td'); if (i === 3 || i === 4) td.className = 'hide-sm'; td.textContent = c; tr.appendChild(td); });
+      const tag = document.createElement('span'); tag.className = 'tag ' + (t.redeemed ? 'done' : 'open'); tag.textContent = t.redeemed ? 'Redeemed' : 'Open';
+      tr.children[1].replaceChildren(tag);
+      const b = document.createElement('button'); b.className = 'pill ghost'; b.textContent = 'Copy'; b.onclick = () => navigator.clipboard.writeText(linkFor(t.id)).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1200); });
+      tr.children[4].replaceChildren(b);
+      rows.appendChild(tr);
+    }
+    if (!tickets.length) { const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 5; td.className = 'muted'; td.textContent = 'No tickets yet. Make one above.'; tr.appendChild(td); rows.appendChild(tr); }
+    $('#sTickets').textContent = tickets.length; $('#sRedeemed').textContent = red; $('#sDrinks').textContent = drinks;
+  }
+
+  async function enter() {
+    key = $('#key').value.trim(); $('#loginErr').textContent = '';
+    try { await loadLog(); try { sessionStorage.setItem('nbKey', key); } catch {} $('#login').classList.add('hidden'); $('#app').classList.remove('hidden'); }
+    catch { $('#loginErr').textContent = 'That key did not work.'; }
+  }
+  $('#enter').onclick = enter; $('#key').onkeydown = (e) => { if (e.key === 'Enter') enter(); };
+  $('#refresh').onclick = () => loadLog().catch(() => {});
+  $('#name').onkeydown = (e) => { if (e.key === 'Enter') $('#make').click(); };
+  $('#make').onclick = async () => {
+    const name = $('#name').value.trim(); $('#makeErr').textContent = '';
+    if (!name) { $('#makeErr').textContent = 'Add a name first.'; return; }
+    $('#make').disabled = true;
+    try {
+      const r = await api('POST', { name }); const d = await r.json();
+      if (!r.ok) throw new Error();
+      const url = linkFor(d.ticket.id);
+      $('#madeFor').textContent = 'Ticket for ' + d.ticket.name; $('#madeUrl').textContent = url; $('#openLink').href = url; $('#made').classList.add('show');
+      $('#copy').onclick = () => navigator.clipboard.writeText(url).then(() => { $('#copy').textContent = 'Copied'; setTimeout(() => $('#copy').textContent = 'Copy link', 1200); });
+      $('#name').value = ''; loadLog().catch(() => {});
+    } catch { $('#makeErr').textContent = 'Could not make the ticket. Try again.'; }
+    finally { $('#make').disabled = false; }
+  };
+  if (key) { $('#key').value = key; enter(); }
+})();
+</script>
+</body>
+</html>
