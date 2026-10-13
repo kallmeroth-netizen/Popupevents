@@ -5,7 +5,7 @@ Per-guest ticket links, a bartender PIN + quantity flow, and an admin log.
 ## Deploy (about five minutes)
 
 1. In Vercel, create a new project named `drink-tickets` (Add New > Project, or run `npx vercel` inside this folder and accept the defaults).
-2. Storage tab > Create > Blob. Name it `drink-tickets-log`, access Public, and connect it to the project. This adds `BLOB_READ_WRITE_TOKEN` automatically.
+2. Storage tab > Create > Blob. Access Private, leave the prefix blank, and tick "Add a read-write token env var to this connection" so `BLOB_READ_WRITE_TOKEN` is created. Connect it to the project.
 3. Settings > Environment Variables, add both for Production:
    - `BARTENDER_PIN` = the 4 to 6 digit PIN bartenders type
    - `ADMIN_KEY` = a long random string only you know

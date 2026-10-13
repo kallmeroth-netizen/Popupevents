@@ -23,7 +23,7 @@ function newId() {
 
 async function marker(pathname) {
   await put(pathname, '1', {
-    access: 'public',
+    access: 'private',
     addRandomSuffix: false,
     allowOverwrite: true,
     contentType: 'text/plain',
