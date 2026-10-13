@@ -80,6 +80,9 @@
   @keyframes stampIn{0%{opacity:0;transform:translate(-50%,-52%) rotate(-10deg) scale(2)}55%{opacity:1;transform:translate(-50%,-52%) rotate(-10deg) scale(.95)}75%{transform:translate(-50%,-52%) rotate(-10deg) scale(1.03)}100%{opacity:1;transform:translate(-50%,-52%) rotate(-10deg) scale(1)}}
   @keyframes thump{0%,100%{transform:none}30%{transform:translateY(1.2cqw) scale(.99)}}
   .card.thump{animation:thump .35s ease-out}
+  @keyframes deal{0%{opacity:0;transform:translateY(56px) scale(.94)}70%{opacity:1;transform:translateY(-5px) scale(1.005)}100%{opacity:1;transform:translateY(0) scale(1)}}
+  .deal{animation:deal 1.15s cubic-bezier(.22,1,.36,1) .35s both}
+  .deal .face{transition:filter .6s ease}
   @keyframes enter{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
   .enter{animation:enter .9s cubic-bezier(.22,1,.36,1) both}
   .enter.d1{animation-delay:.08s}.enter.d2{animation-delay:.22s}.enter.d3{animation-delay:.5s}
@@ -127,7 +130,7 @@
   .err{color:#B4321C;font-size:14px;text-align:center;min-height:20px;margin-bottom:6px}
   .sheet .pill{width:100%}
   .cancel{display:block;margin:14px auto 0;background:none;border:0;font:500 14px var(--body);color:var(--muted);cursor:pointer}
-  @media (prefers-reduced-motion:reduce){.card{transition:none}.stamp.show{animation:none;opacity:1}.enter{animation:none}}
+  @media (prefers-reduced-motion:reduce){.card{transition:none}.stamp.show{animation:none;opacity:1}.enter,.deal{animation:none}}
 </style>
 </head>
 <body>
@@ -137,7 +140,7 @@
     <div class="greet"><span class="g1"><span id="typed"></span><span class="caret" id="caret"></span></span><span class="g2">first one&#39;s on the house.</span></div>
   </div>
 
-  <div class="stage enter d2">
+  <div class="stage deal">
     <div class="card" id="card">
       <div class="face front">
         <div class="paper">
