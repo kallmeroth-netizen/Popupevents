@@ -27,8 +27,9 @@
 
   /* ---------- site chrome, same as beneighborly.gift ---------- */
   .hdr{position:sticky;top:0;z-index:20;background:rgba(245,241,233,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-  .hdr-in{max-width:1180px;margin:0 auto;padding:clamp(12px,2.6vw,16px) clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:center}
-  .hdr img{height:clamp(11px,2.8vw,17px);width:auto;display:block}
+  .hdr-in{max-width:1180px;margin:0 auto;padding:clamp(10px,2.4vw,15px) clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .hdr img{height:clamp(14px,3.2vw,23px);width:auto;display:block}
+  .hdr-tag{font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:clamp(10px,2.8vw,12px);padding:clamp(6px,1.5vw,9px) clamp(10px,2vw,17px);border-radius:999px;background:var(--ink);color:#FAF6F0;white-space:nowrap}
   .ftr{border-top:1px solid var(--line);background:var(--bar)}
   .ftr-in{max-width:1180px;margin:0 auto;padding:20px 24px 24px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
   .ftr img{height:22px;width:auto;display:block}
@@ -141,6 +142,7 @@
 <header class="hdr" id="hdr">
   <div class="hdr-in">
     <img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly">
+    <span class="hdr-tag">Neighbors Only</span>
   </div>
 </header>
 <main id="main">
