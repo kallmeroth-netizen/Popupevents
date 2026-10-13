@@ -59,9 +59,8 @@
   .back .keyline{border-color:rgba(30,35,41,.3)}
   .eyebrow{font-family:var(--futura);font-weight:600;font-size:1.45cqw;letter-spacing:.34em;text-transform:uppercase}
   .eyebrow.tup{font-family:var(--tup);font-weight:400;font-size:2.9cqw;letter-spacing:0;text-transform:none;color:#f2f2f2}
-  .back .eyebrow.back-tup{color:var(--ink);margin-bottom:1.6cqw}
   .title{font-family:var(--taya);font-size:11.8cqw;line-height:.9;letter-spacing:.02em;text-transform:uppercase}
-  .back .title{font-size:9cqw;line-height:.92;margin-bottom:-1.4cqw}
+  .back .title{font-size:9cqw;line-height:.92;margin:.6cqw 0 -1.2cqw}
 
   /* ---------- stamp ---------- */
   .stamp{position:absolute;z-index:3;left:50%;top:50%;width:54cqw;height:auto;transform:translate(-50%,-52%) rotate(-10deg);opacity:0;pointer-events:none}
@@ -101,26 +100,31 @@
   /* ---------- team member sheet ---------- */
   .scrim{position:fixed;inset:0;background:rgba(30,35,41,.42);opacity:0;pointer-events:none;transition:opacity .25s}
   .scrim.open{opacity:1;pointer-events:auto}
-  .sheet{position:fixed;left:0;right:0;bottom:0;background:#f2f2f2;border-radius:24px 24px 0 0;padding:26px 22px max(30px,env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .38s cubic-bezier(.22,1,.36,1);max-width:480px;margin:0 auto;box-shadow:0 -10px 40px rgba(30,35,41,.15)}
+  .sheet{position:fixed;left:0;right:0;bottom:0;background:#f2f2f2;border-radius:22px 22px 0 0;padding:12px 20px max(26px,env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .38s cubic-bezier(.22,1,.36,1);max-width:480px;margin:0 auto;box-shadow:0 -10px 40px rgba(30,35,41,.15)}
   .sheet.open{transform:none}
-  .sheet .kicker{font-family:var(--futura);font-weight:600;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);text-align:center}
-  .sheet h2{font-family:var(--taya);font-weight:400;font-size:38px;letter-spacing:.01em;text-transform:uppercase;margin:6px 0 6px;text-align:center;line-height:1}
-  .sheet p{margin:0 0 22px;text-align:center;font-family:var(--body);font-weight:400;font-size:16px;line-height:1.5;color:var(--ink)}
-  .field{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
-  label{font-family:var(--futura);font-weight:600;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink)}
-  input[type=password]{font:600 26px/1 var(--futura);letter-spacing:.5em;text-align:center;border:1.5px solid rgba(30,35,41,.2);border-radius:16px;padding:16px;background:var(--page);color:var(--ink);width:100%;outline:none}
-  input[type=password]:focus{border-color:var(--orange)}
-  .qty{display:flex;align-items:center;justify-content:center;gap:22px}
-  .qty button{width:54px;height:54px;border-radius:50%;border:1.5px solid rgba(30,35,41,.2);background:var(--page);font:600 24px/1 var(--futura);color:var(--ink);cursor:pointer}
-  .qty output{font-family:var(--taya);font-size:48px;min-width:52px;text-align:center;line-height:1}
-  .check{display:flex;gap:12px;align-items:flex-start;text-align:left;font-family:var(--body);font-weight:400;font-size:14px;letter-spacing:0;text-transform:none;line-height:1.45;color:var(--ink);margin:4px 0 14px;cursor:pointer}
-  .check input{appearance:none;flex:0 0 auto;width:24px;height:24px;margin:1px 0 0;border:1.5px solid rgba(30,35,41,.35);border-radius:7px;background:var(--page);display:grid;place-items:center;cursor:pointer}
+  .handle{width:36px;height:4px;border-radius:2px;background:rgba(30,35,41,.18);margin:0 auto 16px}
+  .sheet .kicker{font-family:var(--futura);font-weight:600;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);text-align:center}
+  .sheet h2{font-family:var(--taya);font-weight:400;font-size:30px;letter-spacing:.02em;text-transform:uppercase;margin:4px 0 4px;text-align:center;line-height:1}
+  .sheet p{margin:0 0 18px;text-align:center;font-family:var(--body);font-weight:400;font-size:14px;line-height:1.45;color:var(--muted)}
+  .fields{display:flex;gap:12px;margin-bottom:14px}
+  .field{flex:1;display:flex;flex-direction:column;gap:7px;min-width:0}
+  .field.pin{flex:1.1}
+  label{font-family:var(--futura);font-weight:600;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
+  input[type=password]{font:600 22px/1 var(--futura);letter-spacing:.42em;text-indent:.42em;text-align:center;border:1.5px solid rgba(30,35,41,.16);border-radius:14px;height:52px;padding:0 10px;background:#fff;color:var(--ink);width:100%;outline:none;transition:border-color .15s}
+  input[type=password]::placeholder{color:rgba(30,35,41,.3)}
+  input[type=password]:focus{border-color:var(--ink)}
+  .qty{display:flex;align-items:center;justify-content:space-between;height:52px;border:1.5px solid rgba(30,35,41,.16);border-radius:14px;background:#fff;padding:0 3px}
+  .qty button{width:44px;height:44px;border-radius:50%;border:0;background:transparent;font:600 22px/1 var(--futura);color:var(--ink);cursor:pointer}
+  .qty button:active{background:rgba(30,35,41,.06)}
+  .qty output{font-family:var(--taya);font-size:30px;min-width:36px;text-align:center;line-height:1}
+  .check{display:flex;gap:10px;align-items:center;text-align:left;font-family:var(--body);font-weight:400;font-size:13px;letter-spacing:0;text-transform:none;line-height:1.4;color:var(--ink);margin:2px 0 12px;cursor:pointer}
+  .check input{appearance:none;flex:0 0 auto;width:22px;height:22px;margin:0;border:1.5px solid rgba(30,35,41,.3);border-radius:6px;background:#fff;display:grid;place-items:center;cursor:pointer;transition:background .15s,border-color .15s}
   .check input:checked{background:var(--orange);border-color:var(--orange)}
-  .check input:checked:after{content:"";width:7px;height:12px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
-  .pill:disabled{opacity:.4;cursor:not-allowed}
-  .err{color:#B4321C;font-size:14px;text-align:center;min-height:20px;margin-bottom:6px}
-  .sheet .pill{width:100%}
-  .cancel{display:block;margin:14px auto 0;background:none;border:0;font:500 14px var(--body);color:var(--muted);cursor:pointer}
+  .check input:checked:after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+  .pill:disabled{opacity:.3;cursor:not-allowed}
+  .err{color:#B4321C;font-size:13px;text-align:center;min-height:18px;margin-bottom:4px}
+  .sheet .pill{width:100%;padding:15px 24px}
+  .cancel{display:block;margin:12px auto 0;background:none;border:0;font:500 13px var(--body);color:var(--muted);cursor:pointer}
   @media (prefers-reduced-motion:reduce){.card{transition:none}.stamp.show{animation:none;opacity:1}.enter,.deal,.fade{animation:none}.greet .g2,.ctl{transition:none}}
 </style>
 </head>
@@ -128,7 +132,7 @@
 <header class="topbar enter d1"><img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly"></header>
 <main id="main">
   <div class="brand" id="brand">
-    <div class="greet"><span class="g1"><span id="typed"></span><span class="caret" id="caret"></span></span><span class="g2" id="g2">first one&#39;s on the house.</span></div>
+    <div class="greet"><span class="g1"><span id="typed"></span><span class="caret" id="caret"></span></span><span class="g2" id="g2">the first pour is yours.</span></div>
   </div>
 
   <div class="stage deal">
@@ -165,10 +169,7 @@
           <div class="stub l"><div class="perf"></div></div>
           <div class="center">
             <div class="keyline"></div>
-            <div>
-              <div class="eyebrow tup back-tup">Your new go-to is</div>
-              <div class="title">Coming<br>right up</div>
-            </div>
+            <div class="title">Coming<br>right up</div>
           </div>
           <div class="stub r"><div class="perf"></div></div>
         </div>
@@ -181,12 +182,15 @@
 
 <div class="scrim" id="scrim"></div>
 <form class="sheet" id="sheet" autocomplete="off">
+  <div class="handle"></div>
   <div class="kicker">Neighborly</div>
   <h2>Team member</h2>
   <p>Enter your PIN and how many drinks you poured.</p>
-  <div class="field"><label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="••••"></div>
-  <div class="field"><label>Drinks</label>
-    <div class="qty"><button type="button" id="minus" aria-label="Fewer">&minus;</button><output id="qtyOut">1</output><button type="button" id="plus" aria-label="More">+</button></div>
+  <div class="fields">
+    <div class="field pin"><label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="••••"></div>
+    <div class="field"><label>Drinks</label>
+      <div class="qty"><button type="button" id="minus" aria-label="Fewer">&minus;</button><output id="qtyOut">1</output><button type="button" id="plus" aria-label="More">+</button></div>
+    </div>
   </div>
   <label class="check"><input type="checkbox" id="idok"><span>I checked a valid government-issued ID and this guest is 21 or older.</span></label>
   <div class="err" id="err"></div>
