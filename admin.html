@@ -6,17 +6,16 @@
 <meta name="robots" content="noindex">
 <title>Drink Tickets Admin</title>
 <style>
-  @font-face{font-family:'Jost';font-weight:500;font-display:swap;src:url(/fonts/jost-latin-500-normal.woff2) format('woff2')}
-  @font-face{font-family:'Jost';font-weight:600;font-display:swap;src:url(/fonts/jost-latin-600-normal.woff2) format('woff2')}
-  @font-face{font-family:'Instrument Serif';font-weight:400;font-display:swap;src:url(/fonts/instrument-serif-latin-400-normal.woff2) format('woff2')}
+  @font-face{font-family:"Futura Neighborly";src:url(/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600;font-display:swap}
+  @font-face{font-family:"TAYA Maya";src:url(/fonts/TAYAmaya.otf) format("opentype");font-weight:400;font-display:swap}
   @font-face{font-family:'DM Sans';font-weight:400;font-display:swap;src:url(/fonts/dm-sans-latin-400-normal.woff2) format('woff2')}
   @font-face{font-family:'DM Sans';font-weight:500;font-display:swap;src:url(/fonts/dm-sans-latin-500-normal.woff2) format('woff2')}
-  :root{--ink:#1f2328;--orange:#e87142;--cream:#e5e3d6;--off:#f2f2f2;--green:#7bbd91;--sans:'Futura PT','Jost',sans-serif;--body:'Telegraf','DM Sans',sans-serif;--display:'TAY Amaya','Jost',sans-serif}
+  :root{--ink:#1f2328;--orange:#e87142;--cream:#e5e3d6;--off:#f2f2f2;--green:#7bbd91;--sans:"Futura Neighborly","Futura PT",sans-serif;--body:"Telegraf","DM Sans",sans-serif;--display:"TAYA Maya","Oswald",sans-serif}
   *{box-sizing:border-box}
   body{margin:0;background:var(--off);color:var(--ink);font-family:var(--body);padding:28px 16px 60px}
   .wrap{max-width:760px;margin:0 auto}
-  .wordmark{width:160px;display:block;margin:0 auto 24px}
-  h1{font-family:var(--display);font-weight:600;font-synthesis:none;font-size:28px;letter-spacing:.02em;text-transform:uppercase;margin:0 0 4px;text-align:center}
+  .wordmark{width:150px;display:block;margin:0 auto 26px}
+  h1{font-family:var(--display);font-weight:400;font-size:34px;letter-spacing:.02em;text-transform:uppercase;margin:0 0 6px;text-align:center;line-height:1}
   .lead{text-align:center;margin:0 0 28px;opacity:.75}
   .card{background:#fff;border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 10px 30px -18px rgba(31,35,40,.35)}
   label{display:block;font-family:var(--sans);font-weight:600;font-size:12px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:8px}
@@ -39,7 +38,7 @@
   .tag.done{background:var(--green);color:#fff}
   .stats{display:flex;gap:12px;margin-bottom:18px}
   .stat{flex:1;background:#fff;border-radius:14px;padding:14px;text-align:center}
-  .stat b{display:block;font-family:var(--display);font-size:30px;font-weight:600;line-height:1}
+  .stat b{display:block;font-family:var(--display);font-size:34px;font-weight:400;line-height:1}
   .stat span{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.28em;text-transform:uppercase;opacity:.7}
   .hidden{display:none}
   .muted{opacity:.6}
@@ -48,7 +47,7 @@
 </head>
 <body>
 <div class="wrap">
-  <img class="wordmark" src="/assets/wordmark.png" alt="Neighborly">
+  <img class="wordmark" src="/assets/neighborly-wordmark-dark.png" alt="Neighborly">
   <h1>Drink Tickets</h1>
   <p class="lead">Make a ticket link per VIP guest, then watch redemptions land here.</p>
 
