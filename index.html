@@ -149,16 +149,19 @@
   .err{color:var(--err);font-size:13px;text-align:center;min-height:18px;margin-bottom:4px}
   .sheet .pill{width:100%}
   .cancel{display:block;margin:12px auto 0;background:none;border:0;font:500 13px var(--body);color:var(--muted);cursor:pointer}
-  @media (max-height:720px){
-    .brand{padding:12px 0 12px;gap:6px}
-    .greet .g1{font-size:clamp(32px,9.5vw,40px)}
-    .greet .g2{font-size:clamp(22px,6.6vw,26px);margin-top:6px}
-    .note{font-size:15px;line-height:1.5;max-width:320px}
-    .pill{padding:13px 22px;font-size:13px;min-width:200px}
-    .pill.ghost{padding:12px 22px;font-size:12px}
-    .legal{font-size:10px;max-width:280px}
-    .ctl{gap:16px;padding:22px 0 10px}
-    .ftr-in{padding:12px 20px 14px;gap:4px}
+  @media (max-width:520px){
+    main{min-height:calc(100dvh - var(--hdr))}
+    .brand{flex:.9 1 0px;padding:16px 0 14px;gap:6px}
+    .greet .g1{font-size:clamp(34px,10.2vw,40px)}
+    .greet .g2{font-size:clamp(21px,6.3vw,24px);margin-top:6px}
+    .stage{width:90%}
+    .ctl{flex:1.1 1 0px;justify-content:space-evenly;gap:0;padding:24px 0 18px}
+    .note{font-size:15px;line-height:1.55;max-width:320px}
+    .pill{padding:14px 26px;font-size:13px;min-width:200px}
+    .pill.ghost{padding:12px 24px;font-size:12px}
+    .legal{font-size:10.5px;max-width:280px;margin-top:0}
+    .link{font-size:13px}
+    .ftr-in{padding:16px 20px 20px;gap:5px}
     .ftr img{height:18px}
   }
   @media (prefers-reduced-motion:reduce){.card{transition:none}.stamp.show{animation:none;opacity:1}.enter,.deal,.fade{animation:none}.greet .g2,.ctl{transition:none}}
