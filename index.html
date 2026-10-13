@@ -44,13 +44,13 @@
   .hdr{position:sticky;top:0;z-index:20;background:rgba(245,241,233,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
   .hdr-in{max-width:1180px;margin:0 auto;padding:clamp(10px,2.4vw,14px) clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:center}
   .hdr img{height:clamp(22px,5vw,30px);width:auto;display:block}
-  .ftr{border-top:1px solid var(--line);background:var(--bar)}
+  .ftr{border-top:1px solid var(--line);background:var(--bar);margin-top:32px}
   .ftr-in{max-width:1180px;margin:0 auto;padding:20px 24px 24px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
   .ftr img{height:22px;width:auto;display:block}
   .ftr span{font-size:11px;line-height:1.5;color:var(--faint)}
 
   /* ---------- top: greeting ---------- */
-  .brand{flex:1 1 0px;width:100%;padding-top:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;opacity:0}
+  .brand{flex:.82 1 0px;width:100%;padding:20px 0 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;opacity:0}
   .brand.enter{opacity:1}
   .greet{display:flex;flex-direction:column;align-items:center}
   .greet .g1{font-family:var(--taya);font-size:clamp(38px,11.5vw,50px);line-height:1;letter-spacing:.02em;text-transform:uppercase;color:var(--ink);min-height:1em}
@@ -61,11 +61,12 @@
   .greet .g2.show{opacity:1;transform:none}
 
   /* ---------- ticket: landscape raffle ticket, sized in container units (1cqw = 1% of ticket width) ---------- */
-  .stage{width:100%;perspective:1500px;container-type:inline-size}
+  .stage{position:relative;width:100%;perspective:1500px;container-type:inline-size}
+  .shadow{position:absolute;inset:0;border-radius:2.4cqw;box-shadow:0 14px 26px rgba(30,35,41,.2),0 2px 6px rgba(30,35,41,.08);pointer-events:none}
   .card{position:relative;width:100%;aspect-ratio:920/440;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.22,1,.36,1);will-change:transform}
   .card.flipped{transform:rotateY(180deg)}
-  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;filter:drop-shadow(0 14px 26px rgba(30,35,41,.22))}
-  .face.back{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0)}
+  .face.back{transform:rotateY(180deg) translateZ(0)}
   .paper{position:absolute;inset:0;border-radius:2.4cqw;display:grid;grid-template-columns:11.3cqw minmax(0,1fr) 11.3cqw;overflow:hidden;
     -webkit-mask-image:radial-gradient(circle 1.2cqw at 50% 0,transparent 1.2cqw,#000 1.27cqw),radial-gradient(circle 1.2cqw at 50% 100%,transparent 1.2cqw,#000 1.27cqw);
     -webkit-mask-size:4.35cqw 100%,4.35cqw 100%;-webkit-mask-repeat:repeat-x,repeat-x;-webkit-mask-composite:source-in;
@@ -101,7 +102,7 @@
   .enter{animation:enter .9s cubic-bezier(.22,1,.36,1) both}
 
   /* ---------- controls ---------- */
-  .ctl{display:flex;flex-direction:column;align-items:center;gap:0;flex:1 1 0px;width:100%;justify-content:space-evenly;text-align:center;padding-bottom:calc(max(24px,env(safe-area-inset-bottom)) + 4px);transition:opacity .18s ease}
+  .ctl{display:flex;flex-direction:column;align-items:center;gap:0;flex:1.18 1 0px;width:100%;justify-content:space-evenly;text-align:center;padding:10px 0 calc(max(24px,env(safe-area-inset-bottom)) + 4px);transition:opacity .18s ease}
   .ctl.out{opacity:0}
   .pill{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:15px 24px;min-width:220px;font-family:var(--futura);font-weight:600;font-size:14px;letter-spacing:.12em;text-transform:uppercase;transition:background .2s,opacity .2s,transform .15s,box-shadow .2s,border-color .2s}
   .pill:active{transform:scale(.97)}
@@ -164,6 +165,7 @@
   </div>
 
   <div class="stage deal">
+    <div class="shadow"></div>
     <div class="card flipped" id="card">
       <div class="face front">
         <div class="paper">
