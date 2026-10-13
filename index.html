@@ -141,7 +141,7 @@
   </div>
 
   <div class="stage deal">
-    <div class="card" id="card">
+    <div class="card flipped" id="card">
       <div class="face front">
         <div class="paper">
           <div class="stub l"><div class="perf"></div></div>
@@ -295,14 +295,21 @@
     finally { busy = false; $('#go').disabled = !$('#idok').checked; }
   };
 
+  // the ticket deals in back-side up, then turns over to the front
+  function turnOver(instant) {
+    if (instant) { card.style.transition = 'none'; card.classList.remove('flipped'); void card.offsetWidth; card.style.transition = ''; return; }
+    setTimeout(() => card.classList.remove('flipped'), 1050);
+  }
+
   async function load() {
-    if (!id) { setCtl(el('div', 'note', 'This link is missing its ticket.')); return; }
+    if (!id) { turnOver(); setCtl(el('div', 'note', 'This link is missing its ticket.')); return; }
     try {
       const r = await fetch('/api/ticket?id=' + encodeURIComponent(id));
-      if (!r.ok) { setCtl(el('div', 'note', "This ticket link isn't valid.")); return; }
+      if (!r.ok) { turnOver(); setCtl(el('div', 'note', "This ticket link isn't valid.")); return; }
       ticket = await r.json();
+      turnOver(ticket.redeemed);
       render();
-    } catch { setCtl(el('div', 'note', 'No connection. Pull to refresh.')); }
+    } catch { turnOver(); setCtl(el('div', 'note', 'No connection. Pull to refresh.')); }
   }
   load();
 })();
