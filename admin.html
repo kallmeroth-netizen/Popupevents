@@ -2,77 +2,138 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#F5F1E9">
 <title>Drink Tickets Admin</title>
 <style>
   @font-face{font-family:"Futura Neighborly";src:url(/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600;font-display:swap}
   @font-face{font-family:"TAYA Maya";src:url(/fonts/TAYAmaya.otf) format("opentype");font-weight:400;font-display:swap}
-  @font-face{font-family:'DM Sans';font-weight:400;font-display:swap;src:url(/fonts/dm-sans-latin-400-normal.woff2) format('woff2')}
-  @font-face{font-family:'DM Sans';font-weight:500;font-display:swap;src:url(/fonts/dm-sans-latin-500-normal.woff2) format('woff2')}
-  :root{--ink:#1f2328;--orange:#e87142;--cream:#e5e3d6;--off:#f2f2f2;--green:#7bbd91;--sans:"Futura Neighborly","Futura PT",sans-serif;--body:"Telegraf","DM Sans",sans-serif;--display:"TAYA Maya","Oswald",sans-serif}
+  @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+
+  :root{
+    --ink:#1E2329; --text:#3A4049; --muted:#6B7280; --faint:#A8ADB5;
+    --orange:#E87242; --orange-deep:#C25A30; --blush:#FDF3EC; --green:#4F8A4F;
+    --page:#FFFFFF; --bar:#F5F1E9; --panel:#F5F2EB; --field:#FAF6F0; --line:#E6E2DA; --rule:#F1E7D8; --err:#C0473A;
+    --futura:"Futura Neighborly","Futura PT",sans-serif; --taya:"TAYA Maya","Oswald",sans-serif; --body:"Telegraf","DM Sans","Neue Haas Grotesk","Helvetica Neue",Arial,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--off);color:var(--ink);font-family:var(--body);padding:28px 16px 60px}
-  .wrap{max-width:760px;margin:0 auto}
-  .wordmark{width:150px;display:block;margin:0 auto 26px}
-  h1{font-family:var(--display);font-weight:400;font-size:34px;letter-spacing:.02em;text-transform:uppercase;margin:0 0 6px;text-align:center;line-height:1}
-  .lead{text-align:center;margin:0 0 28px;opacity:.75}
-  .card{background:#fff;border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 10px 30px -18px rgba(31,35,40,.35)}
-  label{display:block;font-family:var(--sans);font-weight:600;font-size:12px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:8px}
-  input{width:100%;font:500 17px var(--body);padding:13px 14px;border:1.5px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink)}
-  .row{display:flex;gap:10px;align-items:flex-end}
-  .row > div{flex:1}
-  .pill{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:14px 22px;font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.28em;text-transform:uppercase;white-space:nowrap}
-  .pill.primary{background:var(--orange);color:var(--off)}
-  .pill.ink{background:var(--ink);color:var(--off)}
-  .pill.ghost{background:none;border:1.5px solid var(--ink);color:var(--ink);padding:10px 16px;font-size:11px}
-  .err{color:#b4321c;min-height:20px;margin-top:8px;font-size:14px}
-  .ok{background:var(--cream);border-radius:12px;padding:14px;margin-top:14px;display:none}
-  .ok.show{display:block}
-  .ok code{display:block;word-break:break-all;font-size:14px;margin:6px 0 10px}
-  table{width:100%;border-collapse:collapse;font-size:15px}
-  th{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.28em;text-transform:uppercase;text-align:left;padding:0 8px 10px;opacity:.7}
-  td{padding:12px 8px;border-top:1px solid rgba(31,35,40,.12);vertical-align:middle}
-  .tag{display:inline-block;border-radius:999px;padding:5px 11px;font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.2em;text-transform:uppercase}
-  .tag.open{background:var(--cream)}
-  .tag.done{background:var(--green);color:#fff}
-  .stats{display:flex;gap:12px;margin-bottom:18px}
-  .stat{flex:1;background:#fff;border-radius:14px;padding:14px;text-align:center}
-  .stat b{display:block;font-family:var(--display);font-size:34px;font-weight:400;line-height:1}
-  .stat span{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.28em;text-transform:uppercase;opacity:.7}
+  html{background:#FBF9F4}
+  body{margin:0;background:var(--page);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+
+  /* ---------- site chrome, same as beneighborly.gift ---------- */
+  .hdr{position:sticky;top:0;z-index:20;background:rgba(245,241,233,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .hdr-in{max-width:1180px;margin:0 auto;padding:clamp(10px,2.4vw,15px) clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .hdr img{height:clamp(14px,3.2vw,23px);width:auto;display:block}
+  .nav{display:flex;align-items:center;gap:clamp(4px,1.2vw,8px)}
+  .nav span,.nav button{font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:clamp(10px,2.8vw,12px);padding:clamp(6px,1.5vw,9px) clamp(10px,2vw,17px);border-radius:999px;border:1px solid transparent;background:none;color:var(--text);cursor:pointer;white-space:nowrap}
+  .nav .active{background:var(--ink);color:#FAF6F0}
+  main{flex:1;width:100%;max-width:1180px;margin:0 auto;padding:clamp(16px,3.5vw,34px) clamp(14px,3vw,24px) clamp(40px,7vw,70px)}
+  .wrap{max-width:880px;margin:0 auto;padding-top:clamp(8px,2vw,24px)}
+  .ftr{border-top:1px solid var(--line);background:var(--bar)}
+  .ftr-in{max-width:1180px;margin:0 auto;padding:20px 24px 24px;display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  .ftr-l{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+  .ftr img{height:22px;width:auto;display:block}
+  .ftr span{font-size:11px;line-height:1.5;color:var(--faint)}
+  .badge{display:inline-flex;align-items:center;gap:8px;background:var(--field);border:1px solid var(--line);border-radius:999px;padding:8px 15px;font-size:12px;color:var(--muted)}
+  .badge i{width:7px;height:7px;border-radius:999px;background:var(--green)}
+
+  /* ---------- content ---------- */
+  h1{font-family:var(--taya);font-weight:400;line-height:1;font-size:40px;letter-spacing:.02em;text-transform:uppercase;margin:0 0 14px;color:var(--ink)}
+  .lead{font-size:17px;line-height:1.55;color:var(--text);margin:0 0 26px;max-width:560px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 8px 20px rgba(30,35,41,.08)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),1fr));gap:18px;margin-bottom:18px}
+  .lbl{font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted);margin-bottom:10px}
+  input{width:100%;background:var(--field);border:1px solid var(--line);border-radius:12px;padding:15px 16px;color:var(--ink);font-family:var(--body);font-size:16px;outline:none;transition:border-color .15s}
+  input::placeholder{color:var(--faint)}
+  input:focus{border-color:var(--orange)}
+  input.key{font-family:var(--mono);letter-spacing:.08em}
+  .row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+  .row > .grow{flex:1 1 220px;min-width:0}
+  .btn{appearance:none;cursor:pointer;border-radius:999px;border:0;font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:14px;padding:15px 24px;white-space:nowrap;transition:background .2s,opacity .2s,border-color .2s}
+  .btn.primary{background:var(--orange);color:#fff;box-shadow:0 8px 20px rgba(232,114,66,.28)}
+  .btn.primary:hover{background:var(--orange-deep)}
+  .btn.primary:disabled{opacity:.45;box-shadow:none;cursor:not-allowed}
+  .btn.ghost{background:none;color:var(--orange-deep);border:1px solid var(--line);padding:13px 24px;font-size:13px}
+  .btn.ghost:hover{border-color:var(--orange);background:var(--blush)}
+  .btn.sm{padding:8px 14px;font-size:11px;letter-spacing:.1em}
+  .err{color:var(--err);font-size:14px;min-height:20px;margin-top:10px}
+  .made{background:var(--field);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:16px;display:none}
+  .made.show{display:block}
+  .made strong{display:block;font-size:14px;color:var(--ink);margin-bottom:6px}
+  .made code{display:block;font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:var(--text);word-break:break-all;margin-bottom:12px}
+  .made .btns{display:flex;gap:8px;flex-wrap:wrap}
+  a.btn{text-decoration:none;display:inline-block}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+  .stat b{display:block;font-family:var(--futura);font-weight:600;font-size:44px;line-height:1;color:var(--ink);margin-bottom:8px}
+  .stat span{font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted)}
+  .stat + .stat{border-left:1px solid var(--rule)}
+  .loghead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .loghead .lbl{margin:0}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted);text-align:left;padding:10px 6px;border-bottom:1px solid var(--line)}
+  td{padding:13px 6px;border-bottom:1px solid var(--rule);vertical-align:middle;color:var(--ink)}
+  tr:last-child td{border-bottom:0}
+  td.muted{color:var(--muted)}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);white-space:nowrap}
+  .tag i{width:7px;height:7px;border-radius:999px;background:var(--faint)}
+  .tag.done{color:var(--green)}
+  .tag.done i{background:var(--green)}
   .hidden{display:none}
-  .muted{opacity:.6}
-  @media (max-width:520px){.row{flex-direction:column;align-items:stretch}.hide-sm{display:none}}
+  @media (max-width:520px){.hide-sm{display:none}.card{padding:20px}.stat b{font-size:34px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <img class="wordmark" src="/assets/neighborly-wordmark-dark.png" alt="Neighborly">
-  <h1>Drink Tickets</h1>
-  <p class="lead">Make a ticket link per VIP guest, then watch redemptions land here.</p>
-
-  <div class="card" id="login">
-    <label for="key">Admin key</label>
-    <div class="row"><div><input id="key" type="password" placeholder="Paste your admin key"></div><button class="pill ink" id="enter">Enter</button></div>
-    <div class="err" id="loginErr"></div>
+<header class="hdr">
+  <div class="hdr-in">
+    <img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly">
+    <nav class="nav"><span class="active">Drink Tickets</span></nav>
   </div>
+</header>
+<main>
+  <div class="wrap">
+    <h1>Drink Tickets</h1>
+    <p class="lead">Make a ticket link per VIP guest, then watch redemptions land here.</p>
 
-  <div id="app" class="hidden">
-    <div class="stats"><div class="stat"><b id="sTickets">0</b><span>Tickets</span></div><div class="stat"><b id="sRedeemed">0</b><span>Redeemed</span></div><div class="stat"><b id="sDrinks">0</b><span>Drinks</span></div></div>
-
-    <div class="card">
-      <label for="name">New ticket for</label>
-      <div class="row"><div><input id="name" placeholder="Guest first name" maxlength="40"></div><button class="pill primary" id="make">Make link</button></div>
-      <div class="err" id="makeErr"></div>
-      <div class="ok" id="made"><strong id="madeFor"></strong><code id="madeUrl"></code><button class="pill ghost" id="copy">Copy link</button> <a class="pill ghost" id="openLink" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Open</a></div>
+    <div class="card" id="login">
+      <div class="lbl">Admin key</div>
+      <div class="row"><div class="grow"><input id="key" class="key" type="password" placeholder="Paste your admin key" autocomplete="off"></div><button class="btn primary" id="enter">Enter</button></div>
+      <div class="err" id="loginErr"></div>
     </div>
 
-    <div class="card">
-      <div class="row" style="align-items:center;margin-bottom:12px"><div><label style="margin:0">Log</label></div><button class="pill ghost" id="refresh">Refresh</button></div>
-      <table><thead><tr><th>Guest</th><th>Status</th><th>Drinks</th><th class="hide-sm">Redeemed</th><th class="hide-sm">Link</th></tr></thead><tbody id="rows"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody></table>
+    <div id="app" class="hidden">
+      <div class="grid">
+        <div class="card">
+          <div class="lbl">New ticket for</div>
+          <div class="row"><div class="grow"><input id="name" placeholder="Guest first name" maxlength="40" autocomplete="off"></div><button class="btn primary" id="make">Make link</button></div>
+          <div class="err" id="makeErr"></div>
+          <div class="made" id="made"><strong id="madeFor"></strong><code id="madeUrl"></code><div class="btns"><button class="btn ghost sm" id="copy">Copy link</button><a class="btn ghost sm" id="openLink" target="_blank" rel="noopener">Open</a></div></div>
+        </div>
+        <div class="card stats">
+          <div class="stat"><b id="sTickets">0</b><span>Tickets</span></div>
+          <div class="stat"><b id="sRedeemed">0</b><span>Redeemed</span></div>
+          <div class="stat"><b id="sDrinks">0</b><span>Drinks</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="loghead"><div class="lbl">Log</div><button class="btn ghost sm" id="refresh">Refresh</button></div>
+        <table><thead><tr><th>Guest</th><th>Status</th><th>Drinks</th><th class="hide-sm">Redeemed</th><th>Link</th></tr></thead><tbody id="rows"><tr><td colspan="5" class="muted">Loading</td></tr></tbody></table>
+      </div>
     </div>
   </div>
-</div>
+</main>
+<footer class="ftr">
+  <div class="ftr-in">
+    <div class="ftr-l">
+      <img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly">
+      <span>Neighbors Only Preview · Brentwood, CA</span>
+      <span>Ticket links are private to each guest. One drink per neighbor, on the house.</span>
+    </div>
+    <div class="badge"><i></i>Live redemptions</div>
+  </div>
+</footer>
 <script>
 (() => {
   const $ = (s) => document.querySelector(s);
@@ -81,6 +142,7 @@
   const fmt = (ms) => ms ? new Date(ms).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
   const api = (method, body) => fetch('/api/tickets', { method, headers: { 'Content-Type': 'application/json', 'x-admin-key': key }, body: body ? JSON.stringify(body) : undefined });
   const linkFor = (id) => location.origin + '/t/' + id;
+  const copyBtn = (b, url, idle) => { b.onclick = () => navigator.clipboard.writeText(url).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = idle, 1200); }); };
 
   async function loadLog() {
     const r = await api('GET');
@@ -92,10 +154,10 @@
       if (t.redeemed) { red++; drinks += t.qty; }
       const tr = document.createElement('tr');
       const cells = [t.name || '(no name)', '', t.redeemed ? String(t.qty) : '', t.redeemed ? fmt(t.redeemedAt) : '', ''];
-      cells.forEach((c, i) => { const td = document.createElement('td'); if (i === 3 || i === 4) td.className = 'hide-sm'; td.textContent = c; tr.appendChild(td); });
-      const tag = document.createElement('span'); tag.className = 'tag ' + (t.redeemed ? 'done' : 'open'); tag.textContent = t.redeemed ? 'Redeemed' : 'Open';
+      cells.forEach((c, i) => { const td = document.createElement('td'); if (i === 3) td.className = 'hide-sm'; if (i === 2 || i === 3) td.classList.add('muted'); td.textContent = c; tr.appendChild(td); });
+      const tag = document.createElement('span'); tag.className = 'tag ' + (t.redeemed ? 'done' : ''); tag.append(document.createElement('i'), t.redeemed ? 'Redeemed' : 'Open');
       tr.children[1].replaceChildren(tag);
-      const b = document.createElement('button'); b.className = 'pill ghost'; b.textContent = 'Copy'; b.onclick = () => navigator.clipboard.writeText(linkFor(t.id)).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1200); });
+      const b = document.createElement('button'); b.className = 'btn ghost sm'; b.textContent = 'Copy'; copyBtn(b, linkFor(t.id), 'Copy');
       tr.children[4].replaceChildren(b);
       rows.appendChild(tr);
     }
@@ -120,7 +182,7 @@
       if (!r.ok) throw new Error();
       const url = linkFor(d.ticket.id);
       $('#madeFor').textContent = 'Ticket for ' + d.ticket.name; $('#madeUrl').textContent = url; $('#openLink').href = url; $('#made').classList.add('show');
-      $('#copy').onclick = () => navigator.clipboard.writeText(url).then(() => { $('#copy').textContent = 'Copied'; setTimeout(() => $('#copy').textContent = 'Copy link', 1200); });
+      copyBtn($('#copy'), url, 'Copy link');
       $('#name').value = ''; loadLog().catch(() => {});
     } catch { $('#makeErr').textContent = 'Could not make the ticket. Try again.'; }
     finally { $('#make').disabled = false; }
