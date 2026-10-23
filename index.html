@@ -87,11 +87,13 @@
   .title{font-family:var(--taya);font-size:11.8cqw;line-height:.9;letter-spacing:.02em;text-transform:uppercase}
   .back .title{font-size:9cqw;line-height:.92;margin:.6cqw 0 -1.2cqw}
 
-  /* ---------- stamp ---------- */
-  .stamp{position:absolute;z-index:3;left:50%;top:50%;width:54cqw;height:auto;transform:translate(-50%,-52%) rotate(-10deg);opacity:0;pointer-events:none}
-  .stamp.show{animation:stampIn .55s cubic-bezier(.2,1.1,.3,1) forwards}
-  .stamp.still{opacity:1}
-  @keyframes stampIn{0%{opacity:0;transform:translate(-50%,-52%) rotate(-10deg) scale(2)}55%{opacity:1;transform:translate(-50%,-52%) rotate(-10deg) scale(.95)}75%{transform:translate(-50%,-52%) rotate(-10deg) scale(1.03)}100%{opacity:1;transform:translate(-50%,-52%) rotate(-10deg) scale(1)}}
+  /* ---------- stamp: a hand-drawn X, drawn on in two strokes ---------- */
+  .stamp{position:absolute;z-index:3;left:50%;top:50%;width:42cqw;height:auto;overflow:visible;transform:translate(-50%,-50%) rotate(-6deg);pointer-events:none}
+  .stamp path{fill:none;stroke:#1E2329;stroke-width:22;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:380;stroke-dashoffset:380}
+  .stamp.show .s1{animation:draw .32s cubic-bezier(.4,0,.2,1) forwards}
+  .stamp.show .s2{animation:draw .32s cubic-bezier(.4,0,.2,1) .3s forwards}
+  .stamp.still path{stroke-dashoffset:0}
+  @keyframes draw{to{stroke-dashoffset:0}}
   @keyframes thump{0%,100%{transform:none}30%{transform:translateY(1.2cqw) scale(.99)}}
   .card.thump{animation:thump .35s ease-out}
 
@@ -166,7 +168,7 @@
     .ftr-in{padding:16px 20px 20px;gap:5px}
     .ftr img{height:18px}
   }
-  @media (prefers-reduced-motion:reduce){.card{transition:none}.stamp.show{animation:none;opacity:1}.enter,.deal,.fade{animation:none}.greet .g2,.ctl{transition:none}}
+  @media (prefers-reduced-motion:reduce){.card{transition:none}.stamp.show path{animation:none;stroke-dashoffset:0}.enter,.deal,.fade{animation:none}.greet .g2,.ctl{transition:none}}
 </style>
 </head>
 <body>
@@ -195,18 +197,17 @@
           </div>
           <div class="stub r"><div class="perf"></div></div>
         </div>
-        <svg class="stamp" id="stamp" viewBox="0 0 600 340" aria-hidden="true">
+        <svg class="stamp" id="stamp" viewBox="0 0 300 300" aria-hidden="true">
           <defs>
-            <filter id="ink" x="-8%" y="-10%" width="116%" height="120%">
-              <feTurbulence type="fractalNoise" baseFrequency=".95" numOctaves="3" seed="7" result="n"/>
-              <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="d"/>
-              <feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="2" seed="3" result="w"/>
-              <feColorMatrix in="w" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 2.4 -.25" result="wa"/>
-              <feComposite in="d" in2="wa" operator="in"/>
+            <filter id="wob" x="-10%" y="-10%" width="120%" height="120%">
+              <feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="2" seed="4" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="6" xChannelSelector="R" yChannelSelector="G"/>
             </filter>
           </defs>
-          <image href="/assets/neighborly-houses-mark-lavender.png" x="0" y="0" width="600" height="311" preserveAspectRatio="xMidYMid meet"/>
-          <text filter="url(#ink)" x="300" y="246" text-anchor="middle" font-family="Tuppence, Georgia, serif" font-weight="600" font-size="100" fill="#1f2328">Redeemed</text>
+          <g filter="url(#wob)">
+            <path class="s1" d="M42 40 C 108 98, 176 170, 258 262"/>
+            <path class="s2" d="M260 42 C 198 118, 122 190, 40 260"/>
+          </g>
         </svg>
       </div>
       <div class="face back">
@@ -320,8 +321,8 @@
     card.classList.add('redeemed');
     if (animate) {
       stamp.classList.add('show');
-      setTimeout(() => card.classList.add('thump'), 300);
-      if (navigator.vibrate) setTimeout(() => navigator.vibrate(40), 300);
+      setTimeout(() => card.classList.add('thump'), 560);
+      if (navigator.vibrate) setTimeout(() => navigator.vibrate(30), 560);
     } else {
       stamp.classList.add('still');
     }
