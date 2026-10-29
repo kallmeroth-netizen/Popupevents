@@ -299,7 +299,10 @@
     const note = el('div', 'note');
     note.append('Something new is pouring in the neighborhood. Tap ', el('strong', null, 'I’m here'), ' when you arrive, and show this to your host to redeem.');
     const b = el('button', 'pill primary', "I'm here");
-    b.onclick = () => { card.classList.add('flipped'); setTimeout(showTeamStep, ms(380)); };
+    b.onclick = () => {
+      fetch('/api/ticket', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, here: true }), keepalive: true }).catch(() => {}); // lets the backend see who's arrived
+      card.classList.add('flipped'); setTimeout(showTeamStep, ms(380));
+    };
     const legal = el('div', 'legal', 'Must be 21 or older with a valid government-issued ID to redeem. One per guest. No cash value.');
     setCtl(note, b, legal);
   }

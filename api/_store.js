@@ -1,6 +1,8 @@
 // Ticket state lives in Vercel Blob *pathnames*, never in blob bodies, so
 // reads are never stale behind the CDN cache. Each ticket is a folder:
 //   tickets/<id>/open~<b64url name>~<createdMs>
+//   tickets/<id>/opened~<firstOpenedMs>      (guest first loaded their link)
+//   tickets/<id>/here~<tappedMs>             (guest tapped "I'm here")
 //   tickets/<id>/redeemed~<qty>~<redeemedMs>
 const { put, list, del } = require('@vercel/blob');
 
@@ -31,13 +33,17 @@ async function marker(pathname) {
 }
 
 function parseFolder(id, blobs) {
-  const t = { id, name: '', createdAt: null, redeemed: false, qty: 0, redeemedAt: null };
+  const t = { id, name: '', createdAt: null, openedAt: null, hereAt: null, redeemed: false, qty: 0, redeemedAt: null };
   for (const b of blobs) {
     const leaf = b.pathname.split('/').pop();
     const parts = leaf.split('~');
     if (parts[0] === 'open') {
       t.name = unb64u(parts[1] || '');
       t.createdAt = Number(parts[2]) || null;
+    } else if (parts[0] === 'opened' || parts[0] === 'here') {
+      const at = Number(parts[1]) || 0;
+      const k = parts[0] === 'opened' ? 'openedAt' : 'hereAt';
+      if (at && (!t[k] || at < t[k])) t[k] = at;
     } else if (parts[0] === 'redeemed') {
       const at = Number(parts[2]) || 0;
       if (!t.redeemed || at < (t.redeemedAt || Infinity)) {
@@ -71,6 +77,21 @@ async function createTicket(name) {
   const id = newId();
   await marker(`tickets/${id}/open~${b64u(name)}~${Date.now()}`);
   return getTicket(id);
+}
+
+async function createTickets(names) {
+  const out = [];
+  for (const name of names) out.push(await createTicket(name));
+  return out;
+}
+
+// First time only: stamps when a guest opened their link or tapped "I'm here".
+async function markOnce(t, kind) {
+  const k = kind === 'opened' ? 'openedAt' : 'hereAt';
+  if (!t || t[k]) return t;
+  const at = Date.now();
+  await marker(`tickets/${t.id}/${kind}~${at}`);
+  return { ...t, [k]: at };
 }
 
 async function redeemTicket(id, qty) {
@@ -130,4 +151,4 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(x, y);
 }
 
-module.exports = { ID_RE, getTicket, createTicket, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };
+module.exports = { ID_RE, getTicket, createTicket, createTickets, markOnce, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };
