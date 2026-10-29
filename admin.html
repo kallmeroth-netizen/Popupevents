@@ -3,231 +3,400 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="robots" content="noindex">
-<meta name="theme-color" content="#F5F1E9">
-<title>Drink Tickets Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#FFFFFF">
+<title>Neighborly Exclusive Previews</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
-<link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <style>
-  @font-face{font-family:"Futura Neighborly";src:url(/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600;font-display:swap}
-  @font-face{font-family:"TAYA Maya";src:url(/fonts/TAYAmaya.otf) format("opentype");font-weight:400;font-display:swap}
-  @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
-  @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
-
-  :root{
-    --ink:#1E2329; --text:#3A4049; --muted:#6B7280; --faint:#A8ADB5;
-    --orange:#E87242; --orange-deep:#C25A30; --blush:#FDF3EC; --green:#4F8A4F;
-    --page:#FFFFFF; --bar:#F5F1E9; --panel:#F5F2EB; --field:#FAF6F0; --line:#E6E2DA; --rule:#F1E7D8; --err:#C0473A;
-    --futura:"Futura Neighborly","Futura PT",sans-serif; --taya:"TAYA Maya","Oswald",sans-serif; --body:"Telegraf","DM Sans","Neue Haas Grotesk","Helvetica Neue",Arial,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  /* Matches the Gift Card and Drop Shop backends: white page, slim header, Futura labels, soft cards, cream footer. */
+  @font-face { font-family: 'NB Futura'; src: url('/fonts/FuturaCyrillicDemi.ttf') format('truetype'); font-weight: 600; font-display: swap; }
+  :root {
+    --bg: #FFFFFF; --cream: #F5F1E9; --surface: #FFFFFF; --ink: #1E2329; --body: #3A4049; --muted: #6B7280; --faint: #A8ADB5;
+    --line: #E6E2DA; --soft: #F4F1EC; --terra: #E87242; --terra-dark: #C25A30; --terra-light: #FDEEE7;
+    --green: #1F7A3A; --green-bg: #E3F3E8; --g: clamp(16px, 3vw, 32px);
+    --f-label: 'NB Futura', 'Futura', 'Jost', sans-serif; --f-body: 'Telegraf', 'Neue Haas Grotesk', 'Helvetica Neue', Arial, sans-serif;
   }
-  *{box-sizing:border-box}
-  html{background:#FBF9F4}
-  body{margin:0;background:var(--page);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  html, body { margin: 0; background: var(--bg); color: var(--body); }
+  body { font-family: var(--f-body); font-size: 14px; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  button, input, textarea { font: inherit; color: inherit; }
+  .hidden { display: none !important; }
+  .k { font-family: var(--f-label); font-weight: 600; text-transform: uppercase; letter-spacing: .14em; font-size: 9px; color: var(--muted); }
+  #app:not(.hidden) { min-height: 100vh; display: flex; flex-direction: column; }
 
-  /* ---------- site chrome, same as beneighborly.gift ---------- */
-  .hdr{position:sticky;top:0;z-index:20;background:rgba(245,241,233,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-  .hdr-in{max-width:1180px;margin:0 auto;padding:clamp(10px,2.4vw,15px) clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .hdr img{height:clamp(14px,3.2vw,23px);width:auto;display:block}
-  .nav{display:flex;align-items:center;gap:clamp(4px,1.2vw,8px)}
-  .nav span,.nav button{font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:clamp(10px,2.8vw,12px);padding:clamp(6px,1.5vw,9px) clamp(10px,2vw,17px);border-radius:999px;border:1px solid transparent;background:none;color:var(--text);cursor:pointer;white-space:nowrap}
-  .nav .active{background:var(--ink);color:#FAF6F0}
-  main{flex:1;width:100%;max-width:1180px;margin:0 auto;padding:clamp(16px,3.5vw,34px) clamp(14px,3vw,24px) clamp(40px,7vw,70px)}
-  .wrap{max-width:880px;margin:0 auto;padding-top:clamp(8px,2vw,24px)}
-  .ftr{border-top:1px solid var(--line);background:var(--bar)}
-  .ftr-in{max-width:1180px;margin:0 auto;padding:20px 24px 24px;display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap}
-  .ftr-l{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
-  .ftr img{height:22px;width:auto;display:block}
-  .ftr span{font-size:11px;line-height:1.5;color:var(--faint)}
-  .badge{display:inline-flex;align-items:center;gap:8px;background:var(--field);border:1px solid var(--line);border-radius:999px;padding:8px 15px;font-size:12px;color:var(--muted)}
-  .badge i{width:7px;height:7px;border-radius:999px;background:var(--green)}
+  .hdr { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .hdr-in { max-width: 1180px; margin: 0 auto; padding: 14px var(--g); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .hdr img { height: clamp(16px, 3.4vw, 24px); width: auto; display: block; }
+  .hdr-right { display: flex; align-items: center; gap: 18px; }
+  .hdr-ey { font-family: var(--f-label); text-transform: uppercase; letter-spacing: .14em; font-size: 10px; color: var(--muted); }
+  .linkbtn { font-family: var(--f-label); font-weight: 600; text-transform: uppercase; letter-spacing: .12em; font-size: 10px; color: var(--muted); background: none; border: 0; border-bottom: 1.5px solid transparent; border-radius: 0; padding: 6px 0 4px; cursor: pointer; }
+  .linkbtn:hover { color: var(--ink); }
+  .linkbtn.danger:hover { color: #B3261E; }
 
-  /* ---------- content ---------- */
-  h1{font-family:var(--taya);font-weight:400;line-height:1;font-size:40px;letter-spacing:.02em;text-transform:uppercase;margin:0 0 14px;color:var(--ink)}
-  .lead{font-size:17px;line-height:1.55;color:var(--text);margin:0 0 26px;max-width:560px}
-  .card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 8px 20px rgba(30,35,41,.08)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),1fr));gap:18px;margin-bottom:18px}
-  .lbl{font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted);margin-bottom:10px}
-  input{width:100%;background:var(--field);border:1px solid var(--line);border-radius:12px;padding:15px 16px;color:var(--ink);font-family:var(--body);font-size:16px;outline:none;transition:border-color .15s}
-  input::placeholder{color:var(--faint)}
-  input:focus{border-color:var(--orange)}
-  input.key{font-family:var(--mono);letter-spacing:.08em}
-  .row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
-  .row > .grow{flex:1 1 220px;min-width:0}
-  .btn{appearance:none;-webkit-tap-highlight-color:transparent;cursor:pointer;border-radius:999px;border:0;font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:14px;padding:15px 24px;white-space:nowrap;transition:background .2s,opacity .2s,border-color .2s}
-  .btn.primary{background:var(--orange);color:#fff;box-shadow:0 8px 20px rgba(232,114,66,.28)}
-  .btn.primary:hover{background:var(--orange-deep)}
-  .btn.primary:disabled{opacity:.45;box-shadow:none;cursor:not-allowed}
-  .btn.ghost{background:none;color:var(--orange-deep);border:1px solid var(--line);padding:13px 24px;font-size:13px}
-  .btn.ghost:hover{border-color:var(--orange);background:var(--blush)}
-  .btn.sm{padding:8px 14px;font-size:11px;letter-spacing:.1em}
-  .err{color:var(--err);font-size:14px;min-height:20px;margin-top:10px}
-  .made{background:var(--field);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:16px;display:none}
-  .made.show{display:block}
-  .made strong{display:block;font-size:14px;color:var(--ink);margin-bottom:6px}
-  .made code{display:block;font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:var(--text);word-break:break-all;margin-bottom:12px}
-  .made .btns{display:flex;gap:8px;flex-wrap:wrap}
-  a.btn{text-decoration:none;display:inline-block}
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
-  .stat b{display:block;font-family:var(--futura);font-weight:600;font-size:44px;line-height:1;color:var(--ink);margin-bottom:8px}
-  .stat span{font-family:var(--futura);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted)}
-  .stat + .stat{border-left:1px solid var(--rule)}
-  .loghead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
-  .loghead .lbl{margin:0}
-  .x{appearance:none;-webkit-tap-highlight-color:transparent;background:none;border:0;cursor:pointer;color:var(--faint);font:400 18px/1 var(--body);padding:4px 6px;border-radius:8px}
-  .x:hover{color:var(--err);background:#FBEFEC}
-  .list{display:flex;flex-direction:column}
-  .item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--rule)}
-  .item:last-child{border-bottom:0}
-  .item .who{flex:1;min-width:0}
-  .item .name{font-size:15px;color:var(--ink);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .item .sub{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-top:2px;min-width:0}
-  .item .sub span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .item .sub i{flex:0 0 auto;width:7px;height:7px;border-radius:999px;background:var(--faint)}
-  .item .sub.done{color:var(--green)}
-  .item .sub.done i{background:var(--green)}
-  .item .muted{font-size:13px;color:var(--muted)}
-  .empty{font-size:14px;color:var(--muted);padding:8px 0}
-  .clearall{display:block;margin:14px auto 0;background:none;border:0;cursor:pointer;font:400 13px var(--body);color:var(--faint);text-decoration:underline;text-underline-offset:2px}
-  .clearall:hover{color:var(--err)}
-  .hidden{display:none}
-  @media (max-width:520px){
-    .hdr{background:rgba(245,241,233,.98);backdrop-filter:none;-webkit-backdrop-filter:none}
-    h1{font-size:30px;margin-bottom:8px}
-    .lead{font-size:15px;margin-bottom:18px}
-    .card{padding:16px;border-radius:16px}
-    .grid{gap:12px;margin-bottom:12px}
-    .row{flex-wrap:nowrap;align-items:stretch}
-    .row > .grow{flex:1 1 0}
-    input{padding:12px 14px;font-size:16px}
-    .btn.primary{padding:0 18px;font-size:12px;letter-spacing:.1em}
-    .made{padding:12px;margin-top:12px}
-    .made code{font-size:12px}
-    .stat b{font-size:28px;margin-bottom:6px}
-    .stat span{font-size:10px}
-    .item{padding:10px 0}
-    .ftr img{height:16px}
-    .badge{display:none}
+  .shell { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: clamp(22px, 4vw, 40px) var(--g) 48px; }
+  .toolbar { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+  h1 { font-family: var(--f-label); font-weight: 600; font-size: clamp(20px, 2.4vw, 26px); letter-spacing: .06em; text-transform: uppercase; color: var(--ink); margin: 0 0 4px; }
+  .muted { color: var(--muted); font-size: 13px; line-height: 1.5; }
+  .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .search { font: inherit; font-size: 14px; padding: 11px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); outline: none; min-width: 300px; }
+  .search:focus { border-color: var(--ink); }
+  .btn { font-family: var(--f-label); font-weight: 600; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--ink); background: #fff; color: var(--ink); cursor: pointer; white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: background .15s, color .15s, border-color .15s; }
+  .btn:hover { background: var(--ink); color: #fff; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn.primary { background: var(--terra); color: #fff; border-color: var(--terra); }
+  .btn.primary:hover { background: var(--terra-dark); border-color: var(--terra-dark); }
+  .btn.ghost { border-color: var(--line); }
+  .btn.ghost:hover { border-color: var(--ink); }
+  .notice { margin: 0 0 16px; padding: 12px 16px; border-radius: 12px; background: #FFF2D6; color: #8A5A00; font-size: 13px; line-height: 1.45; }
+  .err { color: #B3261E; font-size: 13px; min-height: 18px; margin-top: 8px; }
+
+  /* new invite */
+  .new { background: var(--cream); border-radius: 18px; padding: 18px 20px; margin-bottom: 22px; }
+  .new-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .new input, .new textarea { flex: 1 1 260px; min-width: 0; font-size: 14px; padding: 11px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); outline: none; }
+  .new textarea { border-radius: 14px; min-height: 110px; resize: vertical; width: 100%; flex-basis: 100%; line-height: 1.5; }
+  .new input:focus, .new textarea:focus { border-color: var(--ink); }
+  .new-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .made { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .made-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px 10px 16px; }
+  .made-row b { color: var(--ink); font-weight: 600; }
+  .made-row code { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
+
+  /* filters + summary */
+  .filters { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .seg { display: inline-flex; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 3px; max-width: 100%; }
+  .seg button { border: 0; background: none; border-radius: 999px; padding: 7px 13px; cursor: pointer; font-family: var(--f-label); font-weight: 600; text-transform: uppercase; letter-spacing: .12em; font-size: 10px; color: var(--muted); white-space: nowrap; min-width: 0; transition: color .15s, background .15s; }
+  .seg button:hover { color: var(--ink); }
+  .seg button.on { background: var(--terra); color: #fff; }
+  .seg button i { font-style: normal; opacity: .7; margin-left: 4px; }
+  .summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 22px; font-size: 13px; color: var(--muted); }
+  .summary b { font-family: var(--f-label); font-weight: 600; font-size: 18px; color: var(--ink); margin-right: 5px; }
+  .track { height: 3px; background: var(--soft); border-radius: 999px; overflow: hidden; margin: 10px 0 20px; }
+  .track i { display: block; height: 100%; background: #4F8A4F; border-radius: 999px; transition: width .4s ease; }
+
+  /* invites: one soft card each, like the gift orders */
+  .list { display: flex; flex-direction: column; gap: 10px; }
+  .inv { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto; gap: 14px 22px; align-items: center; padding: 16px 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 1px 2px rgba(30,35,41,.03); }
+  .who { font-size: 16px; font-weight: 600; color: var(--ink); line-height: 1.25; }
+  .sub { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+  .steps { display: flex; flex-wrap: wrap; gap: 6px; }
+  .step { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 11.5px; background: #F2F2F2; color: var(--faint); white-space: nowrap; }
+  .step::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .6; }
+  .step.on { background: #F2F2F2; color: var(--ink); }
+  .step.on::before { background: var(--terra); opacity: 1; }
+  .step.ok { background: var(--green-bg); color: var(--green); }
+  .step.ok::before { background: var(--green); opacity: 1; }
+  .actions { display: flex; align-items: center; gap: 8px; }
+  .x { background: none; border: 0; cursor: pointer; color: var(--faint); font-size: 18px; line-height: 1; padding: 6px 8px; border-radius: 8px; }
+  .x:hover { color: #B3261E; background: #FBE4E1; }
+  .empty { padding: 40px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 18px; }
+  .empty b { display: block; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  .help { margin-top: 22px; font-size: 12.5px; color: var(--muted); line-height: 1.6; display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+
+  .foot { background: var(--cream); border-top: 1px solid var(--line); }
+  .foot-in { max-width: 1180px; margin: 0 auto; padding: 24px var(--g); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .foot span { font-family: var(--f-label); text-transform: uppercase; letter-spacing: .12em; font-size: 10px; color: var(--muted); }
+  .fine { font-size: 11px; color: var(--faint); }
+
+  @media (hover: none) { .btn:hover { background: #fff; color: var(--ink); } .btn.primary:hover { background: var(--terra); color: #fff; } }
+  @media (max-width: 900px) { .inv { grid-template-columns: minmax(0, 1fr) auto; } .steps { grid-column: 1 / -1; grid-row: 2; } }
+  @media (max-width: 560px) {
+    .hdr-ey { display: none; }
+    .toolbar { align-items: stretch; } .controls { width: 100%; flex-wrap: nowrap; } .search { min-width: 0; flex: 1; }
+    .filters .seg { display: flex; width: 100%; } .seg button { flex: 1 1 0; padding: 8px 4px; overflow: hidden; text-overflow: ellipsis; letter-spacing: .08em; }
+    .seg button i { display: none; }
+    .new { padding: 16px; }
+    .inv { padding: 14px 16px; gap: 10px 12px; }
+    .actions .btn.open { display: none; }
   }
+
+  /* ── Neighborly backend sign-in (styled like the Marketing Hub login) ── */
+  @font-face { font-family:'NB Futura'; src:url('/fonts/FuturaCyrillicDemi.ttf') format('truetype'); font-weight:600; font-display:swap; }
+  .nb-gate { position:fixed; inset:0; z-index:100; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:96px 24px 48px; background:#F7F6F3; color:#1f2328; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased; overflow-y:auto; }
+  .nb-gate[hidden] { display:none; }
+  .nb-gate-logo { position:absolute; top:40px; left:50%; transform:translateX(-50%); }
+  .nb-gate-logo img { width:145px; height:auto; display:block; filter:brightness(0) drop-shadow(0 1px 4px rgba(31,35,40,.10)); opacity:0; animation:nbGateRise .6s ease .1s forwards; }
+  .nb-gate-card { width:min(300px, 86vw); display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center; }
+  .nb-gate-art { display:block; width:120%; max-width:92vw; height:auto; margin:0 -10% 4px; opacity:0; animation:nbGateRise .7s ease .25s forwards; }
+  .nb-gate-ey { font-family:'NB Futura','Futura','Jost',sans-serif; font-weight:600; font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#1f2328; opacity:0; animation:nbGateFade .5s ease .45s forwards; }
+  .nb-gate-form { width:100%; position:relative; padding-bottom:56px; opacity:0; animation:nbGateRise .55s ease .55s forwards; }
+  .nb-gate-row { display:flex; align-items:center; height:38px; border-bottom:1px solid rgba(31,35,40,.22); transition:border-color .2s; }
+  .nb-gate-row:focus-within { border-color:rgba(31,35,40,.5); }
+  .nb-gate-row.error { border-color:#e87142; animation:nbGateShake .36s ease; }
+  .nb-gate-row input { flex:1; min-width:0; border:0; background:transparent; outline:none; font:inherit; font-size:15px; letter-spacing:.02em; color:#1f2328; padding:0; }
+  .nb-gate-row input::placeholder { font-size:13px; letter-spacing:.02em; color:rgba(31,35,40,.42); }
+  .nb-gate-eye { background:none; border:0; cursor:pointer; padding:4px; color:#1f2328; opacity:.4; display:flex; align-items:center; }
+  .nb-gate-eye:hover { opacity:.9; }
+  .nb-gate-go { position:absolute; left:50%; bottom:10px; transform:translateX(-50%); height:30px; padding:0 22px 0 calc(22px + .16em); border:0; border-radius:100px; background:#e87142; color:#f7f6f3; font-family:'NB Futura','Futura','Jost',sans-serif; font-weight:600; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; white-space:nowrap; cursor:pointer; box-shadow:0 4px 14px rgba(232,113,66,.26); transition:transform .15s, box-shadow .15s, opacity .15s; }
+  .nb-gate-go:hover { transform:translateX(-50%) translateY(-1px); box-shadow:0 6px 18px rgba(232,113,66,.36); }
+  .nb-gate-go:disabled { opacity:.6; cursor:default; }
+  .nb-gate-err { min-height:16px; font-size:11.5px; color:#e87142; }
+  .nb-gate .nb-sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  @keyframes nbGateRise { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+  @keyframes nbGateFade { from { opacity:0; } to { opacity:.7; } }
+  @keyframes nbGateShake { 0%,100% { transform:none; } 25% { transform:translateX(-6px); } 75% { transform:translateX(6px); } }
+  @media (max-width:640px) { .nb-gate-logo { top:32px; } .nb-gate-logo img { width:110px; } }
+  @media (prefers-reduced-motion: reduce) { .nb-gate-logo img, .nb-gate-art, .nb-gate-ey, .nb-gate-form { animation:none; opacity:1; } .nb-gate-ey { opacity:.7; } .nb-gate-row.error { animation:none; } }
+
 </style>
 </head>
 <body>
-<header class="hdr">
-  <div class="hdr-in">
-    <img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly">
-    <nav class="nav"><span class="active">Drink Tickets</span></nav>
-  </div>
-</header>
-<main>
-  <div class="wrap">
-    <h1>Drink Tickets</h1>
-    <p class="lead">Create VIP guest unique link</p>
 
-    <div class="card" id="login">
-      <div class="lbl">Admin key</div>
-      <div class="row"><div class="grow"><input id="key" class="key" type="password" placeholder="Paste your admin key" autocomplete="off"></div><button class="btn primary" id="enter">Enter</button></div>
-      <div class="err" id="loginErr"></div>
-    </div>
-
-    <div id="app" class="hidden">
-      <div class="grid">
-        <div class="card">
-          <div class="lbl">New ticket for</div>
-          <div class="row"><div class="grow"><input id="name" placeholder="Guest first name" maxlength="40" autocomplete="off"></div><button class="btn primary" id="make">Make link</button></div>
-          <div class="err" id="makeErr"></div>
-          <div class="made" id="made"><strong id="madeFor"></strong><code id="madeUrl"></code><div class="btns"><button class="btn ghost sm" id="copy">Copy link</button><a class="btn ghost sm" id="openLink" target="_blank" rel="noopener">Open</a></div></div>
-        </div>
-        <div class="card stats">
-          <div class="stat"><b id="sTickets">0</b><span>Tickets</span></div>
-          <div class="stat"><b id="sRedeemed">0</b><span>Redeemed</span></div>
-          <div class="stat"><b id="sDrinks">0</b><span>Drinks</span></div>
-        </div>
+<section class="nb-gate" id="gate" aria-label="Sign in">
+  <div class="nb-gate-logo"><img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly"></div>
+  <form class="nb-gate-card" id="gateForm" autocomplete="on">
+    <img class="nb-gate-art" src="/assets/neighborly-line-drawing.png" alt="" aria-hidden="true">
+    <div class="nb-gate-ey">Exclusive Previews &middot; Backend</div>
+    <div class="nb-gate-form">
+      <div class="nb-gate-row" id="gateRow">
+        <label class="nb-sr" for="gatePw">Password</label>
+        <input id="gatePw" type="password" placeholder="Password" autocomplete="current-password" autocapitalize="off" spellcheck="false" required autofocus>
+        <button class="nb-gate-eye" id="gateEye" type="button" aria-label="Show password"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
-
-      <div class="card">
-        <div class="loghead"><div class="lbl">Log</div><button class="btn ghost sm" id="refresh">Refresh</button></div>
-        <div class="list" id="rows"><div class="empty">Loading</div></div>
-        <button class="clearall" id="clear">Clear all tickets</button>
-      </div>
+      <button class="nb-gate-go" id="gateGo" type="submit">Enter &rarr;</button>
     </div>
+    <div class="nb-gate-err" id="gateErr" role="alert"></div>
+  </form>
+</section>
+
+<div id="app" class="hidden">
+<header class="hdr"><div class="hdr-in">
+  <img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly">
+  <div class="hdr-right"><span class="hdr-ey">Exclusive Previews &middot; Backend</span><button class="linkbtn" id="signOut" type="button">Sign out</button></div>
+</div></header>
+<main class="shell">
+  <div class="toolbar">
+    <div><h1>Guest invites</h1><div class="muted">Every VIP link and drink ticket, live &middot; <span id="sync">loading</span></div></div>
+    <div class="controls"><input class="search" id="q" type="search" placeholder="Search guest name" autocomplete="off"><button class="btn primary" id="newBtn" type="button">New invite</button></div>
   </div>
+
+  <div class="notice hidden" id="notice" role="status"></div>
+
+  <section class="new hidden" id="new">
+    <div class="new-row" id="oneRow">
+      <input id="name" maxlength="40" placeholder="Guest first name" autocomplete="off">
+      <button class="btn primary" id="make" type="button">Make link</button>
+    </div>
+    <div class="new-row hidden" id="manyRow">
+      <textarea id="names" placeholder="One first name per line"></textarea>
+    </div>
+    <div class="new-foot">
+      <button class="linkbtn" id="modeBtn" type="button">Add several at once</button>
+      <button class="btn primary hidden" id="makeMany" type="button">Make links</button>
+    </div>
+    <div class="err" id="makeErr"></div>
+    <div class="made" id="made"></div>
+  </section>
+
+  <div class="filters">
+    <div class="seg" id="seg">
+      <button data-f="all" class="on">All<i id="cAll"></i></button>
+      <button data-f="unopened">Not opened<i id="cUnopened"></i></button>
+      <button data-f="here">Here<i id="cHere"></i></button>
+      <button data-f="redeemed">Redeemed<i id="cRedeemed"></i></button>
+    </div>
+    <button class="linkbtn" id="exportCsv" type="button">Export CSV</button>
+  </div>
+  <div class="summary" id="summary"></div>
+  <div class="track"><i id="bar" style="width:0"></i></div>
+  <div class="list" id="list"></div>
+
+  <div class="help">Opened is the first time a guest loaded their link. Here is when they tapped “I’m here”. Redeemed is when the bartender poured with the PIN; each ticket redeems once.
+    <button class="linkbtn danger" id="clearAll" type="button">Delete all invites</button></div>
 </main>
-<footer class="ftr">
-  <div class="ftr-in">
-    <div class="ftr-l">
-      <img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly">
-      <span>Neighbors Only Preview · Brentwood, CA</span>
-      <span>Ticket links are private to each guest. One drink per neighbor, on the house.</span>
-    </div>
-    <div class="badge"><i></i>Live redemptions</div>
-  </div>
-</footer>
-<script>
-(() => {
-  const $ = (s) => document.querySelector(s);
-  let key = '';
-  try { key = sessionStorage.getItem('nbKey') || ''; } catch {}
-  const fmtTime = (ms) => ms ? new Date(ms).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : '';
-  const api = (method, body, qs) => fetch('/api/tickets' + (qs || ''), { method, headers: { 'Content-Type': 'application/json', 'x-admin-key': key }, body: body ? JSON.stringify(body) : undefined });
-  const linkFor = (id) => location.origin + '/t/' + id;
-  const copyBtn = (b, url, idle) => { b.onclick = () => navigator.clipboard.writeText(url).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = idle, 1200); }); };
+<footer class="foot"><div class="foot-in"><span>Neighbors Only Preview &middot; Brentwood</span><span class="fine">&copy; 2026 Neighborly</span></div></footer>
+</div>
 
-  async function loadLog() {
-    const r = await api('GET');
-    if (r.status === 401) { throw new Error('unauthorized'); }
-    const { tickets } = await r.json();
-    const rows = $('#rows'); rows.replaceChildren();
-    let red = 0, drinks = 0;
-    for (const t of tickets) {
-      if (t.redeemed) { red++; drinks += t.qty; }
-      const item = document.createElement('div'); item.className = 'item';
-      const who = document.createElement('div'); who.className = 'who';
-      const name = document.createElement('div'); name.className = 'name'; name.textContent = t.name || '(no name)';
-      const sub = document.createElement('div'); sub.className = 'sub' + (t.redeemed ? ' done' : '');
-      const subText = document.createElement('span'); subText.textContent = t.redeemed ? ('Redeemed · ' + t.qty + (t.qty === 1 ? ' drink' : ' drinks') + (t.redeemedAt ? ' · ' + fmtTime(t.redeemedAt) : '')) : 'Open';
-      sub.append(document.createElement('i'), subText);
-      who.append(name, sub);
-      const b = document.createElement('button'); b.className = 'btn ghost sm'; b.textContent = 'Copy'; copyBtn(b, linkFor(t.id), 'Copy');
-      const x = document.createElement('button'); x.className = 'x'; x.title = 'Delete this ticket'; x.setAttribute('aria-label', 'Delete ' + (t.name || 'ticket')); x.textContent = '\u00d7';
-      x.onclick = async () => { if (!confirm('Delete the ticket for ' + (t.name || 'this guest') + '? The link will stop working.')) return; x.disabled = true; try { await api('DELETE', null, '?id=' + t.id); } catch {} loadLog().catch(() => {}); };
-      item.append(who, b, x);
-      rows.appendChild(item);
+<script>
+// ── Neighborly backend sign-in ──
+const NBGate = {
+  open(msg) { const g = document.getElementById('gate'); g.hidden = false; document.getElementById('gateErr').textContent = msg || ''; const i = document.getElementById('gatePw'); i.value = ''; setTimeout(() => i.focus(), 30); },
+  close() { document.getElementById('gate').hidden = true; },
+  wire(check) {
+    const form = document.getElementById('gateForm'), pw = document.getElementById('gatePw'), go = document.getElementById('gateGo'), err = document.getElementById('gateErr'), row = document.getElementById('gateRow'), eye = document.getElementById('gateEye');
+    eye.addEventListener('click', () => { const show = pw.type === 'password'; pw.type = show ? 'text' : 'password'; eye.setAttribute('aria-label', show ? 'Hide password' : 'Show password'); pw.focus(); });
+    pw.addEventListener('input', () => { row.classList.remove('error'); err.textContent = ''; });
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); const v = pw.value.trim(); if (!v) return;
+      go.disabled = true; err.textContent = ''; row.classList.remove('error');
+      try { await check(v); NBGate.close(); }
+      catch (x) {
+        err.textContent = x && x.message && x.message !== 'unauthorized' ? x.message : 'That’s not it — try again.';
+        void row.offsetWidth; row.classList.add('error'); pw.select();
+      } finally { go.disabled = false; }
+    });
+  },
+};
+
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} }, del(k) { try { localStorage.removeItem(k); } catch {} } };
+  const esc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const state = { key: store.get('epAdminKey') || '', tickets: [], filter: 'all', q: '', loadedAt: 0, timers: null, many: false };
+  const linkFor = (id) => location.origin + '/t/' + id;
+  const time = (ms) => ms ? new Date(ms).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : '';
+  const day = (ms) => ms ? new Date(ms).toLocaleDateString([], { month: 'short', day: 'numeric' }) : '';
+  const when = (ms) => ms ? (new Date(ms).toDateString() === new Date().toDateString() ? time(ms) : day(ms) + ' ' + time(ms)) : '';
+
+  async function api(method, body, qs) {
+    const r = await fetch('/api/tickets' + (qs || ''), { method, headers: { 'Content-Type': 'application/json', 'x-admin-key': state.key }, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' });
+    const d = await r.json().catch(() => ({}));
+    if (r.status === 401) { signOut('Wrong password.'); throw new Error('unauthorized'); }
+    if (!r.ok) throw new Error(d.error === 'store_error' ? 'Couldn’t reach the ticket store. Check Blob storage in Vercel.' : 'Something went wrong.');
+    return d;
+  }
+
+  async function load() {
+    try {
+      const { tickets } = await api('GET');
+      state.tickets = tickets || []; state.loadedAt = Date.now(); setNotice('');
+      render();
+    } catch (e) { if (e.message !== 'unauthorized') { $('sync').textContent = 'offline · retrying'; setNotice(e.message); } }
+  }
+
+  function setNotice(t) { $('notice').textContent = t || ''; $('notice').classList.toggle('hidden', !t); }
+  function renderSync() {
+    if (!state.loadedAt) return;
+    const s = Math.round((Date.now() - state.loadedAt) / 1000);
+    $('sync').textContent = 'updated ' + (s < 10 ? 'just now' : s < 60 ? s + 's ago' : Math.round(s / 60) + 'm ago');
+  }
+
+  const status = (t) => t.redeemed ? 'redeemed' : t.hereAt ? 'here' : t.openedAt ? 'opened' : 'unopened';
+
+  function render() {
+    const T = state.tickets;
+    const n = { all: T.length, unopened: 0, opened: 0, here: 0, redeemed: 0 };
+    let drinks = 0;
+    T.forEach((t) => { if (!t.openedAt && !t.hereAt && !t.redeemed) n.unopened++; if (t.openedAt || t.hereAt || t.redeemed) n.opened++; if (t.hereAt || t.redeemed) n.here++; if (t.redeemed) { n.redeemed++; drinks += t.qty || 0; } });
+    $('cAll').textContent = n.all; $('cUnopened').textContent = n.unopened; $('cHere').textContent = n.here; $('cRedeemed').textContent = n.redeemed;
+    $('summary').innerHTML = `<span><b>${n.all}</b>invited</span><span><b>${n.opened}</b>opened</span><span><b>${n.here}</b>here</span><span><b>${n.redeemed}</b>redeemed</span><span><b>${drinks}</b>${drinks === 1 ? 'drink' : 'drinks'} poured</span>`;
+    $('bar').style.width = (n.all ? Math.round(n.redeemed / n.all * 100) : 0) + '%';
+    renderSync();
+
+    const q = state.q.trim().toLowerCase();
+    const shown = T.filter((t) => {
+      const s = status(t);
+      if (state.filter === 'unopened' && s !== 'unopened') return false;
+      if (state.filter === 'here' && !(t.hereAt || t.redeemed)) return false;
+      if (state.filter === 'redeemed' && !t.redeemed) return false;
+      return !q || String(t.name || '').toLowerCase().includes(q);
+    });
+    if (!shown.length) {
+      $('list').innerHTML = `<div class="empty">${T.length ? '<b>No matches</b>Try another name or filter.' : '<b>No invites yet</b>Tap New invite to make the first guest link.'}</div>`;
+      return;
     }
-    if (!tickets.length) { const e = document.createElement('div'); e.className = 'empty'; e.textContent = 'No tickets yet. Make one above.'; rows.appendChild(e); }
-    $('#clear').style.display = tickets.length ? '' : 'none';
-    $('#sTickets').textContent = tickets.length; $('#sRedeemed').textContent = red; $('#sDrinks').textContent = drinks;
+    $('list').innerHTML = shown.map((t) => {
+      const opened = t.openedAt || t.hereAt || t.redeemedAt;
+      const steps = [
+        `<span class="step ${opened ? 'on' : ''}">${opened ? 'Opened' + (t.openedAt ? ' ' + esc(when(t.openedAt)) : '') : 'Not opened'}</span>`,
+        `<span class="step ${t.hereAt || t.redeemed ? 'on' : ''}">${t.hereAt ? 'Here ' + esc(when(t.hereAt)) : t.redeemed ? 'Here' : 'Not here yet'}</span>`,
+        `<span class="step ${t.redeemed ? 'ok' : ''}">${t.redeemed ? 'Redeemed · ' + t.qty + (t.qty === 1 ? ' drink' : ' drinks') + (t.redeemedAt ? ' · ' + esc(when(t.redeemedAt)) : '') : 'Not redeemed'}</span>`,
+      ].join('');
+      return `<div class="inv">
+        <div><div class="who">${esc(t.name || 'Guest')}</div><div class="sub">Invited ${esc(day(t.createdAt))}</div></div>
+        <div class="steps">${steps}</div>
+        <div class="actions"><button class="btn ghost" data-copy="${esc(t.id)}" type="button">Copy link</button><a class="btn ghost open" href="/t/${esc(t.id)}" target="_blank" rel="noopener">Open</a><button class="x" data-del="${esc(t.id)}" type="button" title="Delete invite" aria-label="Delete invite for ${esc(t.name || 'guest')}">&times;</button></div>
+      </div>`;
+    }).join('');
+    $('list').querySelectorAll('[data-copy]').forEach((b) => b.onclick = () => copy(linkFor(b.dataset.copy), b, 'Copy link'));
+    $('list').querySelectorAll('[data-del]').forEach((b) => b.onclick = () => del(b.dataset.del, b));
+  }
+
+  function copy(text, btn, idle) {
+    const done = () => { btn.textContent = 'Copied'; setTimeout(() => (btn.textContent = idle), 1300); };
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, () => prompt('Copy this:', text)); else prompt('Copy this:', text);
+  }
+
+  async function del(id, btn) {
+    const t = state.tickets.find((x) => x.id === id);
+    if (!confirm('Delete the invite for ' + ((t && t.name) || 'this guest') + '? Their link will stop working.')) return;
+    btn.disabled = true;
+    try { await api('DELETE', null, '?id=' + encodeURIComponent(id)); state.tickets = state.tickets.filter((x) => x.id !== id); render(); }
+    catch (e) { if (e.message !== 'unauthorized') alert(e.message); btn.disabled = false; }
+  }
+
+  function showMade(tickets) {
+    const rows = tickets.map((t) => `<div class="made-row"><b>${esc(t.name)}</b><code>${esc(linkFor(t.id))}</code><button class="btn ghost" data-mk="${esc(t.id)}" type="button">Copy</button></div>`).join('');
+    const all = tickets.length > 1 ? `<div><button class="btn ghost" id="copyAll" type="button">Copy all ${tickets.length} links</button></div>` : '';
+    $('made').innerHTML = rows + all;
+    $('made').querySelectorAll('[data-mk]').forEach((b) => b.onclick = () => copy(linkFor(b.dataset.mk), b, 'Copy'));
+    if ($('copyAll')) $('copyAll').onclick = () => copy(tickets.map((t) => t.name + ': ' + linkFor(t.id)).join('\n'), $('copyAll'), 'Copy all ' + tickets.length + ' links');
+  }
+
+  async function make(names, btn) {
+    $('makeErr').textContent = '';
+    if (!names.length) { $('makeErr').textContent = 'Add a name first.'; return; }
+    btn.disabled = true; const label = btn.textContent; btn.textContent = 'Making…';
+    try {
+      const d = names.length === 1 ? await api('POST', { name: names[0] }) : await api('POST', { names });
+      const made = d.tickets || [d.ticket];
+      showMade(made);
+      state.tickets = [...made, ...state.tickets];
+      $('name').value = ''; $('names').value = '';
+      render();
+      if (made.length === 1) copy(linkFor(made[0].id), $('made').querySelector('[data-mk]'), 'Copy');
+    } catch (e) { if (e.message !== 'unauthorized') $('makeErr').textContent = e.message; }
+    finally { btn.disabled = false; btn.textContent = label; }
+  }
+
+  function exportCsv() {
+    const cell = (v) => { const s = String(v == null ? '' : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+    const iso = (ms) => ms ? new Date(ms).toLocaleString() : '';
+    const lines = [['Guest', 'Link', 'Invited', 'Opened', 'Here', 'Redeemed', 'Drinks']].concat(
+      state.tickets.map((t) => [t.name, linkFor(t.id), iso(t.createdAt), iso(t.openedAt), iso(t.hereAt), iso(t.redeemedAt), t.redeemed ? t.qty : '']));
+    const url = URL.createObjectURL(new Blob(['﻿' + lines.map((r) => r.map(cell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' }));
+    const a = document.createElement('a'); a.href = url; a.download = 'exclusive-preview-invites.csv'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function signOut(msg) {
+    store.del('epAdminKey'); state.key = '';
+    $('app').classList.add('hidden');
+    NBGate.open(msg);
   }
 
   async function enter() {
-    key = $('#key').value.trim(); $('#loginErr').textContent = '';
-    try { await loadLog(); try { sessionStorage.setItem('nbKey', key); } catch {} $('#login').classList.add('hidden'); $('#app').classList.remove('hidden'); }
-    catch { $('#loginErr').textContent = 'That key did not work.'; }
+    const { tickets } = await api('GET');
+    store.set('epAdminKey', state.key);
+    state.tickets = tickets || []; state.loadedAt = Date.now();
+    NBGate.close(); $('app').classList.remove('hidden');
+    render();
+    fetch('/api/health').then((r) => r.json()).then((h) => {
+      if (h.bartenderPin === false) setNotice('BARTENDER_PIN isn’t set in Vercel, so bartenders can’t redeem tickets yet.');
+    }).catch(() => {});
+    if (!state.timers) state.timers = [setInterval(load, 15000), setInterval(renderSync, 5000)];
   }
-  $('#enter').onclick = enter; $('#key').onkeydown = (e) => { if (e.key === 'Enter') enter(); };
-  $('#refresh').onclick = () => loadLog().catch(() => {});
-  $('#clear').onclick = async () => {
-    if (!confirm('Delete every ticket? All existing links will stop working. This cannot be undone.')) return;
-    $('#clear').disabled = true;
-    try { await api('DELETE', null, '?all=1'); } catch {}
-    $('#clear').disabled = false; loadLog().catch(() => {});
+
+  NBGate.wire(async (pw) => { state.key = pw; await enter(); });
+
+  $('signOut').onclick = () => signOut();
+  $('newBtn').onclick = () => { const s = $('new'); s.classList.toggle('hidden'); if (!s.classList.contains('hidden')) (state.many ? $('names') : $('name')).focus(); };
+  $('modeBtn').onclick = () => {
+    state.many = !state.many;
+    $('oneRow').classList.toggle('hidden', state.many); $('manyRow').classList.toggle('hidden', !state.many); $('makeMany').classList.toggle('hidden', !state.many);
+    $('modeBtn').textContent = state.many ? 'Just one' : 'Add several at once';
+    (state.many ? $('names') : $('name')).focus();
   };
-  $('#name').onkeydown = (e) => { if (e.key === 'Enter') $('#make').click(); };
-  $('#make').onclick = async () => {
-    const name = $('#name').value.trim(); $('#makeErr').textContent = '';
-    if (!name) { $('#makeErr').textContent = 'Add a name first.'; return; }
-    $('#make').disabled = true;
-    try {
-      const r = await api('POST', { name }); const d = await r.json();
-      if (!r.ok) throw new Error();
-      const url = linkFor(d.ticket.id);
-      $('#madeFor').textContent = 'Ticket for ' + d.ticket.name; $('#madeUrl').textContent = url; $('#openLink').href = url; $('#made').classList.add('show');
-      copyBtn($('#copy'), url, 'Copy link');
-      $('#name').value = ''; loadLog().catch(() => {});
-    } catch { $('#makeErr').textContent = 'Could not make the ticket. Try again.'; }
-    finally { $('#make').disabled = false; }
+  $('make').onclick = () => make([$('name').value.trim()].filter(Boolean), $('make'));
+  $('name').onkeydown = (e) => { if (e.key === 'Enter') $('make').click(); };
+  $('makeMany').onclick = () => make($('names').value.split(/\n|,/).map((s) => s.trim()).filter(Boolean), $('makeMany'));
+  $('seg').querySelectorAll('button').forEach((b) => b.onclick = () => {
+    state.filter = b.dataset.f; $('seg').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); render();
+  });
+  $('q').addEventListener('input', (e) => { state.q = e.target.value; render(); });
+  $('exportCsv').onclick = exportCsv;
+  $('clearAll').onclick = async () => {
+    if (!state.tickets.length) return;
+    if (!confirm('Delete every invite? All ' + state.tickets.length + ' links will stop working. This can’t be undone.')) return;
+    try { await api('DELETE', null, '?all=1'); state.tickets = []; render(); } catch (e) { if (e.message !== 'unauthorized') alert(e.message); }
   };
-  if (key) { $('#key').value = key; enter(); }
+
+  if (state.key) enter().catch(() => NBGate.open());
+  else NBGate.open();
 })();
 </script>
 </body>
