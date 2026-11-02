@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F5F1E9">
+<title>Neighborly Cocktail Menu</title>
+<meta name="description" content="The Neighbors Only cocktail menu.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<style>
+  @font-face{font-family:"Futura Neighborly";src:url(/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600;font-display:swap}
+  @font-face{font-family:"Tuppence";src:url(/fonts/Tuppence-Variable.otf) format("opentype");font-weight:100 900;font-display:swap}
+  @font-face{font-family:"TAYA Maya";src:url(/fonts/TAYAmaya.otf) format("opentype");font-weight:400;font-display:swap}
+  @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+
+  :root{
+    --ink:#1E2329; --text:#3A4049; --muted:#6B7280; --faint:#A8ADB5;
+    --orange:#E87242; --orange-deep:#C25A30; --blush:#FDF3EC;
+    --cream:#F5F1E9; --paper:#FBF9F4; --card:#FFFFFF; --line:#E6E2DA; --lav:#CBC8D6; --lav-soft:#E4E2EB;
+    --futura:"Futura Neighborly","Futura PT",sans-serif; --taya:"TAYA Maya","Oswald",sans-serif; --tup:"Tuppence",Georgia,serif;
+    --body:"Telegraf","DM Sans","Neue Haas Grotesk","Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{background:var(--cream);overflow-x:hidden;overflow-x:clip;scroll-behavior:smooth;scroll-padding-top:120px}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden;overflow-x:clip}
+
+  /* ---------- header: back to the ticket ---------- */
+  .hdr{position:sticky;top:0;z-index:20;background:rgba(245,241,233,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .2s}
+  .hdr.stuck{border-bottom-color:var(--line)}
+  .hdr-in{max-width:1040px;margin:0 auto;padding:10px clamp(12px,3vw,24px);display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+  .back{justify-self:start;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px 0 8px;border-radius:999px;color:var(--ink);text-decoration:none;font-family:var(--futura);font-weight:600;font-size:12px;letter-spacing:.1em;text-transform:uppercase;transition:background .2s,color .2s}
+  .back svg{width:22px;height:22px;transition:transform .2s}
+  .back:hover{background:#fff;color:var(--orange-deep)}
+  .back:hover svg{transform:translateX(-3px)}
+  .hdr .mark{height:24px;width:auto;display:block}
+  .chips{max-width:1040px;margin:0 auto;padding:0 clamp(16px,3vw,24px) 10px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;font-family:var(--futura);font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--paper);transition:color .2s,border-color .2s,background .2s}
+  .chip.on{color:#fff;background:var(--ink);border-color:var(--ink)}
+
+  main{max-width:1040px;margin:0 auto;padding:0 clamp(16px,4vw,40px) 40px}
+
+  /* ---------- hero ---------- */
+  .hero{padding:clamp(28px,7vw,64px) 0 clamp(20px,4vw,36px);display:grid;gap:14px}
+  .hero h1{margin:6px 0 0;font-family:var(--taya);font-weight:400;font-size:clamp(56px,15vw,108px);line-height:.86;letter-spacing:.02em;text-transform:uppercase}
+  .hero p{margin:0;font-family:var(--tup);font-size:clamp(20px,5vw,26px);line-height:1.25;color:var(--text);max-width:30ch}
+
+  /* ---------- sections ---------- */
+  section{padding:clamp(26px,5vw,44px) 0}
+  .sec-hd{display:flex;align-items:center;gap:clamp(14px,3vw,28px);margin-bottom:clamp(20px,4vw,30px)}
+  .sec-hd h2{margin:0;font-family:var(--tup);font-weight:400;font-size:clamp(38px,9vw,56px);line-height:1;letter-spacing:-.005em;white-space:nowrap}
+  .sec-hd .rule{flex:1;height:1px;background:var(--ink);opacity:.55;min-width:24px}
+  .sec-hd .kick{font-family:var(--futura);font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:clamp(22px,4vw,34px) clamp(28px,5vw,56px)}
+  .item{position:relative}
+  .tag{display:inline-block;margin-bottom:8px;padding:4px 10px 3px;border-radius:999px;background:var(--orange);color:#fff;font-family:var(--futura);font-weight:600;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase}
+  .name{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:0}
+  .name b{font-family:var(--taya);font-weight:400;font-size:clamp(26px,6.4vw,32px);line-height:1;letter-spacing:.025em;text-transform:uppercase}
+  .name .price{font-family:var(--tup);font-size:clamp(20px,5vw,24px);line-height:1;color:var(--orange-deep)}
+  .name .price i{font-style:normal;color:var(--faint);padding:0 .25em}
+  .desc{margin:10px 0 0;font-size:15.5px;line-height:1.6;color:var(--text);max-width:42ch}
+
+  /* signatures live on their own card */
+  .feature{background:var(--card);border:1px solid var(--ink);border-radius:clamp(22px,4vw,30px);padding:clamp(22px,5vw,40px);margin:clamp(10px,2vw,18px) 0;box-shadow:0 18px 40px -28px rgba(30,35,41,.35)}
+  .feature .sec-hd{margin-bottom:clamp(20px,4vw,30px)}
+  .callout{background:var(--lav);border-radius:20px;padding:22px 24px;align-self:start}
+  .callout .kick{display:block;font-family:var(--futura);font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+  .callout p{margin:0;font-size:15.5px;line-height:1.6;color:var(--ink)}
+
+  /* ---------- close ---------- */
+  .close{margin-top:clamp(14px,3vw,28px);padding:clamp(26px,5vw,40px);border-radius:clamp(22px,4vw,30px);background:var(--orange);color:#fff;display:grid;gap:16px;justify-items:start;position:relative;overflow:hidden}
+  .close h3{margin:0;font-family:var(--taya);font-weight:400;font-size:clamp(34px,8vw,48px);line-height:.92;letter-spacing:.02em;text-transform:uppercase}
+  .close p{margin:0;font-family:var(--tup);font-size:clamp(18px,4.4vw,22px);line-height:1.3;max-width:32ch}
+  .close .houses{position:absolute;right:-14px;bottom:-10px;width:clamp(120px,26vw,200px);opacity:.22;pointer-events:none}
+  .pill{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:14px 22px;background:#fff;color:var(--orange-deep);text-decoration:none;font-family:var(--futura);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;transition:transform .15s,background .2s}
+  .pill:hover{background:var(--blush)}
+  .pill:active{transform:scale(.97)}
+  .pill svg{width:18px;height:18px}
+
+  .ftr{border-top:1px solid var(--line);background:var(--cream)}
+  .ftr-in{max-width:1040px;margin:0 auto;padding:18px clamp(16px,4vw,40px) max(22px,env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+  .ftr img{height:20px;width:auto;display:block}
+  .ftr span{font-size:11px;line-height:1.5;color:var(--faint)}
+
+  /* ---------- motion ---------- */
+  .rise{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+  .rise.in{opacity:1;transform:none}
+
+  @media (min-width:720px){
+    .grid{grid-template-columns:1fr 1fr}
+    .hdr .mark{height:28px}
+  }
+  @media (max-width:520px){
+    .sec-hd{flex-wrap:wrap;row-gap:6px}
+    .sec-hd .rule{order:3;flex-basis:100%;height:1px}
+    .sec-hd .kick{margin-left:auto}
+    .back span{display:none}
+    .back{padding:0 8px}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rise{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<header class="hdr" id="hdr">
+  <div class="hdr-in">
+    <a class="back" id="back" href="/" aria-label="Back to your ticket">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+      <span>My ticket</span>
+    </a>
+    <img class="mark" src="/assets/neighborly-houses-mark.png" alt="Neighborly">
+    <span></span>
+  </div>
+  <nav class="chips" aria-label="Menu sections">
+    <a class="chip" href="#frozen">Frozen</a>
+    <a class="chip" href="#signatures">Signatures</a>
+    <a class="chip" href="#another-round">Another round</a>
+  </nav>
+</header>
+
+<main>
+  <div class="hero rise">
+    <h1>Cocktails</h1>
+    <p>Have a look around, pick a favorite, and the bar will take it from there.</p>
+  </div>
+
+  <section id="frozen">
+    <div class="sec-hd rise"><h2>Frozen</h2><span class="rule"></span><span class="kick">Blended favorites</span></div>
+    <div class="grid">
+      <article class="item rise">
+        <span class="tag">Signature</span>
+        <h3 class="name"><b>Frozen Espresso Martini</b><span class="price">15</span></h3>
+        <p class="desc">Finished with house salted vanilla cloud.</p>
+      </article>
+      <article class="item rise">
+        <h3 class="name"><b>The Opalite</b><span class="price">14</span></h3>
+        <p class="desc">A frozen gin and house green juice cocktail with cucumber finish.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="signatures" class="feature">
+    <div class="sec-hd rise"><h2>Signatures</h2><span class="rule"></span><span class="kick">Neighborly originals</span></div>
+    <div class="grid">
+      <article class="item rise">
+        <span class="tag">Signature</span>
+        <h3 class="name"><b>Signature Skinny Margarita</b><span class="price">17.5</span></h3>
+        <p class="desc">Casa Dragones Blanco, orange liqueur, fresh lime and lemon. No added sugar.</p>
+      </article>
+      <article class="item rise">
+        <h3 class="name"><b>Café 43</b><span class="price">15</span></h3>
+        <p class="desc">Sightglass espresso and Spanish Licor 43 Original shaken cold.</p>
+      </article>
+      <article class="item rise">
+        <h3 class="name"><b>The Greenhouse</b><span class="price">16</span></h3>
+        <p class="desc">Hendrick’s, French elderflower liqueur, fresh cucumber, basil, citrus and cucumber tonic.</p>
+      </article>
+      <article class="item rise">
+        <h3 class="name"><b>Bad Bunny</b><span class="price">15</span></h3>
+        <p class="desc">Ketel One vodka, house carrot-ginger juice, lime and ginger beer.</p>
+      </article>
+      <article class="item rise">
+        <h3 class="name"><b>Espresso Martini</b><span class="price">17</span></h3>
+        <p class="desc">Ketel One, cold brew, coffee liqueur and a touch of Irish cream.</p>
+      </article>
+      <aside class="callout rise">
+        <span class="kick">Your tequila</span>
+        <p>Any margarita can be made with Casamigos Blanco, Casa Dragones Blanco or La Gritona Reposado.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section id="another-round">
+    <div class="sec-hd rise"><h2>Another round</h2><span class="rule"></span><span class="kick">Classics</span></div>
+    <div class="grid">
+      <article class="item rise">
+        <h3 class="name"><b>Riviera Spritz</b><span class="price">14</span></h3>
+        <p class="desc">Maple-sweetened blue spirulina lemonade, Italian lemon liqueur and Prosecco served over ice.</p>
+      </article>
+      <article class="item rise">
+        <span class="tag">Signature</span>
+        <h3 class="name"><b>Neighborhood Margarita</b><span class="price">17</span></h3>
+        <p class="desc">La Gritona Reposado, orange liqueur, organic simple syrup, fresh lime and lemon.</p>
+      </article>
+      <article class="item rise">
+        <h3 class="name"><b>Sunset Sangria</b><span class="price">13.5<i>|</i>29</span></h3>
+        <p class="desc">Fruit-forward house red served over ice with orange garnish. Glass or pitcher.</p>
+      </article>
+      <article class="item rise">
+        <h3 class="name"><b>Hot Girl Pickle Margarita</b><span class="price">16.5</span></h3>
+        <p class="desc">Casamigos Blanco, orange liqueur, organic simple syrup, pickle juice, fresh lime and lemon. Tajín rim and Hot Girl Pickle garnish.</p>
+      </article>
+    </div>
+  </section>
+
+  <div class="close rise">
+    <img class="houses" src="/assets/neighborly-houses-mark-white.png" alt="">
+    <h3>Found the one?</h3>
+    <p>Head back to your ticket and show it at the bar with your ID. The first pour is on us.</p>
+    <a class="pill" id="back2" href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+      Back to my ticket
+    </a>
+  </div>
+</main>
+
+<footer class="ftr">
+  <div class="ftr-in">
+    <img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly">
+    <span>Neighbors Only Preview · Brentwood, CA</span>
+    <span>Must be 21 or older with a valid government-issued ID. Please drink responsibly.</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // the ticket id rides along as ?t=<id>, so the back arrow lands on the right ticket
+  const id = (new URLSearchParams(location.search).get('t') || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const home = id ? '/t/' + id : '/';
+  let cameFromTicket = false;
+  try { const r = new URL(document.referrer); cameFromTicket = r.origin === location.origin && r.pathname.startsWith('/t/'); } catch {}
+  document.querySelectorAll('#back, #back2').forEach((a) => {
+    a.href = home;
+    a.addEventListener('click', (e) => { if (cameFromTicket && history.length > 1) { e.preventDefault(); history.back(); } });
+  });
+
+  // header gets a hairline once the page scrolls under it
+  const hdr = document.getElementById('hdr');
+  const onScroll = () => hdr.classList.toggle('stuck', scrollY > 4);
+  onScroll(); addEventListener('scroll', onScroll, { passive: true });
+
+  // items rise in as they reach the screen
+  const rises = document.querySelectorAll('.rise');
+  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    rises.forEach((n) => n.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+    rises.forEach((n) => io.observe(n));
+  }
+
+  // section chips follow along
+  const chips = [...document.querySelectorAll('.chip')];
+  const secs = chips.map((c) => document.querySelector(c.getAttribute('href')));
+  const mark = () => {
+    let on = 0;
+    secs.forEach((s, i) => { if (s.getBoundingClientRect().top < innerHeight * .4) on = i; });
+    chips.forEach((c, i) => c.classList.toggle('on', i === on));
+  };
+  mark(); addEventListener('scroll', mark, { passive: true });
+})();
+</script>
+</body>
+</html>

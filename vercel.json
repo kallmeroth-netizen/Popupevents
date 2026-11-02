@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/t/:id", "destination": "/index.html" }
+    { "source": "/t/:id", "destination": "/index.html" },
+    { "source": "/menu", "destination": "/menu.html" }
   ],
   "headers": [
     {

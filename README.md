@@ -21,6 +21,6 @@ Per-guest ticket links, a bartender PIN + quantity flow, and an admin log.
 
 ## Files
 
-- `index.html` ticket page, `admin.html` admin page, `fonts/` the brand fonts (TAYA Maya, Tuppence, Futura Demi), `assets/` wordmarks
+- `index.html` ticket page, `menu.html` cocktail menu (served at `/menu`, linked from the ticket), `admin.html` admin page, `fonts/` the brand fonts (TAYA Maya, Tuppence, Futura Demi), `assets/` wordmarks
 - `api/ticket.js` read a ticket (stamps the first open; POST `here` stamps "I'm here"), `api/redeem.js` bartender redemption, `api/tickets.js` admin create (one or many) + list + delete
 - `api/_store.js` ticket state kept in Vercel Blob

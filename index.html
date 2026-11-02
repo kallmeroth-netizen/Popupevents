@@ -118,6 +118,9 @@
   .fine{font-family:var(--futura);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
   .legal{font-size:11px;line-height:1.5;color:var(--faint);max-width:300px;margin-top:-8px}
   .link{background:none;border:0;font:500 14px var(--body);color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+  .menu-link{display:inline-flex;align-items:center;gap:8px;font-family:var(--futura);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);text-decoration:none;padding:6px 2px;border-bottom:1px solid var(--orange);transition:color .2s,gap .2s}
+  .menu-link svg{width:16px;height:16px;color:var(--orange)}
+  .menu-link:hover{color:var(--orange-deep);gap:11px}
   .wait{display:inline-flex;gap:7px;align-items:center;height:56px}
   .wait i{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:blink 1s infinite}
   .wait i:nth-child(2){animation-delay:.2s}.wait i:nth-child(3){animation-delay:.4s}
@@ -269,6 +272,7 @@
   const wait = (n) => new Promise((r) => setTimeout(r, n));
   const fmt = (t) => new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  const menuLink = () => { const a = el('a', 'menu-link'); a.href = '/menu' + (id ? '?t=' + encodeURIComponent(id) : ''); a.innerHTML = 'Explore the menu <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>'; return a; };
   const dots = () => { const w = el('div', 'wait'); w.append(el('i'), el('i'), el('i')); return w; };
 
   // controls swap with a short cross-fade so nothing pops in or out
@@ -304,7 +308,7 @@
       card.classList.add('flipped'); setTimeout(showTeamStep, ms(380));
     };
     const legal = el('div', 'legal', 'Must be 21 or older with a valid government-issued ID to redeem. One per guest. No cash value.');
-    setCtl(note, b, legal);
+    setCtl(note, b, menuLink(), legal);
   }
 
   function showTeamStep() {
@@ -314,13 +318,13 @@
     b.onclick = openSheet;
     const back = el('button', 'link', 'Flip back');
     back.onclick = () => { card.classList.remove('flipped'); setTimeout(render, ms(380)); };
-    setCtl(note, b, back);
+    setCtl(note, b, menuLink(), back);
   }
 
   function showRedeemed(animate) {
     const line = el('div', 'fine', 'Redeemed · ' + ticket.qty + (ticket.qty === 1 ? ' drink' : ' drinks') + (ticket.redeemedAt ? ' · ' + fmt(ticket.redeemedAt) : ''));
     const thanks = el('div', 'note', 'Thank you for being the first to try the Neighbors Only bar. Can’t wait to have you back soon!');
-    setCtl(thanks, line);
+    setCtl(thanks, menuLink(), line);
     card.classList.add('redeemed');
     if (animate) {
       stamp.classList.add('show');
