@@ -4,6 +4,9 @@
 // blocks a guest from booking.
 //   marketing-calendar/barPreviewVisits/<ticketId>
 // Optional env: HUB_FIREBASE_URL (defaults to the hub's database), FIREBASE_DB_SECRET.
+// The hub's hourly job pushes Influencer items on to the shared Google Calendar;
+// set HUB_SYNC_URL (https://<hub>/api/gcal-sync) and HUB_CRON_SECRET to run it
+// right after every booking instead of waiting for the hour.
 const { visitLabels, LOCATION } = require('./_slots');
 
 const BASE = (process.env.HUB_FIREBASE_URL || 'https://neighborly-hub-53e4b-default-rtdb.firebaseio.com').replace(/\/+$/, '');
@@ -41,11 +44,26 @@ async function call(url, init) {
 // Push the ticket's current visit (or its absence) to the hub.
 async function syncVisit(t) {
   if (!t || !t.id) return false;
-  if (t.visit && !t.redeemed) return call(nodeUrl(t.id), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(eventFor(t)) });
-  return call(nodeUrl(t.id), { method: 'DELETE' });
+  const ok = t.visit && !t.redeemed
+    ? await call(nodeUrl(t.id), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(eventFor(t)) })
+    : await call(nodeUrl(t.id), { method: 'DELETE' });
+  pokeGoogleSync().catch(() => {});
+  return ok;
 }
-const removeVisit = (id) => call(nodeUrl(id), { method: 'DELETE' });
-const removeAll = () => call(`${BASE}/${PATH}.json${auth()}`, { method: 'DELETE' });
+const removeVisit = async (id) => { const ok = await call(nodeUrl(id), { method: 'DELETE' }); pokeGoogleSync().catch(() => {}); return ok; };
+const removeAll = async () => { const ok = await call(`${BASE}/${PATH}.json${auth()}`, { method: 'DELETE' }); pokeGoogleSync().catch(() => {}); return ok; };
+
+// Ask the hub to push to Google Calendar now. No-op unless HUB_SYNC_URL is set.
+async function pokeGoogleSync() {
+  const url = (process.env.HUB_SYNC_URL || '').trim();
+  if (!url) return false;
+  const headers = process.env.HUB_CRON_SECRET ? { Authorization: 'Bearer ' + process.env.HUB_CRON_SECRET } : {};
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 25000);
+  try { const r = await fetch(url, { headers, signal: ctrl.signal }); return r.ok; }
+  catch { return false; }
+  finally { clearTimeout(timer); }
+}
 
 async function hubStatus() {
   const ctrl = new AbortController();
@@ -57,4 +75,4 @@ async function hubStatus() {
   finally { clearTimeout(timer); }
 }
 
-module.exports = { eventFor, syncVisit, removeVisit, removeAll, hubStatus, PATH };
+module.exports = { eventFor, syncVisit, removeVisit, removeAll, pokeGoogleSync, hubStatus, PATH };

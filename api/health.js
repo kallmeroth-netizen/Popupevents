@@ -12,6 +12,7 @@ module.exports = async (req, res) => {
     adminPassword: !!process.env.ADMIN_PASSWORD,
     store: 'untested',
     hubCalendar: 'untested',
+    googleSyncPoke: !!(process.env.HUB_SYNC_URL || '').trim(),
     visitCaps: { window: windowCap(), day: dayCap() },
   };
   out.hubCalendar = await hubStatus();
