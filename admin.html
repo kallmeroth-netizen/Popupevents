@@ -337,6 +337,7 @@ const NBGate = {
       const steps = [
         `<span class="step ${t.visit ? 'on' : ''}">${t.visit ? 'Visit ' + esc(t.visit.dateLabel) + ' · ' + esc(t.visit.label) : 'No time picked'}</span>`,
         `<span class="step ${t.plusOne ? 'on' : ''}">${t.plusOne ? '+1 ' + esc(t.plusOne) : 'No plus one'}</span>`,
+        t.email ? `<span class="step on" title="Confirmation email">${esc(t.email)}</span>` : '',
         `<span class="step ${opened ? 'on' : ''}">${opened ? 'Opened' + (t.openedAt ? ' ' + esc(when(t.openedAt)) : '') : 'Not opened'}</span>`,
         `<span class="step ${t.hereAt || t.redeemed ? 'on' : ''}">${t.hereAt ? 'Here ' + esc(when(t.hereAt)) : t.redeemed ? 'Here' : 'Not here yet'}</span>`,
         `<span class="step ${t.redeemed ? 'ok' : ''}">${t.redeemed ? 'Redeemed · ' + t.qty + (t.qty === 1 ? ' drink' : ' drinks') + (t.redeemedAt ? ' · ' + esc(when(t.redeemedAt)) : '') : 'Not redeemed'}</span>`,
@@ -400,8 +401,8 @@ const NBGate = {
   function exportCsv() {
     const cell = (v) => { const s = String(v == null ? '' : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
     const iso = (ms) => ms ? new Date(ms).toLocaleString() : '';
-    const lines = [['Guest', 'Plus one', 'Visit date', 'Window', 'Link', 'Invited', 'Opened', 'Here', 'Redeemed', 'Drinks']].concat(
-      state.tickets.map((t) => [t.name, t.plusOne || '', t.visit ? t.visit.date : '', t.visit ? t.visit.label : '', linkFor(t.id), iso(t.createdAt), iso(t.openedAt), iso(t.hereAt), iso(t.redeemedAt), t.redeemed ? t.qty : '']));
+    const lines = [['Guest', 'Email', 'Plus one', 'Visit date', 'Window', 'Link', 'Invited', 'Opened', 'Here', 'Redeemed', 'Drinks']].concat(
+      state.tickets.map((t) => [t.name, t.email || '', t.plusOne || '', t.visit ? t.visit.date : '', t.visit ? t.visit.label : '', linkFor(t.id), iso(t.createdAt), iso(t.openedAt), iso(t.hereAt), iso(t.redeemedAt), t.redeemed ? t.qty : '']));
     const url = URL.createObjectURL(new Blob(['﻿' + lines.map((r) => r.map(cell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' }));
     const a = document.createElement('a'); a.href = url; a.download = 'exclusive-preview-invites.csv'; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);

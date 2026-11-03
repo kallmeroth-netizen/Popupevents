@@ -2,8 +2,10 @@
 //   { id, date, hour }      book or move the visit (capacity checked here)
 //   { id, clear: true }     give the window back
 //   { id, plusOne: "Sam" }  name the one guest they can bring ("" removes)
+//   { id, email }           where to send the confirmation (sent now if a visit is booked)
 // Every change is mirrored to the Marketing Hub calendar.
-const { getTicket, allTickets, setVisit, clearVisit, setPlusOne, json, readBody, ID_RE } = require('./_store');
+const { getTicket, allTickets, setVisit, clearVisit, setPlusOne, setEmail, json, readBody, ID_RE } = require('./_store');
+const { sendConfirmation, EMAIL_RE, configured: mailConfigured } = require('./_mail');
 const { availability, WINDOWS, DATE_RE, ticketView } = require('./_slots');
 const { syncVisit } = require('./_hub');
 
@@ -16,6 +18,14 @@ module.exports = async (req, res) => {
     const t = await getTicket(id);
     if (!t) return json(res, 404, { error: 'not_found' });
     if (t.redeemed) return json(res, 409, { error: 'already_redeemed' });
+
+    if (Object.prototype.hasOwnProperty.call(body, 'email')) {
+      const email = String(body.email || '').trim().toLowerCase().slice(0, 120);
+      if (email && !EMAIL_RE.test(email)) return json(res, 400, { error: 'bad_email' });
+      const after = await setEmail(id, email);
+      const mailed = email ? await sendConfirmation(after, false) : false;
+      return json(res, 200, { ok: true, mailed, mailConfigured: mailConfigured(), ticket: ticketView(after) });
+    }
 
     if (Object.prototype.hasOwnProperty.call(body, 'plusOne')) {
       const name = String(body.plusOne || '').trim().replace(/\s+/g, ' ').slice(0, 40);
@@ -39,9 +49,11 @@ module.exports = async (req, res) => {
     if (!day) return json(res, 400, { error: 'bad_date' });
     const w = day.windows.find((x) => x.hour === hour);
     if (!w.open) return json(res, 409, { error: w.past ? 'past' : 'full', days });
+    const moved = !!t.visit;
     const after = await setVisit(id, date, hour);
     const synced = await syncVisit(after).catch(() => false);
-    return json(res, 200, { ok: true, synced, ticket: ticketView(after) });
+    const mailed = await sendConfirmation(after, moved).catch(() => false);
+    return json(res, 200, { ok: true, synced, mailed, mailConfigured: mailConfigured(), ticket: ticketView(after) });
   } catch (e) {
     return json(res, 500, { error: 'store_error' });
   }

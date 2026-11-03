@@ -65,7 +65,7 @@ function visitLabels(visit) {
 
 // What the guest page gets to see.
 function ticketView(t) {
-  return { id: t.id, name: t.name, redeemed: t.redeemed, qty: t.qty, redeemedAt: t.redeemedAt, visit: visitLabels(t.visit), plusOne: t.plusOne || '', today: laNow().date };
+  return { id: t.id, name: t.name, redeemed: t.redeemed, qty: t.qty, redeemedAt: t.redeemedAt, visit: visitLabels(t.visit), plusOne: t.plusOne || '', email: t.email || '', today: laNow().date };
 }
 
 module.exports = { TZ, WINDOWS, DAYS, LOCATION, DATE_RE, laNow, addDays, labels, windowLabel, windowCap, dayCap, availability, visitLabels, ticketView };

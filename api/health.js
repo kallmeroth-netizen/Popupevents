@@ -3,6 +3,7 @@ const { list } = require('@vercel/blob');
 const { json } = require('./_store');
 const { hubStatus } = require('./_hub');
 const { windowCap, dayCap } = require('./_slots');
+const mail = require('./_mail');
 
 module.exports = async (req, res) => {
   const out = {
@@ -12,6 +13,7 @@ module.exports = async (req, res) => {
     adminPassword: !!process.env.ADMIN_PASSWORD,
     store: 'untested',
     hubCalendar: 'untested',
+    confirmationEmail: mail.configured(),
     googleSyncPoke: !!(process.env.HUB_SYNC_URL || '').trim(),
     visitCaps: { window: windowCap(), day: dayCap() },
   };

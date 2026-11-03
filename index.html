@@ -163,6 +163,20 @@
   .guest .acts{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
   .guest .hint{font-size:12px;line-height:1.45;color:var(--faint);text-align:center;max-width:300px}
   .guest .err{min-height:0;margin:0}
+  /* booked step inside the sheet */
+  .done{display:flex;flex-direction:column;gap:14px;text-align:center;align-items:center}
+  .done .card{width:100%;background:var(--orange);color:#fff;border-radius:16px;padding:18px 20px;text-align:left}
+  .done .card small{display:block;font-family:var(--futura);font-weight:600;font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:6px}
+  .done .card b{display:block;font-size:19px;line-height:1.2}
+  .done .card span{display:block;font-size:14px;margin-top:3px;opacity:.95}
+  .done .mail{display:flex;gap:8px;width:100%}
+  .done input{flex:1;min-width:0;font:400 15px var(--body);border:1px solid var(--line);border-radius:999px;height:46px;padding:0 16px;background:#fff;color:var(--ink);outline:none}
+  .done input:focus{border-color:var(--orange)}
+  .done .mail .pill{min-width:0;padding:0 18px;height:46px;font-size:12px}
+  .done .sent{font-size:14px;color:var(--text)}
+  .done .sent b{color:var(--ink);font-weight:600}
+  .done .hint{font-size:12px;line-height:1.45;color:var(--faint);max-width:320px}
+  .done .acts{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
 
   /* ---------- team member sheet ---------- */
   .scrim{position:fixed;inset:0;z-index:30;background:rgba(18,21,26,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .25s}
@@ -456,11 +470,72 @@
           return;
         }
         if (!r.ok) { e.textContent = 'Something went wrong. Try again.'; return; }
-        ticket = d.ticket; setPaper(); pick = { date: null, hour: null }; closePlan(); render();
+        ticket = d.ticket; setPaper(); pick = { date: null, hour: null }; render(); showBooked(changing, d.mailed, d.mailConfigured);
       } catch { e.textContent = 'No connection. Try again.'; }
       finally { go.textContent = changing ? 'Move it' : 'Lock it in'; go.disabled = !(pick.date && pick.hour); }
     };
     later.onclick = () => { pick = { date: null, hour: null }; closePlan(); };
+  }
+
+  // ---------- booked: confirmation step in the sheet ----------
+  // a calendar file the phone can open, local time in Brentwood
+  function icsFile() {
+    const v = ticket.visit; const d = v.date.replace(/-/g, ''); const hh = String(v.hour).padStart(2, '0'), eh = String(v.hour + 1).padStart(2, '0');
+    const esc = (t) => String(t).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,');
+    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Neighborly//Bar Preview//EN', 'BEGIN:VEVENT', 'UID:bp-' + id + '@beneighborly.com',
+      'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''), 'DTSTART:' + d + 'T' + hh + '0000', 'DTEND:' + d + 'T' + eh + '0000',
+      'SUMMARY:' + esc('Neighborly Bar Preview'), 'LOCATION:' + esc('Neighborly Brentwood'), 'DESCRIPTION:' + esc('Your ticket: ' + location.origin + '/t/' + id + '. Tap I\'m here when you arrive and show it at the bar with a valid ID.'), 'END:VEVENT', 'END:VCALENDAR'];
+    return new Blob([lines.join('\r\n') + '\r\n'], { type: 'text/calendar;charset=utf-8' });
+  }
+  function addToCalendar() {
+    const url = URL.createObjectURL(icsFile());
+    const a = el('a'); a.href = url; a.download = 'neighborly-bar-preview.ics'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+
+  function showBooked(changing, mailed, mailConfigured) {
+    const v = ticket.visit;
+    const box = el('div', 'plan');
+    const hd = el('div', 'plan-hd'); hd.append(el('h3', null, changing ? 'Moved.' : 'You’re in.'));
+    const done = el('div', 'done');
+    const card = el('div', 'card'); card.append(el('small', null, 'Your visit'), el('b', null, v.longLabel), el('span', null, v.label + ' · Neighborly Brentwood'));
+    done.append(card);
+    const e = el('div', 'err');
+    const finish = el('button', 'link', 'Done'); finish.onclick = closePlan;
+    const cal = el('button', 'link', 'Add to calendar'); cal.onclick = addToCalendar;
+    const acts = el('div', 'acts'); acts.append(cal, finish);
+
+    const sentRow = (addr) => { const n = el('div', 'sent'); n.append('Confirmation sent to ', el('b', null, addr)); return n; };
+    if (mailed && ticket.email) {
+      done.append(sentRow(ticket.email), acts);
+    } else if (mailConfigured === false && ticket.email) {
+      done.append(el('div', 'hint', 'We have ' + ticket.email + ' for your confirmation.'), acts);
+    } else {
+      const row = el('div', 'mail');
+      const input = el('input'); input.type = 'email'; input.placeholder = 'Email for a confirmation'; input.autocomplete = 'email'; input.value = ticket.email || '';
+      const sendBtn = el('button', 'pill primary', 'Send'); sendBtn.type = 'button';
+      sendBtn.onclick = async () => {
+        const email = input.value.trim();
+        if (!email) { e.textContent = 'Add your email, or tap Done to skip.'; return; }
+        sendBtn.disabled = true; e.textContent = '';
+        try {
+          const { r, d } = await post({ email });
+          if (r.status === 400) { e.textContent = 'That email doesn’t look right.'; return; }
+          if (!r.ok) throw 0;
+          ticket = d.ticket;
+          row.replaceWith(d.mailed ? sentRow(email) : el('div', 'hint', 'Saved. We have ' + email + ' for your confirmation.'));
+          hint.remove();
+        } catch { e.textContent = 'Couldn’t send that. Try again.'; }
+        finally { sendBtn.disabled = false; }
+      };
+      input.onkeydown = (ev) => { if (ev.key === 'Enter') sendBtn.click(); };
+      row.append(input, sendBtn);
+      const hint = el('div', 'hint', 'Optional. One email with the details and your ticket link, nothing else.');
+      done.append(row, e, hint, acts);
+    }
+    box.append(hd, done);
+    planBody.replaceChildren(box);
+    planSheet.scrollTop = 0;
   }
 
   // the booked time

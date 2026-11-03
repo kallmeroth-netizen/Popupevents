@@ -6,6 +6,7 @@
 //   tickets/<id>/redeemed~<qty>~<redeemedMs>
 //   tickets/<id>/visit~<YYYY-MM-DD>~<hour>~<setMs>   (newest wins; date "none" clears)
 //   tickets/<id>/plus~<b64url name>~<setMs>         (newest wins; empty name removes)
+//   tickets/<id>/email~<b64url address>~<setMs>     (newest wins; for the confirmation email)
 const { put, list, del } = require('@vercel/blob');
 
 const ID_RE = /^[a-z0-9]{10,32}$/;
@@ -35,7 +36,7 @@ async function marker(pathname) {
 }
 
 function parseFolder(id, blobs) {
-  const t = { id, name: '', createdAt: null, openedAt: null, hereAt: null, redeemed: false, qty: 0, redeemedAt: null, visit: null, visitAt: 0, plusOne: '', plusAt: 0 };
+  const t = { id, name: '', createdAt: null, openedAt: null, hereAt: null, redeemed: false, qty: 0, redeemedAt: null, visit: null, visitAt: 0, plusOne: '', plusAt: 0, email: '', emailAt: 0 };
   for (const b of blobs) {
     const leaf = b.pathname.split('/').pop();
     const parts = leaf.split('~');
@@ -52,6 +53,9 @@ function parseFolder(id, blobs) {
     } else if (parts[0] === 'plus') {
       const at = Number(parts[2]) || 0;
       if (at >= t.plusAt) { t.plusAt = at; t.plusOne = unb64u(parts[1] || ''); }
+    } else if (parts[0] === 'email') {
+      const at = Number(parts[2]) || 0;
+      if (at >= t.emailAt) { t.emailAt = at; t.email = unb64u(parts[1] || ''); }
     } else if (parts[0] === 'redeemed') {
       const at = Number(parts[2]) || 0;
       if (!t.redeemed || at < (t.redeemedAt || Infinity)) {
@@ -109,6 +113,10 @@ async function setVisit(id, date, hour) {
 }
 async function clearVisit(id) {
   await marker(`tickets/${id}/visit~none~0~${Date.now()}`);
+  return getTicket(id);
+}
+async function setEmail(id, email) {
+  await marker(`tickets/${id}/email~${b64u(email || '')}~${Date.now()}`);
   return getTicket(id);
 }
 async function setPlusOne(id, name) {
@@ -173,4 +181,4 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(x, y);
 }
 
-module.exports = { ID_RE, getTicket, createTicket, createTickets, markOnce, setVisit, clearVisit, setPlusOne, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };
+module.exports = { ID_RE, getTicket, createTicket, createTickets, markOnce, setVisit, clearVisit, setPlusOne, setEmail, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };
