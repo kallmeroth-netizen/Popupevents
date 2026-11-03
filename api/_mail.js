@@ -1,12 +1,19 @@
-// Visit confirmation email, sent through Resend (plain HTTPS, no package).
-// Env: RESEND_API_KEY (required to send), MAIL_FROM (default below, the domain
-// must be verified in Resend), MAIL_REPLY_TO (optional), SITE_URL.
+// Visit confirmation email through EmailJS, the same account the Marketing Hub
+// uses (service service_v4jp7sp). The template decides the layout; this sends
+// the variables. Env (all optional, defaults below): EMAILJS_SERVICE_ID,
+// EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY, EMAILJS_PRIVATE_KEY, SITE_URL.
+// EmailJS refuses server-side sends unless the account allows non-browser
+// applications or EMAILJS_PRIVATE_KEY is set, so set the private key.
 // Best effort: a mail problem never blocks a booking; the API reports `mailed`.
 const { visitLabels, LOCATION } = require('./_slots');
 
-const FROM = () => (process.env.MAIL_FROM || 'Neighborly <hello@beneighborly.com>').trim();
-const SITE = () => (process.env.SITE_URL || 'https://exclusivepreview.vercel.app').replace(/\/+$/, '');
-const configured = () => !!(process.env.RESEND_API_KEY || '').trim();
+const env = (k, d) => { const v = (process.env[k] || '').trim(); return v || d; };
+const SERVICE = () => env('EMAILJS_SERVICE_ID', 'service_v4jp7sp');
+const TEMPLATE = () => env('EMAILJS_TEMPLATE_ID', 'template_4fcjrnf');
+const PUBLIC_KEY = () => env('EMAILJS_PUBLIC_KEY', 'pW4-kj71suA1OsbFa');
+const PRIVATE_KEY = () => env('EMAILJS_PRIVATE_KEY', '');
+const SITE = () => env('SITE_URL', 'https://exclusivepreview.vercel.app').replace(/\/+$/, '');
+const configured = () => !!(SERVICE() && TEMPLATE() && PUBLIC_KEY());
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -49,7 +56,14 @@ function confirmation(t, moved) {
   </div>
   <p style="margin:18px 8px 0;font-size:11px;line-height:1.5;color:#A8ADB5">Must be 21 or older with a valid government-issued ID to redeem. One per guest. No cash value. Neighborly, ${esc(LOCATION)}, CA.</p>
 </div></body></html>`;
-  return { subject, text, html };
+  // everything the EmailJS template can use as {{variable}}
+  const params = {
+    to_email: t.email || '', to_name: t.name || 'Neighbor', first_name: first, guest_name: t.name || '',
+    subject, visit_day: v.longLabel, visit_date: v.dateLabel, visit_window: v.label, visit_time: v.time,
+    location: `Neighborly ${LOCATION}`, ticket_link: link, plus_one: t.plusOne || '', plus_one_line: plus,
+    moved: moved ? 'yes' : 'no', headline: moved ? 'Your visit moved.' : `You're in, ${first}.`, message: text,
+  };
+  return { subject, text, html, params };
 }
 
 async function send(to, msg) {
@@ -57,9 +71,9 @@ async function send(to, msg) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 8000);
   try {
-    const body = { from: FROM(), to: [to], subject: msg.subject, html: msg.html, text: msg.text };
-    if (process.env.MAIL_REPLY_TO) body.reply_to = process.env.MAIL_REPLY_TO.trim();
-    const r = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: 'Bearer ' + process.env.RESEND_API_KEY.trim(), 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: ctrl.signal });
+    const body = { service_id: SERVICE(), template_id: TEMPLATE(), user_id: PUBLIC_KEY(), template_params: { ...msg.params, to_email: to } };
+    if (PRIVATE_KEY()) body.accessToken = PRIVATE_KEY();
+    const r = await fetch('https://api.emailjs.com/api/v1.0/email/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: ctrl.signal });
     return r.ok;
   } catch { return false; }
   finally { clearTimeout(timer); }

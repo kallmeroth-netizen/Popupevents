@@ -50,15 +50,15 @@
   .ftr span{font-size:11px;line-height:1.5;color:var(--faint)}
 
   /* ---------- top: greeting ---------- */
-  .brand{flex:.82 1 0px;width:100%;padding:20px 0 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;opacity:0}
+  .brand{flex:.82 1 0px;width:100%;padding:20px 0 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;opacity:0;transition:opacity .45s ease}
   .brand.enter{opacity:1}
   .greet{display:flex;flex-direction:column;align-items:center}
   .greet .g1{font-family:var(--taya);font-size:clamp(36px,11vw,48px);line-height:1;letter-spacing:.02em;text-transform:uppercase;color:var(--ink);min-height:1em}
   .caret{display:inline-block;width:.08em;height:.95em;background:var(--ink);margin-left:.08em;vertical-align:-.08em;animation:caret 1s steps(1) infinite}
-  .caret.done{animation:none;opacity:0;transition:opacity .4s ease}
+  .caret.booked{animation:none;opacity:0;transition:opacity .4s ease}
   @keyframes caret{50%{opacity:0}}
-  .greet .g2{font-family:var(--tup);font-weight:400;font-size:clamp(26px,8vw,32px);white-space:nowrap;line-height:1.1;color:var(--ink);margin-top:10px;opacity:0;transform:translateY(6px);transition:opacity .55s ease,transform .55s cubic-bezier(.22,1,.36,1)}
-  .greet .g2.show{opacity:1;transform:none}
+  .greet .g2{font-family:var(--tup);font-weight:400;font-size:clamp(26px,8vw,32px);white-space:nowrap;line-height:1.1;color:var(--ink);margin-top:10px;opacity:0;transition:opacity .6s ease}
+  .greet .g2.show{opacity:1}
 
   /* ---------- ticket: landscape raffle ticket, sized in container units (1cqw = 1% of ticket width) ---------- */
   .stage{width:92%;margin:0 auto;perspective:1500px;container-type:inline-size}
@@ -164,19 +164,17 @@
   .guest .hint{font-size:12px;line-height:1.45;color:var(--faint);text-align:center;max-width:300px}
   .guest .err{min-height:0;margin:0}
   /* booked step inside the sheet */
-  .done{display:flex;flex-direction:column;gap:14px;text-align:center;align-items:center}
-  .done .card{width:100%;background:var(--orange);color:#fff;border-radius:16px;padding:18px 20px;text-align:left}
-  .done .card small{display:block;font-family:var(--futura);font-weight:600;font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:6px}
-  .done .card b{display:block;font-size:19px;line-height:1.2}
-  .done .card span{display:block;font-size:14px;margin-top:3px;opacity:.95}
-  .done .mail{display:flex;gap:8px;width:100%}
-  .done input{flex:1;min-width:0;font:400 15px var(--body);border:1px solid var(--line);border-radius:999px;height:46px;padding:0 16px;background:#fff;color:var(--ink);outline:none}
-  .done input:focus{border-color:var(--orange)}
-  .done .mail .pill{min-width:0;padding:0 18px;height:46px;font-size:12px}
-  .done .sent{font-size:14px;color:var(--text)}
-  .done .sent b{color:var(--ink);font-weight:600}
-  .done .hint{font-size:12px;line-height:1.45;color:var(--faint);max-width:320px}
-  .done .acts{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+  .booked{display:flex;flex-direction:column;gap:14px;text-align:center;align-items:center}
+  .booked .vcard{width:100%;background:var(--orange);color:#fff;border-radius:16px;padding:18px 20px;text-align:left}
+  .booked .vcard small{display:block;font-family:var(--futura);font-weight:600;font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:6px}
+  .booked .vcard b{display:block;font-size:19px;line-height:1.2}
+  .booked .vcard span{display:block;font-size:14px;margin-top:3px;opacity:.95}
+  .plan input[type=email]{width:100%;font:400 15px var(--body);border:1px solid var(--line);border-radius:999px;height:48px;padding:0 16px;background:#fff;color:var(--ink);outline:none}
+  .plan input[type=email]:focus{border-color:var(--orange)}
+  .booked .sent{font-size:14px;color:var(--text)}
+  .booked .sent b{color:var(--ink);font-weight:600}
+  .booked .hint{font-size:12px;line-height:1.45;color:var(--faint);max-width:320px}
+  .booked .acts{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
 
   /* ---------- team member sheet ---------- */
   .scrim{position:fixed;inset:0;z-index:30;background:rgba(18,21,26,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .25s}
@@ -429,9 +427,11 @@
     const intro = el('p', null, 'Pick a day and an hour window for your visit. Brentwood, any day this week.');
     hd.append(el('h3', null, changing ? 'Move your visit' : 'When will we see you?'), intro);
     const days = el('div', 'days'), wins = el('div', 'wins'), e = el('div', 'err');
+    const email = el('input'); email.type = 'email'; email.placeholder = 'you@example.com'; email.autocomplete = 'email'; email.inputMode = 'email'; email.value = ticket.email || '';
+    email.oninput = () => { e.textContent = ''; paint(); };
     const go = el('button', 'pill primary', changing ? 'Move it' : 'Lock it in'); go.disabled = true;
     const later = el('button', 'link', changing ? 'Keep my time' : 'Decide later');
-    box.append(hd, lbl('Day'), days, lbl('Hour window', 'One party per window'), wins, e, go, later);
+    box.append(hd, lbl('Day'), days, lbl('Hour window', 'One party per window'), wins, lbl('Email', 'For your confirmation'), email, e, go, later);
     planBody.replaceChildren(box);
 
     const firstOpen = slots.days.find((d) => d.open);
@@ -453,7 +453,7 @@
         b.onclick = () => { pick.hour = w.hour; e.textContent = ''; paint(); };
         return b;
       }));
-      go.disabled = !(pick.date && pick.hour);
+      go.disabled = !(pick.date && pick.hour && email.value.trim());
       const on = days.querySelector('.on');
       if (on) days.scrollLeft = on.offsetLeft - days.clientWidth / 2 + on.offsetWidth / 2;
     };
@@ -461,18 +461,21 @@
 
     go.onclick = async () => {
       if (!(pick.date && pick.hour)) return;
+      const addr = email.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addr)) { e.textContent = 'That email doesn’t look right.'; return; }
       go.disabled = true; go.textContent = 'Saving'; e.textContent = '';
       try {
-        const { r, d } = await post({ date: pick.date, hour: pick.hour });
+        const { r, d } = await post({ date: pick.date, hour: pick.hour, email: addr });
         if (r.status === 409 && d.error !== 'already_redeemed') {
           e.textContent = d.error === 'past' ? 'That window just passed. Pick another.' : 'That window was just taken. Pick another.';
           if (d.days) { slots.days = d.days; pick.hour = null; paint(); }
           return;
         }
+        if (r.status === 400 && d.error === 'bad_email') { e.textContent = 'That email doesn’t look right.'; return; }
         if (!r.ok) { e.textContent = 'Something went wrong. Try again.'; return; }
-        ticket = d.ticket; setPaper(); pick = { date: null, hour: null }; render(); showBooked(changing, d.mailed, d.mailConfigured);
+        ticket = d.ticket; setPaper(); pick = { date: null, hour: null }; render(); showBooked(changing, d.mailed);
       } catch { e.textContent = 'No connection. Try again.'; }
-      finally { go.textContent = changing ? 'Move it' : 'Lock it in'; go.disabled = !(pick.date && pick.hour); }
+      finally { go.textContent = changing ? 'Move it' : 'Lock it in'; go.disabled = !(pick.date && pick.hour && email.value.trim()); }
     };
     later.onclick = () => { pick = { date: null, hour: null }; closePlan(); };
   }
@@ -493,46 +496,19 @@
     setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
 
-  function showBooked(changing, mailed, mailConfigured) {
+  function showBooked(changing, mailed) {
     const v = ticket.visit;
     const box = el('div', 'plan');
     const hd = el('div', 'plan-hd'); hd.append(el('h3', null, changing ? 'Moved.' : 'You’re in.'));
-    const done = el('div', 'done');
-    const card = el('div', 'card'); card.append(el('small', null, 'Your visit'), el('b', null, v.longLabel), el('span', null, v.label + ' · Neighborly Brentwood'));
-    done.append(card);
-    const e = el('div', 'err');
+    const done = el('div', 'booked');
+    const card = el('div', 'vcard'); card.append(el('small', null, 'Your visit'), el('b', null, v.longLabel), el('span', null, v.label + ' · Neighborly Brentwood'));
+    const line = el('div', 'sent');
+    if (mailed) line.append('Confirmation sent to ', el('b', null, ticket.email));
+    else line.append('We have ', el('b', null, ticket.email), ' for your confirmation.');
     const finish = el('button', 'link', 'Done'); finish.onclick = closePlan;
     const cal = el('button', 'link', 'Add to calendar'); cal.onclick = addToCalendar;
     const acts = el('div', 'acts'); acts.append(cal, finish);
-
-    const sentRow = (addr) => { const n = el('div', 'sent'); n.append('Confirmation sent to ', el('b', null, addr)); return n; };
-    if (mailed && ticket.email) {
-      done.append(sentRow(ticket.email), acts);
-    } else if (mailConfigured === false && ticket.email) {
-      done.append(el('div', 'hint', 'We have ' + ticket.email + ' for your confirmation.'), acts);
-    } else {
-      const row = el('div', 'mail');
-      const input = el('input'); input.type = 'email'; input.placeholder = 'Email for a confirmation'; input.autocomplete = 'email'; input.value = ticket.email || '';
-      const sendBtn = el('button', 'pill primary', 'Send'); sendBtn.type = 'button';
-      sendBtn.onclick = async () => {
-        const email = input.value.trim();
-        if (!email) { e.textContent = 'Add your email, or tap Done to skip.'; return; }
-        sendBtn.disabled = true; e.textContent = '';
-        try {
-          const { r, d } = await post({ email });
-          if (r.status === 400) { e.textContent = 'That email doesn’t look right.'; return; }
-          if (!r.ok) throw 0;
-          ticket = d.ticket;
-          row.replaceWith(d.mailed ? sentRow(email) : el('div', 'hint', 'Saved. We have ' + email + ' for your confirmation.'));
-          hint.remove();
-        } catch { e.textContent = 'Couldn’t send that. Try again.'; }
-        finally { sendBtn.disabled = false; }
-      };
-      input.onkeydown = (ev) => { if (ev.key === 'Enter') sendBtn.click(); };
-      row.append(input, sendBtn);
-      const hint = el('div', 'hint', 'Optional. One email with the details and your ticket link, nothing else.');
-      done.append(row, e, hint, acts);
-    }
+    done.append(card, line, el('div', 'hint', 'On the day, open this ticket and tap I’m here when you arrive.'), acts);
     box.append(hd, done);
     planBody.replaceChildren(box);
     planSheet.scrollTop = 0;

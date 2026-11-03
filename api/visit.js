@@ -1,5 +1,5 @@
 // POST /api/visit, from the guest's own ticket page.
-//   { id, date, hour }      book or move the visit (capacity checked here)
+//   { id, date, hour, email? }  book or move the visit (capacity checked here); email is saved first
 //   { id, clear: true }     give the window back
 //   { id, plusOne: "Sam" }  name the one guest they can bring ("" removes)
 //   { id, email }           where to send the confirmation (sent now if a visit is booked)
@@ -19,7 +19,8 @@ module.exports = async (req, res) => {
     if (!t) return json(res, 404, { error: 'not_found' });
     if (t.redeemed) return json(res, 409, { error: 'already_redeemed' });
 
-    if (Object.prototype.hasOwnProperty.call(body, 'email')) {
+    // email on its own (a booking carries its email further down)
+    if (Object.prototype.hasOwnProperty.call(body, 'email') && body.date == null) {
       const email = String(body.email || '').trim().toLowerCase().slice(0, 120);
       if (email && !EMAIL_RE.test(email)) return json(res, 400, { error: 'bad_email' });
       const after = await setEmail(id, email);
@@ -50,6 +51,11 @@ module.exports = async (req, res) => {
     const w = day.windows.find((x) => x.hour === hour);
     if (!w.open) return json(res, 409, { error: w.past ? 'past' : 'full', days });
     const moved = !!t.visit;
+    if (Object.prototype.hasOwnProperty.call(body, 'email')) {
+      const email = String(body.email || '').trim().toLowerCase().slice(0, 120);
+      if (email && !EMAIL_RE.test(email)) return json(res, 400, { error: 'bad_email' });
+      if (email !== (t.email || '')) await setEmail(id, email);
+    }
     const after = await setVisit(id, date, hour);
     const synced = await syncVisit(after).catch(() => false);
     const mailed = await sendConfirmation(after, moved).catch(() => false);
