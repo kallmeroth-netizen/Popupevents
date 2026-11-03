@@ -43,37 +43,35 @@
 
   /* ---------- hero ---------- */
   .hero{padding:clamp(28px,7vw,64px) 0 clamp(20px,4vw,36px);display:grid;gap:14px}
-  .hero h1{margin:6px 0 0;font-family:var(--taya);font-weight:400;font-size:clamp(56px,15vw,108px);line-height:.86;text-transform:uppercase}
-  .hero p{margin:0;font-family:var(--tup);font-size:clamp(19px,4.6vw,24px);line-height:1.3;color:var(--muted);max-width:30ch}
+  .hero h1{margin:6px 0 0;font-family:var(--taya);font-weight:400;font-size:clamp(36px,9.5vw,56px);line-height:.95;text-transform:uppercase}
+  .hero p{margin:0;font-family:var(--tup);font-size:clamp(15px,3.8vw,18px);line-height:1.3;color:var(--muted);max-width:30ch}
 
   /* ---------- sections ---------- */
   section{padding:clamp(26px,5vw,44px) 0}
   .sec-hd{display:flex;align-items:center;gap:clamp(14px,3vw,28px);margin-bottom:clamp(20px,4vw,30px)}
-  .sec-hd h2{margin:0;font-family:var(--tup);font-weight:400;font-size:clamp(38px,9vw,56px);line-height:1;white-space:nowrap}
+  .sec-hd h2{margin:0;font-family:var(--tup);font-weight:400;font-size:clamp(24px,6vw,32px);line-height:1;white-space:nowrap}
   .sec-hd .rule{flex:1;height:1px;background:var(--line);min-width:24px}
-  .sec-hd .kick{font-family:var(--futura);font-weight:600;font-size:10.5px;text-transform:uppercase;white-space:nowrap;color:var(--muted)}
+  .sec-hd .kick{font-family:var(--futura);font-weight:600;font-size:9.5px;text-transform:uppercase;white-space:nowrap;color:var(--muted)}
 
   .grid{display:grid;grid-template-columns:1fr;gap:clamp(22px,4vw,34px) clamp(28px,5vw,56px)}
   .item{position:relative}
-  .tag{display:inline-block;margin-bottom:8px;padding:3px 9px 2px;border-radius:999px;border:1px solid var(--orange);background:var(--orange);color:#fff;font-family:var(--futura);font-weight:600;font-size:9.5px;text-transform:uppercase}
+  .tag{display:inline-block;margin-bottom:7px;padding:3px 9px 2px;border-radius:999px;border:1px solid var(--orange);background:var(--orange);color:#fff;font-family:var(--futura);font-weight:600;font-size:8.5px;text-transform:uppercase}
   .name{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:0}
-  .name b{font-family:var(--taya);font-weight:400;font-size:clamp(26px,6.4vw,32px);line-height:1;text-transform:uppercase}
-  .name .price{font-family:var(--tup);font-size:clamp(20px,5vw,24px);line-height:1;color:var(--muted)}
-  .name .price i{font-style:normal;color:var(--line);padding:0 .25em}
-  .desc{margin:10px 0 0;font-size:15px;line-height:1.6;color:var(--muted);max-width:42ch}
+  .name b{font-family:var(--futura);font-weight:600;font-size:15px;line-height:1.25;text-transform:uppercase}
+  .desc{margin:5px 0 0;font-size:13.5px;line-height:1.55;color:var(--muted);max-width:42ch}
 
   /* signatures live on their own card */
   .feature{background:#FAF9F6;border:1px solid var(--line);border-radius:clamp(20px,4vw,28px);padding:clamp(22px,5vw,40px);margin:clamp(10px,2vw,18px) 0}
   .feature .sec-hd{margin-bottom:clamp(20px,4vw,30px)}
   .callout{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px;align-self:start}
-  .callout .kick{display:block;color:var(--muted);font-family:var(--futura);font-weight:600;font-size:10.5px;text-transform:uppercase;margin-bottom:8px}
-  .callout p{margin:0;font-size:15px;line-height:1.6;color:var(--text)}
+  .callout .kick{display:block;color:var(--muted);font-family:var(--futura);font-weight:600;font-size:9.5px;text-transform:uppercase;margin-bottom:8px}
+  .callout p{margin:0;font-size:13.5px;line-height:1.6;color:var(--text)}
 
   /* ---------- close ---------- */
   .close{margin-top:clamp(14px,3vw,28px);padding:clamp(34px,6vw,52px) 20px;border-top:1px solid var(--line);color:var(--ink);display:grid;gap:14px;justify-items:center;text-align:center}
   .close h3{margin:0;font-family:var(--taya);font-weight:400;font-size:clamp(30px,7vw,40px);line-height:.92;text-transform:uppercase}
-  .close p{margin:0;font-family:var(--tup);font-size:clamp(17px,4.2vw,20px);line-height:1.35;max-width:32ch;color:var(--muted)}
-    .pill{display:inline-flex;align-items:center;gap:10px;margin-top:6px;border-radius:999px;padding:14px 24px;background:var(--ink);color:#fff;text-decoration:none;font-family:var(--futura);font-weight:600;font-size:13px;text-transform:uppercase;transition:transform .15s,background .2s}
+  .close p{margin:0;font-family:var(--tup);font-size:clamp(15px,3.8vw,17px);line-height:1.35;max-width:32ch;color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:10px;margin-top:6px;border-radius:999px;padding:13px 22px;background:var(--ink);color:#fff;text-decoration:none;font-family:var(--futura);font-weight:600;font-size:12px;text-transform:uppercase;transition:transform .15s,background .2s}
   .pill:hover{background:#2E343C}
   .pill:active{transform:scale(.97)}
   .pill svg{width:18px;height:18px}
@@ -121,16 +119,17 @@
     <p>Have a look around, pick a favorite, and the bar will take it from there.</p>
   </div>
 
+  <div class="menu-body">
   <section id="frozen">
     <div class="sec-hd rise"><h2>Frozen</h2><span class="rule"></span><span class="kick">Blended favorites</span></div>
     <div class="grid">
       <article class="item rise">
         <span class="tag">Signature</span>
-        <h3 class="name"><b>Frozen Espresso Martini</b><span class="price">15</span></h3>
+        <h3 class="name"><b>Frozen Espresso Martini</b></h3>
         <p class="desc">Finished with house salted vanilla cloud.</p>
       </article>
       <article class="item rise">
-        <h3 class="name"><b>The Opalite</b><span class="price">14</span></h3>
+        <h3 class="name"><b>The Opalite</b></h3>
         <p class="desc">A frozen gin and house green juice cocktail with cucumber finish.</p>
       </article>
     </div>
@@ -141,23 +140,23 @@
     <div class="grid">
       <article class="item rise">
         <span class="tag">Signature</span>
-        <h3 class="name"><b>Signature Skinny Margarita</b><span class="price">17.5</span></h3>
+        <h3 class="name"><b>Signature Skinny Margarita</b></h3>
         <p class="desc">Casa Dragones Blanco, orange liqueur, fresh lime and lemon. No added sugar.</p>
       </article>
       <article class="item rise">
-        <h3 class="name"><b>Café 43</b><span class="price">15</span></h3>
+        <h3 class="name"><b>Café 43</b></h3>
         <p class="desc">Sightglass espresso and Spanish Licor 43 Original shaken cold.</p>
       </article>
       <article class="item rise">
-        <h3 class="name"><b>The Greenhouse</b><span class="price">16</span></h3>
+        <h3 class="name"><b>The Greenhouse</b></h3>
         <p class="desc">Hendrick’s, French elderflower liqueur, fresh cucumber, basil, citrus and cucumber tonic.</p>
       </article>
       <article class="item rise">
-        <h3 class="name"><b>Bad Bunny</b><span class="price">15</span></h3>
+        <h3 class="name"><b>Bad Bunny</b></h3>
         <p class="desc">Ketel One vodka, house carrot-ginger juice, lime and ginger beer.</p>
       </article>
       <article class="item rise">
-        <h3 class="name"><b>Espresso Martini</b><span class="price">17</span></h3>
+        <h3 class="name"><b>Espresso Martini</b></h3>
         <p class="desc">Ketel One, cold brew, coffee liqueur and a touch of Irish cream.</p>
       </article>
       <aside class="callout rise">
@@ -171,24 +170,25 @@
     <div class="sec-hd rise"><h2>Another round</h2><span class="rule"></span><span class="kick">Classics</span></div>
     <div class="grid">
       <article class="item rise">
-        <h3 class="name"><b>Riviera Spritz</b><span class="price">14</span></h3>
+        <h3 class="name"><b>Riviera Spritz</b></h3>
         <p class="desc">Maple-sweetened blue spirulina lemonade, Italian lemon liqueur and Prosecco served over ice.</p>
       </article>
       <article class="item rise">
         <span class="tag">Signature</span>
-        <h3 class="name"><b>Neighborhood Margarita</b><span class="price">17</span></h3>
+        <h3 class="name"><b>Neighborhood Margarita</b></h3>
         <p class="desc">La Gritona Reposado, orange liqueur, organic simple syrup, fresh lime and lemon.</p>
       </article>
       <article class="item rise">
-        <h3 class="name"><b>Sunset Sangria</b><span class="price">13.5<i>|</i>29</span></h3>
+        <h3 class="name"><b>Sunset Sangria</b></h3>
         <p class="desc">Fruit-forward house red served over ice with orange garnish. Glass or pitcher.</p>
       </article>
       <article class="item rise">
-        <h3 class="name"><b>Hot Girl Pickle Margarita</b><span class="price">16.5</span></h3>
+        <h3 class="name"><b>Hot Girl Pickle Margarita</b></h3>
         <p class="desc">Casamigos Blanco, orange liqueur, organic simple syrup, pickle juice, fresh lime and lemon. Tajín rim and Hot Girl Pickle garnish.</p>
       </article>
     </div>
   </section>
+  </div>
 
   <div class="close rise">
     <p>Found the one? Show your ticket and ID at the bar.</p>
