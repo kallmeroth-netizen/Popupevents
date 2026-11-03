@@ -81,6 +81,9 @@
   .swin b { font-weight: 600; color: var(--ink); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
   .swin i { font-style: normal; color: var(--faint); }
   .swin.past { opacity: .5; }
+  .swin.held i { color: #B08968; }
+  .sday.later { background: var(--soft); border-style: dashed; }
+  .sday.later h4 b, .sday.later h4 span { color: var(--faint); }
 
   /* filters + summary */
   .filters { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -227,7 +230,7 @@
   <div class="track"><i id="bar" style="width:0"></i></div>
   <div class="list" id="list"></div>
 
-  <div class="help">Opened is the first time a guest loaded their link. Here is when they tapped “I’m here”. Redeemed is when the bartender poured with the PIN; each ticket redeems once. Visit is the day and hour window the guest picked on their ticket (preview days only, 4 to 9 PM, no 6 to 7, one party per window); confirmed visits also show under Influencer on the Marketing Hub calendar. Plus one is the single guest they can bring on the same link.
+  <div class="help">Opened is the first time a guest loaded their link. Here is when they tapped “I’m here”. Redeemed is when the bartender poured with the PIN; each ticket redeems once. Visit is the day and hour window the guest picked on their ticket (preview days only, 4 to 9 PM, no 6 to 7, one party per window); confirmed visits also show under Influencer on the Marketing Hub calendar. Plus one is the single guest they can bring on the same link. <b>Held</b> windows are kept off the picker on purpose so it never looks wide open: guests can book through <span id="openThrough"></span> (rolls forward a day each day) and a few off-peak windows are held. Nobody is in a held window. To release them, set VISIT_HOLDS to off and VISIT_OPEN_DAYS to 0 in Vercel.
     <button class="linkbtn danger" id="clearAll" type="button">Delete all invites</button></div>
 </main>
 <footer class="foot"><div class="foot-in"><span>Neighbors Only Preview &middot; Brentwood</span><span class="fine">&copy; 2026 Neighborly</span></div></footer>
@@ -289,13 +292,15 @@ const NBGate = {
     const s = state.slots; if (!s) return;
     const byKey = {};
     state.tickets.forEach((t) => { if (t.visit) (byKey[t.visit.date + '-' + t.visit.hour] = byKey[t.visit.date + '-' + t.visit.hour] || []).push(t); });
-    $('sched').innerHTML = s.days.map((d) => `<div class="sday ${d.today ? 'today' : ''}"><h4><b>${d.today ? 'Today' : esc(d.dow)}</b><span>${esc(d.mon + ' ' + d.day)}</span></h4>${d.windows.map((w) => {
+    $('sched').innerHTML = s.days.map((d) => `<div class="sday ${d.today ? 'today' : ''} ${d.later ? 'later' : ''}"><h4><b>${d.today ? 'Today' : esc(d.dow)}</b><span>${esc(d.mon + ' ' + d.day)}</span></h4>${d.windows.map((w) => {
       const who = byKey[d.date + '-' + w.hour] || [];
       const names = who.map((t) => `<b title="${esc(t.name)}${t.plusOne ? ' and ' + esc(t.plusOne) : ''}">${esc(t.name)}${t.plusOne ? ' <i>+1</i>' : ''}${t.redeemed ? ' <i>&#10003;</i>' : ''}</b>`).join('');
-      return `<div class="swin ${w.past ? 'past' : ''}"><span>${esc(w.label.replace(' PM', ''))}</span>${names || `<i>${w.past ? 'Passed' : w.open ? 'Open' : 'Full'}</i>`}</div>`;
+      return `<div class="swin ${w.past ? 'past' : ''} ${w.held ? 'held' : ''}"><span>${esc(w.label.replace(' PM', ''))}</span>${names || `<i>${w.past ? 'Passed' : w.held ? 'Held' : w.open ? 'Open' : 'Full'}</i>`}</div>`;
     }).join('')}</div>`).join('');
     const booked = state.tickets.filter((t) => t.visit && !t.redeemed).length;
-    $('weekNote').textContent = `${s.range ? s.range.label.replace(/, \d{4}/g, '') + ' · ' : ''}${s.caps.window} per window, ${s.caps.day} a day · ${booked} upcoming`;
+    const heldN = s.days.reduce((n, d) => n + d.windows.filter((w) => w.held && !w.past).length, 0);
+    if (s.range && $('openThrough')) $('openThrough').textContent = new Date(s.range.openThrough + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC' });
+    $('weekNote').textContent = (heldN ? `${heldN} held (not guests; see note below) · ` : '') + `${s.range ? s.range.label.replace(/, \d{4}/g, '') + ' · ' : ''}${s.caps.window} per window, ${s.caps.day} a day · ${booked} upcoming`;
   }
 
   function setNotice(t) { $('notice').textContent = t || ''; $('notice').classList.toggle('hidden', !t); }

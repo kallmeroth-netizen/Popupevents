@@ -6,6 +6,18 @@
 // can be tuned in Vercel without a deploy:
 //   VISIT_WINDOW_CAP  parties per hour window (default 1)
 //   VISIT_DAY_CAP     parties per day (default 4)
+//
+// HOLDS, so the picker never looks wide open. These are not bookings; the
+// backend shows them as "Held" so nobody mistakes them for guests:
+//   VISIT_OPEN_DAYS   how many days from today are bookable (default 6, so
+//                     today through five days out; the window rolls forward a
+//                     day each day). Days after that show every window as Full.
+//                     Set 0 to open every preview day.
+//   VISIT_HOLDS       off-peak windows held back. Unset: an automatic pattern,
+//                     one off-peak window (4 to 5 or 8 to 9 PM) on about two
+//                     of every three of the next VISIT_HOLD_DAYS days (default 4).
+//                     Or an explicit list "2026-11-06:16,2026-11-08:20".
+//                     Set "off" to release them all once bookings fill up.
 const TZ = 'America/Los_Angeles';
 const WINDOWS = [16, 17, 19, 20];
 const START = () => (process.env.VISIT_START || '2026-11-05').trim();
@@ -13,6 +25,21 @@ const END = () => (process.env.VISIT_END || '2026-11-15').trim();
 const LOCATION = 'Brentwood';
 
 const windowCap = () => Math.max(1, parseInt(process.env.VISIT_WINDOW_CAP, 10) || 1);
+const openDays = () => { const n = parseInt(process.env.VISIT_OPEN_DAYS, 10); return Number.isNaN(n) ? 6 : Math.max(0, n); };
+const holdDays = () => { const n = parseInt(process.env.VISIT_HOLD_DAYS, 10); return Number.isNaN(n) ? 4 : Math.max(0, n); };
+const OFF_PEAK = [16, 20];
+const hashOf = (s) => { let h = 7; for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 1000003; return h; };
+// Off-peak windows held back on a given date (see the HOLDS note above).
+function holdsFor(date, todayDate) {
+  const raw = (process.env.VISIT_HOLDS || '').trim();
+  if (raw.toLowerCase() === 'off') return [];
+  if (raw) return raw.split(',').map((s) => s.trim()).filter((s) => s.startsWith(date + ':')).map((s) => Number(s.split(':')[1])).filter((h) => WINDOWS.includes(h));
+  const idx = Math.round((new Date(date + 'T12:00:00Z') - new Date(todayDate + 'T12:00:00Z')) / 86400000);
+  if (idx < 0 || idx >= holdDays()) return [];
+  const pick = hashOf(date) % 3;
+  return pick === 0 ? [] : [OFF_PEAK[pick - 1]];
+}
+const openThrough = (todayDate) => { const n = openDays(); const d = n > 0 ? addDays(todayDate, n - 1) : END(); return d < END() ? d : END(); };
 const dayCap = () => Math.max(1, parseInt(process.env.VISIT_DAY_CAP, 10) || 4);
 
 // Clock in Brentwood, whatever region the function runs in.
@@ -46,20 +73,24 @@ function availability(tickets, excludeId, now = new Date()) {
     c[k.visit.hour] = (c[k.visit.hour] || 0) + 1;
     c.total++;
   }
+  const through = openThrough(t.date);
   const first = t.date > START() ? t.date : START();
   const dates = [];
   for (let d = first; d <= END() && dates.length < 60; d = addDays(d, 1)) dates.push(d);
   return dates.map((date) => {
     const c = counts[date] || { total: 0 };
     const dayFull = c.total >= dayCap();
+    const later = date > through;
+    const held = later ? WINDOWS.slice() : holdsFor(date, t.date);
     const windows = WINDOWS.map((hour) => {
       const used = c[hour] || 0;
       const past = date === t.date && t.hour >= hour;
       const left = Math.max(0, windowCap() - used);
-      const open = !past && !dayFull && left > 0;
-      return { hour, label: windowLabel(hour), open, left: open ? left : 0, past, booked: used };
+      const isHeld = held.includes(hour) && used === 0;
+      const open = !past && !dayFull && left > 0 && !isHeld;
+      return { hour, label: windowLabel(hour), open, left: open ? left : 0, past, booked: used, held: isHeld };
     });
-    return { date, ...labels(date), today: date === t.date, open: windows.some((w) => w.open), windows };
+    return { date, ...labels(date), today: date === t.date, later, open: windows.some((w) => w.open), windows };
   });
 }
 
@@ -73,4 +104,4 @@ function ticketView(t) {
   return { id: t.id, name: t.name, redeemed: t.redeemed, qty: t.qty, redeemedAt: t.redeemedAt, visit: visitLabels(t.visit), plusOne: t.plusOne || '', email: t.email || '', today: laNow().date };
 }
 
-module.exports = { TZ, WINDOWS, START, END, LOCATION, DATE_RE, laNow, addDays, labels, windowLabel, windowCap, dayCap, availability, visitLabels, ticketView };
+module.exports = { TZ, WINDOWS, START, END, LOCATION, openDays, openThrough, holdsFor, DATE_RE, laNow, addDays, labels, windowLabel, windowCap, dayCap, availability, visitLabels, ticketView };

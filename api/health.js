@@ -2,7 +2,7 @@
 const { list } = require('@vercel/blob');
 const { json } = require('./_store');
 const { hubStatus } = require('./_hub');
-const { windowCap, dayCap } = require('./_slots');
+const { windowCap, dayCap, openDays, openThrough, laNow } = require('./_slots');
 const mail = require('./_mail');
 
 module.exports = async (req, res) => {
@@ -16,6 +16,7 @@ module.exports = async (req, res) => {
     confirmationEmail: mail.configured(),
     googleSyncPoke: !!(process.env.HUB_SYNC_URL || '').trim(),
     visitCaps: { window: windowCap(), day: dayCap() },
+    holds: { openDays: openDays(), openThrough: openThrough(laNow().date), pattern: (process.env.VISIT_HOLDS || 'auto').trim() },
   };
   out.hubCalendar = await hubStatus();
   if (out.blobToken) {
