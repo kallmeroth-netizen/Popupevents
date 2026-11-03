@@ -1,12 +1,15 @@
 // Visit windows for the Neighbors Only preview, Brentwood only.
-// Guests pick one hour window on one of the next seven days. Four windows a
-// day, 4 to 9 PM with 6 to 7 skipped. Capacity is per window and per day and
+// Guests pick one hour window on a preview day. The preview runs from
+// VISIT_START to VISIT_END (inclusive, Brentwood dates; defaults below), and
+// only days from today on are offered. Four windows a day, 4 to 9 PM with 6 to
+// 7 skipped. Capacity is per window and per day and
 // can be tuned in Vercel without a deploy:
 //   VISIT_WINDOW_CAP  parties per hour window (default 1)
 //   VISIT_DAY_CAP     parties per day (default 4)
 const TZ = 'America/Los_Angeles';
 const WINDOWS = [16, 17, 19, 20];
-const DAYS = 7;
+const START = () => (process.env.VISIT_START || '2026-11-05').trim();
+const END = () => (process.env.VISIT_END || '2026-11-15').trim();
 const LOCATION = 'Brentwood';
 
 const windowCap = () => Math.max(1, parseInt(process.env.VISIT_WINDOW_CAP, 10) || 1);
@@ -32,7 +35,7 @@ const h12 = (h) => (h % 12) || 12;
 const windowLabel = (h) => `${h12(h)} to ${h12(h + 1)} PM`;
 const pad = (n) => String(n).padStart(2, '0');
 
-// The next seven days with every window's status, given every ticket in the store.
+// Every preview day still ahead, with each window's status, given every ticket in the store.
 // excludeId leaves one ticket's own booking out of the counts (for rebooking).
 function availability(tickets, excludeId, now = new Date()) {
   const t = laNow(now);
@@ -43,8 +46,10 @@ function availability(tickets, excludeId, now = new Date()) {
     c[k.visit.hour] = (c[k.visit.hour] || 0) + 1;
     c.total++;
   }
-  return Array.from({ length: DAYS }, (_, i) => {
-    const date = addDays(t.date, i);
+  const first = t.date > START() ? t.date : START();
+  const dates = [];
+  for (let d = first; d <= END() && dates.length < 60; d = addDays(d, 1)) dates.push(d);
+  return dates.map((date) => {
     const c = counts[date] || { total: 0 };
     const dayFull = c.total >= dayCap();
     const windows = WINDOWS.map((hour) => {
@@ -54,7 +59,7 @@ function availability(tickets, excludeId, now = new Date()) {
       const open = !past && !dayFull && left > 0;
       return { hour, label: windowLabel(hour), open, left: open ? left : 0, past, booked: used };
     });
-    return { date, ...labels(date), today: i === 0, open: windows.some((w) => w.open), windows };
+    return { date, ...labels(date), today: date === t.date, open: windows.some((w) => w.open), windows };
   });
 }
 
@@ -68,4 +73,4 @@ function ticketView(t) {
   return { id: t.id, name: t.name, redeemed: t.redeemed, qty: t.qty, redeemedAt: t.redeemedAt, visit: visitLabels(t.visit), plusOne: t.plusOne || '', email: t.email || '', today: laNow().date };
 }
 
-module.exports = { TZ, WINDOWS, DAYS, LOCATION, DATE_RE, laNow, addDays, labels, windowLabel, windowCap, dayCap, availability, visitLabels, ticketView };
+module.exports = { TZ, WINDOWS, START, END, LOCATION, DATE_RE, laNow, addDays, labels, windowLabel, windowCap, dayCap, availability, visitLabels, ticketView };

@@ -424,7 +424,7 @@
   function showPlanner(changing) {
     const box = el('div', 'plan');
     const hd = el('div', 'plan-hd');
-    const intro = el('p', null, 'Pick a day and an hour window for your visit. Brentwood, any day this week.');
+    const intro = el('p', null, 'Pick a day and an hour window for your visit. Brentwood, ' + (slots.range ? slots.range.label.replace(/, \d{4}/g, '') : 'while the preview runs') + '.');
     hd.append(el('h3', null, changing ? 'Move your visit' : 'When will we see you?'), intro);
     const days = el('div', 'days'), wins = el('div', 'wins'), e = el('div', 'err');
     const email = el('input'); email.type = 'email'; email.placeholder = 'you@example.com'; email.autocomplete = 'email'; email.inputMode = 'email'; email.value = ticket.email || '';
@@ -436,7 +436,7 @@
 
     const firstOpen = slots.days.find((d) => d.open);
     if (!slots.days.some((d) => d.date === pick.date && d.open)) pick = { date: firstOpen ? firstOpen.date : null, hour: null };
-    if (!firstOpen) intro.textContent = 'This week is spoken for. Check back tomorrow, when a new day opens up.';
+    if (!firstOpen) intro.textContent = slots.days.length ? 'Every window is spoken for. Check back in case one opens up.' : 'The preview has wrapped. Thank you for coming by.';
 
     const paint = () => {
       days.replaceChildren(...slots.days.map((d) => {

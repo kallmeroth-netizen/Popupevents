@@ -70,9 +70,8 @@
   .week { margin-bottom: 22px; }
   .week-hd { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
   .week-hd h2 { font-family: var(--f-label); font-weight: 600; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); margin: 0; }
-  .week-scroll { overflow-x: auto; scrollbar-width: none; margin: 0 calc(-1 * var(--g)); padding: 0 var(--g); }
-  .week-scroll::-webkit-scrollbar { display: none; }
-  .sched { display: grid; grid-template-columns: repeat(7, minmax(138px, 1fr)); gap: 8px; min-width: 1010px; }
+  .week-scroll { }
+  .sched { display: grid; grid-template-columns: repeat(auto-fill, minmax(138px, 1fr)); gap: 8px; }
   .sday { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px 4px; }
   .sday.today { border-color: var(--terra); }
   .sday h4 { margin: 0 0 4px; font-family: var(--f-label); font-weight: 600; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
@@ -210,7 +209,7 @@
   </section>
 
   <section class="week" id="week">
-    <div class="week-hd"><h2>This week in Brentwood</h2><span class="muted" id="weekNote"></span></div>
+    <div class="week-hd"><h2 id="weekTitle">Preview days in Brentwood</h2><span class="muted" id="weekNote"></span></div>
     <div class="week-scroll"><div class="sched" id="sched"></div></div>
   </section>
 
@@ -228,7 +227,7 @@
   <div class="track"><i id="bar" style="width:0"></i></div>
   <div class="list" id="list"></div>
 
-  <div class="help">Opened is the first time a guest loaded their link. Here is when they tapped “I’m here”. Redeemed is when the bartender poured with the PIN; each ticket redeems once. Visit is the day and hour window the guest picked on their ticket (4 to 9 PM, no 6 to 7, one party per window); confirmed visits also show under Influencer on the Marketing Hub calendar. Plus one is the single guest they can bring on the same link.
+  <div class="help">Opened is the first time a guest loaded their link. Here is when they tapped “I’m here”. Redeemed is when the bartender poured with the PIN; each ticket redeems once. Visit is the day and hour window the guest picked on their ticket (preview days only, 4 to 9 PM, no 6 to 7, one party per window); confirmed visits also show under Influencer on the Marketing Hub calendar. Plus one is the single guest they can bring on the same link.
     <button class="linkbtn danger" id="clearAll" type="button">Delete all invites</button></div>
 </main>
 <footer class="foot"><div class="foot-in"><span>Neighbors Only Preview &middot; Brentwood</span><span class="fine">&copy; 2026 Neighborly</span></div></footer>
@@ -296,7 +295,7 @@ const NBGate = {
       return `<div class="swin ${w.past ? 'past' : ''}"><span>${esc(w.label.replace(' PM', ''))}</span>${names || `<i>${w.past ? 'Passed' : w.open ? 'Open' : 'Full'}</i>`}</div>`;
     }).join('')}</div>`).join('');
     const booked = state.tickets.filter((t) => t.visit && !t.redeemed).length;
-    $('weekNote').textContent = `${s.caps.window} per window, ${s.caps.day} a day · ${booked} upcoming`;
+    $('weekNote').textContent = `${s.range ? s.range.label.replace(/, \d{4}/g, '') + ' · ' : ''}${s.caps.window} per window, ${s.caps.day} a day · ${booked} upcoming`;
   }
 
   function setNotice(t) { $('notice').textContent = t || ''; $('notice').classList.toggle('hidden', !t); }
