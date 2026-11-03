@@ -38,7 +38,7 @@ function availability(tickets, excludeId, now = new Date()) {
   const t = laNow(now);
   const counts = {};
   for (const k of tickets || []) {
-    if (!k || !k.visit || k.id === excludeId || k.redeemed) continue;
+    if (!k || !k.visit || k.id === excludeId) continue; // redeemed visits still hold their window
     const c = (counts[k.visit.date] = counts[k.visit.date] || { total: 0 });
     c[k.visit.hour] = (c[k.visit.hour] || 0) + 1;
     c.total++;
