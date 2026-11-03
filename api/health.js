@@ -1,6 +1,8 @@
 // GET /api/health -> which pieces are configured. Never reveals values.
 const { list } = require('@vercel/blob');
 const { json } = require('./_store');
+const { hubStatus } = require('./_hub');
+const { windowCap, dayCap } = require('./_slots');
 
 module.exports = async (req, res) => {
   const out = {
@@ -9,7 +11,10 @@ module.exports = async (req, res) => {
     adminKey: !!process.env.ADMIN_KEY,
     adminPassword: !!process.env.ADMIN_PASSWORD,
     store: 'untested',
+    hubCalendar: 'untested',
+    visitCaps: { window: windowCap(), day: dayCap() },
   };
+  out.hubCalendar = await hubStatus();
   if (out.blobToken) {
     try { await list({ prefix: 'tickets/', limit: 1 }); out.store = 'ok'; }
     catch (e) { out.store = 'error: ' + String(e && e.message || e).slice(0, 120); }

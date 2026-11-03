@@ -4,6 +4,8 @@
 //   tickets/<id>/opened~<firstOpenedMs>      (guest first loaded their link)
 //   tickets/<id>/here~<tappedMs>             (guest tapped "I'm here")
 //   tickets/<id>/redeemed~<qty>~<redeemedMs>
+//   tickets/<id>/visit~<YYYY-MM-DD>~<hour>~<setMs>   (newest wins; date "none" clears)
+//   tickets/<id>/plus~<b64url name>~<setMs>         (newest wins; empty name removes)
 const { put, list, del } = require('@vercel/blob');
 
 const ID_RE = /^[a-z0-9]{10,32}$/;
@@ -33,7 +35,7 @@ async function marker(pathname) {
 }
 
 function parseFolder(id, blobs) {
-  const t = { id, name: '', createdAt: null, openedAt: null, hereAt: null, redeemed: false, qty: 0, redeemedAt: null };
+  const t = { id, name: '', createdAt: null, openedAt: null, hereAt: null, redeemed: false, qty: 0, redeemedAt: null, visit: null, visitAt: 0, plusOne: '', plusAt: 0 };
   for (const b of blobs) {
     const leaf = b.pathname.split('/').pop();
     const parts = leaf.split('~');
@@ -44,6 +46,12 @@ function parseFolder(id, blobs) {
       const at = Number(parts[1]) || 0;
       const k = parts[0] === 'opened' ? 'openedAt' : 'hereAt';
       if (at && (!t[k] || at < t[k])) t[k] = at;
+    } else if (parts[0] === 'visit') {
+      const at = Number(parts[3]) || 0;
+      if (at >= t.visitAt) { t.visitAt = at; t.visit = parts[1] === 'none' ? null : { date: parts[1], hour: Number(parts[2]) }; }
+    } else if (parts[0] === 'plus') {
+      const at = Number(parts[2]) || 0;
+      if (at >= t.plusAt) { t.plusAt = at; t.plusOne = unb64u(parts[1] || ''); }
     } else if (parts[0] === 'redeemed') {
       const at = Number(parts[2]) || 0;
       if (!t.redeemed || at < (t.redeemedAt || Infinity)) {
@@ -92,6 +100,20 @@ async function markOnce(t, kind) {
   const at = Date.now();
   await marker(`tickets/${t.id}/${kind}~${at}`);
   return { ...t, [k]: at };
+}
+
+// The guest's visit window and plus one. Each write is a fresh marker; the newest wins.
+async function setVisit(id, date, hour) {
+  await marker(`tickets/${id}/visit~${date}~${hour}~${Date.now()}`);
+  return getTicket(id);
+}
+async function clearVisit(id) {
+  await marker(`tickets/${id}/visit~none~0~${Date.now()}`);
+  return getTicket(id);
+}
+async function setPlusOne(id, name) {
+  await marker(`tickets/${id}/plus~${b64u(name || '')}~${Date.now()}`);
+  return getTicket(id);
 }
 
 async function redeemTicket(id, qty) {
@@ -151,4 +173,4 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(x, y);
 }
 
-module.exports = { ID_RE, getTicket, createTicket, createTickets, markOnce, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };
+module.exports = { ID_RE, getTicket, createTicket, createTickets, markOnce, setVisit, clearVisit, setPlusOne, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };

@@ -1,4 +1,5 @@
 const { getTicket, markOnce, json, readBody, ID_RE } = require('./_store');
+const { ticketView } = require('./_slots');
 
 module.exports = async (req, res) => {
   const body = req.method === 'POST' ? await readBody(req) : {};
@@ -13,7 +14,7 @@ module.exports = async (req, res) => {
       return json(res, 200, { ok: true });
     }
     await markOnce(t, 'opened').catch(() => {});
-    return json(res, 200, { id: t.id, name: t.name, redeemed: t.redeemed, qty: t.qty, redeemedAt: t.redeemedAt });
+    return json(res, 200, ticketView(t));
   } catch (e) {
     return json(res, 500, { error: 'store_error' });
   }
