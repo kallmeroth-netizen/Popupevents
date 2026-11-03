@@ -191,6 +191,11 @@
   .err{color:var(--err);font-size:13px;text-align:center;min-height:18px;margin-bottom:4px}
   .sheet .pill{width:100%}
   .cancel{display:block;margin:12px auto 0;background:none;border:0;font:500 13px var(--body);color:var(--muted);cursor:pointer}
+  .sheet.plan-sheet{max-height:88vh;max-height:88svh;overflow-y:auto;overscroll-behavior:contain}
+  .sheet .plan{max-width:none;gap:16px}
+  .sheet .plan-hd{margin-bottom:2px}
+  .sheet .plan .pill{width:100%;margin-top:6px}
+  .sheet .plan .link{margin-top:-4px}
 
   /* ---------- the menu, right under the ticket (drinks come from /menu.html) ---------- */
   .tmenu{border-top:1px solid var(--line);background:#fff;scroll-margin-top:var(--hdr)}
@@ -314,6 +319,10 @@
 </footer>
 
 <div class="scrim" id="scrim"></div>
+<div class="sheet plan-sheet" id="planSheet" role="dialog" aria-label="Pick your visit">
+  <div class="handle"></div>
+  <div id="planBody"></div>
+</div>
 <form class="sheet" id="sheet" autocomplete="off">
   <div class="handle"></div>
   <div class="kicker">Neighborly</div>
@@ -338,7 +347,9 @@
   const brand = $('#brand'), g2 = $('#g2'), typed = $('#typed'), caret = $('#caret'), hdr = $('#hdr');
   const id = (location.pathname.match(/^\/t\/([a-z0-9]+)/i) || [, new URLSearchParams(location.search).get('t') || ''])[1].toLowerCase();
   let ticket = null, qty = 1, busy = false, slots = null, pick = { date: null, hour: null };
-  const tline = $('#tline');
+  const tline = $('#tline'), planSheet = $('#planSheet'), planBody = $('#planBody');
+  const openPlan = () => { planSheet.classList.add('open'); scrim.classList.add('open'); };
+  const closePlan = () => { planSheet.classList.remove('open'); scrim.classList.remove('open'); setTimeout(() => { if (!planSheet.classList.contains('open')) planBody.replaceChildren(); }, 400); };
   // the ticket itself carries the booked time, so it reads as the confirmation
   const setPaper = () => { tline.textContent = ticket && ticket.visit ? ticket.visit.dateLabel + ' · ' + ticket.visit.label + ' · Brentwood' : 'One drink per neighbor, on the house.'; };
   const post = async (body) => { const r = await fetch('/api/visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, ...body }) }); const d = await r.json().catch(() => ({})); return { r, d }; };
@@ -384,13 +395,17 @@
   // ---------- visit planner ----------
   const lbl = (text, hint) => { const n = el('div', 'lbl'); n.append(text); if (hint) n.append(el('span', null, hint)); return n; };
 
+  // opens in a sheet over the ticket, like the team member step
   async function openPlanner(changing) {
-    setCtl(dots());
+    planBody.replaceChildren(dots()); planBody.firstChild.style.display = 'flex'; planBody.firstChild.style.justifyContent = 'center'; planBody.firstChild.style.width = '100%';
+    openPlan();
     try { await loadSlots(); showPlanner(changing); }
     catch {
-      const retry = el('button', 'link', 'Try again'); retry.onclick = () => openPlanner(changing);
-      const later = el('button', 'link', ticket.visit ? 'Keep my time' : 'Decide later'); later.onclick = render;
-      setCtl(el('div', 'note', 'Couldn’t load the calendar right now.'), retry, later);
+      const box = el('div', 'plan');
+      const retry = el('button', 'pill primary', 'Try again'); retry.onclick = () => openPlanner(changing);
+      const later = el('button', 'link', ticket.visit ? 'Keep my time' : 'Decide later'); later.onclick = closePlan;
+      box.append(el('div', 'note', 'Couldn’t load the calendar right now.'), retry, later);
+      planBody.replaceChildren(box);
     }
   }
 
@@ -403,7 +418,7 @@
     const go = el('button', 'pill primary', changing ? 'Move it' : 'Lock it in'); go.disabled = true;
     const later = el('button', 'link', changing ? 'Keep my time' : 'Decide later');
     box.append(hd, lbl('Day'), days, lbl('Hour window', 'One party per window'), wins, e, go, later);
-    setCtl(box);
+    planBody.replaceChildren(box);
 
     const firstOpen = slots.days.find((d) => d.open);
     if (!slots.days.some((d) => d.date === pick.date && d.open)) pick = { date: firstOpen ? firstOpen.date : null, hour: null };
@@ -441,11 +456,11 @@
           return;
         }
         if (!r.ok) { e.textContent = 'Something went wrong. Try again.'; return; }
-        ticket = d.ticket; setPaper(); pick = { date: null, hour: null }; render();
+        ticket = d.ticket; setPaper(); pick = { date: null, hour: null }; closePlan(); render();
       } catch { e.textContent = 'No connection. Try again.'; }
       finally { go.textContent = changing ? 'Move it' : 'Lock it in'; go.disabled = !(pick.date && pick.hour); }
     };
-    later.onclick = () => { pick = { date: null, hour: null }; render(); };
+    later.onclick = () => { pick = { date: null, hour: null }; closePlan(); };
   }
 
   // the booked time, or a nudge to pick one
@@ -545,7 +560,7 @@
 
   function openSheet() { err.textContent = ''; $('#pin').value = ''; qty = 1; $('#qtyOut').textContent = '1'; $('#idok').checked = false; $('#go').disabled = true; sheet.classList.add('open'); scrim.classList.add('open'); setTimeout(() => $('#pin').focus(), 320); }
   function closeSheet() { sheet.classList.remove('open'); scrim.classList.remove('open'); }
-  $('#cancel').onclick = closeSheet; scrim.onclick = closeSheet;
+  $('#cancel').onclick = closeSheet; scrim.onclick = () => { closeSheet(); closePlan(); };
   $('#idok').onchange = () => { $('#go').disabled = !$('#idok').checked; };
   $('#minus').onclick = () => { qty = Math.max(1, qty - 1); $('#qtyOut').textContent = qty; };
   $('#plus').onclick = () => { qty = Math.min(6, qty + 1); $('#qtyOut').textContent = qty; };
@@ -598,8 +613,7 @@
     await wait(ms(400));
     await typeGreeting('hey, ' + (ticket.name || 'neighbor') + '!');
     g2.classList.add('show');
-    // first visit: pick a day and time before anything else; after that the ticket remembers it
-    if (ticket.redeemed) showRedeemed(false); else if (ticket.visit) render(); else openPlanner(false);
+    if (ticket.redeemed) showRedeemed(false); else render();
   }
   load();
 
