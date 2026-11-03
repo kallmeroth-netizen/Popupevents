@@ -164,9 +164,9 @@
   .tmenu-hd h2{margin:0;font-family:var(--taya);font-weight:400;font-size:clamp(32px,8.5vw,44px);line-height:.95;text-transform:uppercase;color:var(--ink)}
   .tmenu-hd p{margin:6px 0 0;font-family:var(--tup);font-size:clamp(15px,3.8vw,17px);line-height:1.35;color:var(--muted)}
   .tmenu section{padding:clamp(22px,5vw,34px) 0}
-  .tmenu .sec-hd{display:flex;align-items:center;gap:clamp(14px,3vw,24px);margin-bottom:clamp(18px,4vw,26px)}
+  .tmenu .sec-hd{display:flex;align-items:baseline;gap:clamp(14px,3vw,24px);margin-bottom:clamp(18px,4vw,26px)}
   .tmenu .sec-hd h2{margin:0;font-family:var(--tup);font-weight:400;font-size:clamp(24px,6vw,30px);line-height:1;white-space:nowrap;color:var(--ink)}
-  .tmenu .sec-hd .rule{flex:1;height:1px;background:var(--line);min-width:24px}
+  .tmenu .sec-hd .rule{flex:1;height:1px;background:var(--line);min-width:24px;align-self:center}
   .tmenu .kick{font-family:var(--futura);font-weight:600;font-size:9.5px;text-transform:uppercase;white-space:nowrap;color:var(--muted)}
   .tmenu .grid{display:grid;grid-template-columns:1fr;gap:clamp(20px,4vw,30px) clamp(28px,5vw,48px)}
   .tmenu .tag{display:inline-block;margin-bottom:7px;padding:3px 9px 2px;border-radius:999px;background:var(--orange);color:#fff;font-family:var(--futura);font-weight:600;font-size:8.5px;text-transform:uppercase}
@@ -177,13 +177,14 @@
   .tmenu .callout{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;align-self:start}
   .tmenu .callout .kick{display:block;margin-bottom:8px}
   .tmenu .callout p{margin:0;font-size:13.5px;line-height:1.6;color:var(--text)}
-  .tmenu .up{display:flex;justify-content:center;padding:18px 0 4px}
-  @media (min-width:640px){.tmenu .grid{grid-template-columns:1fr 1fr}}
+  .tmenu .up{display:flex;justify-content:center;padding:22px 0 8px}
+  button.menu-link{appearance:none;background:none;border:0;border-bottom:1px solid var(--orange);border-radius:0;cursor:pointer}
+  /* two columns: every item keeps a slot for the Signature tag so names line up across a row */
+  @media (min-width:640px){.tmenu .grid{grid-template-columns:1fr 1fr}.tmenu .item{position:relative;padding-top:24px}.tmenu .item .tag{position:absolute;top:0;left:0;margin:0}}
   @media (max-width:520px){
     .tmenu .sec-hd{align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
     .tmenu .sec-hd .rule{display:none}
     .tmenu .sec-hd h2{white-space:normal}
-    .tmenu .sec-hd .kick{white-space:normal;text-align:right;max-width:9em;line-height:1.3}
     .tmenu .feature{padding:22px 18px}
   }
   @media (max-width:520px){
@@ -263,7 +264,7 @@
   <div class="tmenu-in">
     <div class="tmenu-hd"><h2>Cocktails</h2><p>Pick a favorite and the bar will take it from there.</p></div>
     <div id="menuBody"></div>
-    <div class="up"><button class="link" type="button" id="toTicket">Back to my ticket</button></div>
+    <div class="up"><button class="menu-link" type="button" id="toTicket">Back to my ticket <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></button></div>
   </div>
 </section>
 <footer class="ftr">
