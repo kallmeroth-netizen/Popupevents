@@ -49,7 +49,7 @@ function designHtml(x) {
       <tr><td align="center" style="padding-bottom:26px;">
         <a href="${e('ticket_link')}" style="display:inline-block;background:#1E2329;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:16px 34px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;">Open my ticket</a>
       </td></tr>
-      <tr><td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#3A4049;padding-bottom:12px;">On the day, open your ticket and tap <strong style="color:#1E2329;">I'm here</strong> when you arrive. Show it at the bar with a valid ID and your first drink is on us.</td></tr>
+      <tr><td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#3A4049;padding-bottom:12px;">On the day, open your ticket and tap <strong style="color:#1E2329;">I'm here</strong> when you arrive. Show it at the bar with a valid ID and your first drink is on us. Your meal is on the house too.</td></tr>
       <tr><td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#3A4049;padding-bottom:12px;">${e('plus_one_line')}</td></tr>
       <tr><td style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#3A4049;">Need a different time? Open the ticket and tap <strong style="color:#1E2329;">Change</strong>.</td></tr>
     </table>
@@ -76,7 +76,7 @@ function confirmation(t, moved) {
     `Neighborly ${LOCATION}`,
     '',
     `Your ticket: ${link}`,
-    `On the day, open it and tap I'm here when you arrive. Show it at the bar with a valid ID and your first drink is on us.`,
+    `On the day, open it and tap I'm here when you arrive. Show it at the bar with a valid ID and your first drink is on us. Your meal is on the house too.`,
     plus,
     'Need a different time? Open the ticket and tap Change.',
     '',
