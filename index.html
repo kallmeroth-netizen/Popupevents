@@ -463,11 +463,8 @@
     later.onclick = () => { pick = { date: null, hour: null }; closePlan(); };
   }
 
-  // the booked time, or a nudge to pick one
+  // the booked time
   function visitRow() {
-    if (!ticket.visit) {
-      const b = el('button', 'pill ghost', 'Pick a day and time'); b.onclick = () => openPlanner(false); return b;
-    }
     const v = el('div', 'visit');
     const t = el('span'); t.append('Your visit: ', el('b', null, ticket.visit.dateLabel + ' · ' + ticket.visit.label));
     const change = el('button', 'link', 'Change'); change.onclick = () => openPlanner(true);
@@ -522,16 +519,47 @@
     return g;
   }
 
+  // the guest tapped I'm here: the ticket turns over for the bartender
+  function arrive() {
+    fetch('/api/ticket', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, here: true }), keepalive: true }).catch(() => {}); // lets the backend see who's arrived
+    card.classList.add('flipped'); setTimeout(showTeamStep, ms(380));
+  }
+
+  // one step at a time: book, then (on the day) check in, then the bartender redeems
   function render() {
-    const note = el('div', 'note');
-    note.append('Something new is pouring in the neighborhood. Tap ', el('strong', null, 'I’m here'), ' when you arrive, and show this to your host to redeem.');
-    const b = el('button', 'pill primary', "I'm here");
-    b.onclick = () => {
-      fetch('/api/ticket', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, here: true }), keepalive: true }).catch(() => {}); // lets the backend see who's arrived
-      card.classList.add('flipped'); setTimeout(showTeamStep, ms(380));
-    };
     const legal = el('div', 'legal', 'Must be 21 or older with a valid government-issued ID to redeem. One per guest. No cash value.');
-    setCtl(note, visitRow(), b, guestRow(false), menuLink(), legal);
+    const note = el('div', 'note');
+
+    // step 1: pick a visit
+    if (!ticket.visit) {
+      note.append('Something new is pouring in the neighborhood. Pick a day and time to come by, and this ticket is your first drink.');
+      const b = el('button', 'pill primary', 'Pick a day and time'); b.id = 'pickBtn'; b.onclick = () => openPlanner(false);
+      setCtl(note, b, menuLink(), legal);
+      return;
+    }
+
+    const today = ticket.today || '';
+    const checkin = el('button', 'link', 'Already here? Check in'); checkin.onclick = arrive;
+
+    // missed window: pick again
+    if (today && ticket.visit.date < today) {
+      note.append('Your window on ', el('strong', null, ticket.visit.dateLabel), ' has passed. Pick a new time and we’ll hold a spot for you.');
+      const b = el('button', 'pill primary', 'Pick a new time'); b.id = 'pickBtn'; b.onclick = () => openPlanner(true);
+      setCtl(note, b, guestRow(false), menuLink(), checkin, legal);
+      return;
+    }
+
+    // step 2, on the day: check in
+    if (ticket.visit.date === today) {
+      note.append('Today’s the day. Tap ', el('strong', null, 'I’m here'), ' when you arrive, and show this to your host.');
+      const b = el('button', 'pill primary', "I'm here"); b.id = 'hereBtn'; b.onclick = arrive;
+      setCtl(note, visitRow(), b, guestRow(false), menuLink(), legal);
+      return;
+    }
+
+    // step 2, before the day: all set
+    note.append('You’re all set. Bring this ticket on ', el('strong', null, ticket.visit.dateLabel), ' and tap ', el('strong', null, 'I’m here'), ' when you arrive.');
+    setCtl(note, visitRow(), guestRow(false), menuLink(), checkin, legal);
   }
 
   function showTeamStep() {
