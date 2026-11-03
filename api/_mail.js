@@ -9,7 +9,7 @@ const { visitLabels, LOCATION } = require('./_slots');
 
 const env = (k, d) => { const v = (process.env[k] || '').trim(); return v || d; };
 const SERVICE = () => env('EMAILJS_SERVICE_ID', 'service_v4jp7sp');
-const TEMPLATE = () => env('EMAILJS_TEMPLATE_ID', 'template_4fcjrnf');
+const TEMPLATE = () => env('EMAILJS_TEMPLATE_ID', 'template_lsjzf4n');
 const PUBLIC_KEY = () => env('EMAILJS_PUBLIC_KEY', 'pW4-kj71suA1OsbFa');
 const PRIVATE_KEY = () => env('EMAILJS_PRIVATE_KEY', '');
 const SITE = () => env('SITE_URL', 'https://exclusivepreview.vercel.app').replace(/\/+$/, '');
