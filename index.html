@@ -431,7 +431,7 @@
   function showPlanner(changing) {
     const box = el('div', 'plan');
     const hd = el('div', 'plan-hd');
-    const intro = el('p', null, 'Pick a day and an hour window for your visit.');
+    const intro = el('p', null, 'Pick the day and hour that suit you. We’ll keep the spot just for you.');
     const short = (d) => new Date(d + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
     const where = el('p', 'where', 'Neighborly Brentwood' + (slots.range ? ' · ' + short(slots.range.start) + ' to ' + short(slots.range.end) : ''));
     hd.append(el('h3', null, changing ? 'Move your visit' : 'When will we see you?'), intro, where);
@@ -508,7 +508,7 @@
   function showBooked(changing, mailed) {
     const v = ticket.visit;
     const box = el('div', 'plan');
-    const hd = el('div', 'plan-hd'); hd.append(el('h3', null, changing ? 'Moved.' : 'You’re in.'));
+    const hd = el('div', 'plan-hd'); hd.append(el('h3', null, changing ? 'Moved.' : 'You’re on the list.'));
     const done = el('div', 'booked');
     const card = el('div', 'vcard'); card.append(el('small', null, 'Your visit'), el('b', null, v.longLabel), el('span', null, v.label + ' · Neighborly Brentwood'));
     const line = el('div', 'sent');
@@ -517,7 +517,7 @@
     const finish = el('button', 'link', 'Done'); finish.onclick = closePlan;
     const cal = el('button', 'link', 'Add to calendar'); cal.onclick = addToCalendar;
     const acts = el('div', 'acts'); acts.append(cal, finish);
-    done.append(card, line, el('div', 'hint', 'On the day, open this ticket and tap I’m here when you arrive.'), acts);
+    done.append(card, line, el('div', 'hint', 'On the day, open this ticket and tap I’m here when you arrive. We’ll be expecting you.'), acts);
     box.append(hd, done);
     planBody.replaceChildren(box);
     planSheet.scrollTop = 0;
@@ -565,7 +565,7 @@
       input.onkeydown = (ev) => { if (ev.key === 'Enter') save.click(); };
       const cancel = el('button', 'link', 'Cancel'); cancel.onclick = render;
       row.append(input, save);
-      g.append(row, e, el('div', 'hint', 'One guest per ticket. They’ll be on the list under your name.'), cancel);
+      g.append(row, e, el('div', 'hint', 'Your invitation covers one guest. They’ll be on the list under your name.'), cancel);
       setTimeout(() => input.focus(), 50);
       return g;
     }
@@ -592,7 +592,7 @@
 
     // step 1: pick a visit
     if (!ticket.visit) {
-      note.append('Something new is pouring in the neighborhood. Pick a day and time to come by. Your first drink and your meal are on us.');
+      note.append('You’re one of a handful of neighbors invited to try the bar before anyone else. Pick a day and time to come by. Your first drink and your meal are on us.');
       const b = el('button', 'pill primary', 'Pick a day and time'); b.id = 'pickBtn'; b.onclick = () => openPlanner(false);
       setCtl(note, b, menuLink(), legal);
       return;
@@ -603,7 +603,7 @@
 
     // missed window: pick again
     if (today && ticket.visit.date < today) {
-      note.append('Your window on ', el('strong', null, ticket.visit.dateLabel), ' has passed. Pick a new time and we’ll hold a spot for you.');
+      note.append('Your window on ', el('strong', null, ticket.visit.dateLabel), ' has passed. Pick a new time and we’ll keep a spot just for you.');
       const b = el('button', 'pill primary', 'Pick a new time'); b.id = 'pickBtn'; b.onclick = () => openPlanner(true);
       setCtl(note, b, guestRow(false), menuLink(), checkin, legal);
       return;
@@ -611,14 +611,14 @@
 
     // step 2, on the day: check in
     if (ticket.visit.date === today) {
-      note.append('Today’s the day. Tap ', el('strong', null, 'I’m here'), ' when you arrive, and show this to your host. Your meal is on the house too.');
+      note.append('Today’s the day. Tap ', el('strong', null, 'I’m here'), ' when you arrive and show this to your host. Your seat and your meal are waiting.');
       const b = el('button', 'pill primary', "I'm here"); b.id = 'hereBtn'; b.onclick = arrive;
       setCtl(note, visitRow(), b, guestRow(false), menuLink(), legal);
       return;
     }
 
     // step 2, before the day: all set
-    note.append('You’re all set. Bring this ticket on ', el('strong', null, ticket.visit.dateLabel), ' and tap ', el('strong', null, 'I’m here'), ' when you arrive. Dinner is on us too.');
+    note.append('You’re on the list. Bring this ticket on ', el('strong', null, ticket.visit.dateLabel), ' and tap ', el('strong', null, 'I’m here'), ' when you arrive. We’ll have a seat waiting, and dinner is on us.');
     setCtl(note, visitRow(), guestRow(false), menuLink(), checkin, legal);
   }
 
@@ -634,7 +634,7 @@
 
   function showRedeemed(animate) {
     const line = el('div', 'fine', 'Redeemed · ' + ticket.qty + (ticket.qty === 1 ? ' drink' : ' drinks') + (ticket.redeemedAt ? ' · ' + fmt(ticket.redeemedAt) : ''));
-    const thanks = el('div', 'note', 'Thank you for being the first to try the Neighbors Only bar. Can’t wait to have you back soon!');
+    const thanks = el('div', 'note', 'You were one of the very first through the door. Thank you for trying the Neighbors Only bar; we can’t wait to have you back.');
     setCtl(thanks, menuLink(), line);
     card.classList.add('redeemed');
     if (animate) {
