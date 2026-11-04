@@ -20,7 +20,7 @@
 //                     Set "off" to release them all once bookings fill up.
 const TZ = 'America/Los_Angeles';
 const WINDOWS = [16, 17, 19, 20];
-const START = () => (process.env.VISIT_START || '2026-11-05').trim();
+const START = () => (process.env.VISIT_START || '2026-11-04').trim();
 const END = () => (process.env.VISIT_END || '2026-11-15').trim();
 const LOCATION = 'Brentwood';
 
