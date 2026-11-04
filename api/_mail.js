@@ -27,7 +27,6 @@ function designHtml(x) {
   // A body fragment, not a full document: EmailJS drops it inside its own page,
   // and nested html/head/body tags are what make some inboxes render it badly.
   return `<style>
-@font-face{font-family:"TAYA Maya";src:url(${site}/fonts/TAYAmaya.otf) format("opentype");font-weight:400}
 @font-face{font-family:"Tuppence";src:url(${site}/fonts/Tuppence-Variable.otf) format("opentype");font-weight:100 900}
 @font-face{font-family:"Futura Neighborly";src:url(${site}/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600}
 @font-face{font-family:"DM Sans";src:url(${site}/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400}
@@ -39,7 +38,7 @@ function designHtml(x) {
   <tr><td style="background:#FFFFFF;border:1px solid #E6E2DA;border-radius:22px;padding:34px 32px 30px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
       <tr><td style="font-family:'Futura Neighborly','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#6B7280;font-weight:700;padding-bottom:12px;">Neighbors Only Preview</td></tr>
-      <tr><td style="font-family:'TAYA Maya','Arial Narrow','Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:400;font-size:34px;line-height:1;letter-spacing:.02em;text-transform:uppercase;color:#1E2329;padding-bottom:12px;">${e('headline')}</td></tr>
+      <tr><td style="font-family:'Tuppence',Georgia,'Times New Roman',serif;font-weight:400;font-size:32px;line-height:1.1;color:#1E2329;padding-bottom:12px;">${e('headline')}</td></tr>
       <tr><td style="font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.55;color:#3A4049;padding-bottom:24px;">${e('intro')}</td></tr>
       <tr><td style="padding-bottom:24px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E87242" style="background:#E87242;background-image:linear-gradient(140deg,#F0895C 0%,#E87242 52%,#D2602F 100%);border-radius:18px;">
