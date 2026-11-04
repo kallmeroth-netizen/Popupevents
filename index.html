@@ -133,6 +133,7 @@
   .plan-hd{text-align:center}
   .plan-hd h3{margin:0;font-family:var(--taya);font-weight:400;font-size:clamp(26px,7vw,32px);line-height:1;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
   .plan-hd p{margin:8px auto 0;font-size:14.5px;line-height:1.5;color:var(--text);max-width:320px}
+  .plan-hd p.where{margin-top:4px;font-family:var(--futura);font-weight:600;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
   .lbl{font-family:var(--futura);font-weight:600;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:baseline;gap:10px}
   .lbl span{font-family:var(--body);font-weight:400;font-size:12px;letter-spacing:0;text-transform:none;color:var(--faint)}
   .days{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px;margin:-2px -2px 0;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
@@ -430,14 +431,16 @@
   function showPlanner(changing) {
     const box = el('div', 'plan');
     const hd = el('div', 'plan-hd');
-    const intro = el('p', null, 'Pick a day and an hour window for your visit. Brentwood, ' + (slots.range ? slots.range.label.replace(/, \d{4}/g, '') : 'while the preview runs') + '.');
-    hd.append(el('h3', null, changing ? 'Move your visit' : 'When will we see you?'), intro);
+    const intro = el('p', null, 'Pick a day and an hour window for your visit.');
+    const short = (d) => new Date(d + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+    const where = el('p', 'where', 'Neighborly Brentwood' + (slots.range ? ' · ' + short(slots.range.start) + ' to ' + short(slots.range.end) : ''));
+    hd.append(el('h3', null, changing ? 'Move your visit' : 'When will we see you?'), intro, where);
     const days = el('div', 'days'), wins = el('div', 'wins'), e = el('div', 'err');
     const email = el('input'); email.type = 'email'; email.placeholder = 'you@example.com'; email.autocomplete = 'email'; email.inputMode = 'email'; email.value = ticket.email || '';
     email.oninput = () => { e.textContent = ''; paint(); };
     const go = el('button', 'pill primary', changing ? 'Move it' : 'Lock it in'); go.disabled = true;
     const later = el('button', 'link', changing ? 'Keep my time' : 'Decide later');
-    box.append(hd, lbl('Day'), days, lbl('Hour window', 'One party per window'), wins, lbl('Email', 'For your confirmation'), email, e, go, later);
+    box.append(hd, lbl('Day'), days, lbl('Hour window'), wins, lbl('Email', 'For your confirmation'), email, e, go, later);
     planBody.replaceChildren(box);
 
     const firstOpen = slots.days.find((d) => d.open);
