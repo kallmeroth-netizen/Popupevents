@@ -18,6 +18,8 @@
 //                     of every three of the next VISIT_HOLD_DAYS days (default 4).
 //                     Or an explicit list "2026-11-06:16,2026-11-08:20".
 //                     Set "off" to release them all once bookings fill up.
+//   VISIT_OPEN_DATES  days that are bookable no matter the horizon, comma list
+//                     (default 2026-11-12,2026-11-13: Thursday and Friday of the second week).
 const TZ = 'America/Los_Angeles';
 const WINDOWS = [16, 17, 19, 20];
 const START = () => (process.env.VISIT_START || '2026-11-04').trim();
@@ -39,6 +41,7 @@ function holdsFor(date, todayDate) {
   const pick = hashOf(date) % 3;
   return pick === 0 ? [] : [OFF_PEAK[pick - 1]];
 }
+const openDates = () => (process.env.VISIT_OPEN_DATES || '2026-11-12,2026-11-13').split(',').map((s) => s.trim()).filter(Boolean);
 const openThrough = (todayDate) => { const n = openDays(); const d = n > 0 ? addDays(todayDate, n - 1) : END(); return d < END() ? d : END(); };
 const dayCap = () => Math.max(1, parseInt(process.env.VISIT_DAY_CAP, 10) || 4);
 
@@ -80,7 +83,7 @@ function availability(tickets, excludeId, now = new Date()) {
   return dates.map((date) => {
     const c = counts[date] || { total: 0 };
     const dayFull = c.total >= dayCap();
-    const later = date > through;
+    const later = date > through && !openDates().includes(date);
     const held = later ? WINDOWS.slice() : holdsFor(date, t.date);
     const windows = WINDOWS.map((hour) => {
       const used = c[hour] || 0;
@@ -104,4 +107,4 @@ function ticketView(t) {
   return { id: t.id, name: t.name, redeemed: t.redeemed, qty: t.qty, redeemedAt: t.redeemedAt, visit: visitLabels(t.visit), plusOne: t.plusOne || '', email: t.email || '', today: laNow().date };
 }
 
-module.exports = { TZ, WINDOWS, START, END, LOCATION, openDays, openThrough, holdsFor, DATE_RE, laNow, addDays, labels, windowLabel, windowCap, dayCap, availability, visitLabels, ticketView };
+module.exports = { TZ, WINDOWS, START, END, LOCATION, openDays, openDates, openThrough, holdsFor, DATE_RE, laNow, addDays, labels, windowLabel, windowCap, dayCap, availability, visitLabels, ticketView };
