@@ -366,6 +366,8 @@
   const brand = $('#brand'), g2 = $('#g2'), typed = $('#typed'), caret = $('#caret'), hdr = $('#hdr');
   const id = (location.pathname.match(/^\/t\/([a-z0-9]+)/i) || [, new URLSearchParams(location.search).get('t') || ''])[1].toLowerCase();
   let ticket = null, qty = 1, busy = false, slots = null, pick = { date: null, hour: null };
+  // ?redeem=1 (the QR on the Wallet pass) goes straight to the bartender's PIN step
+  const wantRedeem = new URLSearchParams(location.search).get('redeem') === '1';
   const tline = $('#tline'), planSheet = $('#planSheet'), planBody = $('#planBody');
   const openPlan = () => { planSheet.classList.add('open'); scrim.classList.add('open'); };
   const closePlan = () => { planSheet.classList.remove('open'); scrim.classList.remove('open'); setTimeout(() => { if (!planSheet.classList.contains('open')) planBody.replaceChildren(); }, 400); };
@@ -704,7 +706,7 @@
     await wait(ms(400));
     await typeGreeting('hey, ' + (ticket.name || 'neighbor') + '!');
     g2.classList.add('show');
-    if (ticket.redeemed) showRedeemed(false); else render();
+    if (ticket.redeemed) showRedeemed(false); else if (wantRedeem) { render(); arrive(); setTimeout(openSheet, ms(900)); } else render();
   }
   load();
 

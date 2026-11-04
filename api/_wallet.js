@@ -30,6 +30,8 @@ function relevantDate(date, hour) {
 function passJson(t) {
   const v = visitLabels(t.visit);
   const link = `${SITE()}/t/${t.id}`;
+  // scanning the pass lands the bartender straight on the PIN step
+  const redeemLink = `${link}?redeem=1`;
   return {
     formatVersion: 1,
     passTypeIdentifier: env('WALLET_PASS_TYPE_ID'),
@@ -42,7 +44,7 @@ function passJson(t) {
     foregroundColor: 'rgb(30, 35, 41)',
     labelColor: 'rgb(110, 86, 48)',
     relevantDate: relevantDate(v.date, v.hour),
-    barcodes: [{ format: 'PKBarcodeFormatQR', message: link, messageEncoding: 'iso-8859-1', altText: 'Show this at the bar' }],
+    barcodes: [{ format: 'PKBarcodeFormatQR', message: redeemLink, messageEncoding: 'iso-8859-1', altText: 'Bartender: scan to redeem' }],
     eventTicket: {
       headerFields: [{ key: 'day', label: 'YOUR VISIT', value: v.dateLabel }],
       primaryFields: [{ key: 'window', label: 'HOUR WINDOW', value: v.label }],
@@ -52,6 +54,7 @@ function passJson(t) {
       ],
       auxiliaryFields: [{ key: 'where', label: 'WHERE', value: `Neighborly ${LOCATION}` }],
       backFields: [
+        { key: 'redeem', label: 'For the bartender', value: redeemLink, attributedValue: `<a href="${redeemLink}">Open the redeem screen</a>` },
         { key: 'open', label: 'Your ticket', value: link, attributedValue: `<a href="${link}">Open my ticket</a>` },
         { key: 'how', label: 'On the day', value: `Tap I'm here on your ticket when you arrive, then show it at the bar with a valid ID. Your first drink and your meal are on us.` },
         { key: 'change', label: 'Need a different time?', value: 'Open the ticket and tap Change. This pass updates when you add it again.' },
