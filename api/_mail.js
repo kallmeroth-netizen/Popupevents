@@ -24,15 +24,14 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function designHtml(x) {
   const site = SITE();
   const e = (k) => esc(x[k]);
-  return `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Neighborly</title>
-<style>
+  // A body fragment, not a full document: EmailJS drops it inside its own page,
+  // and nested html/head/body tags are what make some inboxes render it badly.
+  return `<style>
 @font-face{font-family:"TAYA Maya";src:url(${site}/fonts/TAYAmaya.otf) format("opentype");font-weight:400}
 @font-face{font-family:"Tuppence";src:url(${site}/fonts/Tuppence-Variable.otf) format("opentype");font-weight:100 900}
 @font-face{font-family:"Futura Neighborly";src:url(${site}/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600}
 @font-face{font-family:"DM Sans";src:url(${site}/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400}
-</style></head>
-<body style="margin:0;padding:0;background:#F5F1E9;">
+</style>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F1E9;">
 <tr><td align="center" style="padding:36px 16px 40px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
@@ -62,8 +61,7 @@ function designHtml(x) {
   </td></tr>
   <tr><td style="padding:20px 8px 0;font-family:'DM Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;line-height:1.55;color:#A8ADB5;">Must be 21 or older with a valid government-issued ID to redeem. One per guest. No cash value.<br>Neighborly, Brentwood, CA</td></tr>
 </table>
-</td></tr></table>
-</body></html>`;
+</td></tr></table>`;
 }
 // Same design with EmailJS placeholders, for pasting into the template's code view.
 const templateHtml = () => designHtml(Object.fromEntries(['headline', 'intro', 'visit_day', 'visit_window', 'location', 'ticket_link', 'plus_one_line'].map((k) => [k, `{{${k}}}`])));
