@@ -65,6 +65,14 @@ async function pokeGoogleSync() {
   finally { clearTimeout(timer); }
 }
 
+// Can we write? Puts and removes a probe the calendar ignores (no start date).
+async function hubWriteStatus() {
+  const url = `${BASE}/${PATH}/_probe.json${auth()}`;
+  const ok = await call(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ probe: true, at: Date.now() }) });
+  if (ok) await call(url, { method: 'DELETE' });
+  return ok ? 'ok' : 'error';
+}
+
 async function hubStatus() {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 5000);
@@ -75,4 +83,4 @@ async function hubStatus() {
   finally { clearTimeout(timer); }
 }
 
-module.exports = { eventFor, syncVisit, removeVisit, removeAll, pokeGoogleSync, hubStatus, PATH };
+module.exports = { eventFor, syncVisit, removeVisit, removeAll, pokeGoogleSync, hubStatus, hubWriteStatus, PATH };

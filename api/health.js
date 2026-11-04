@@ -1,7 +1,7 @@
 // GET /api/health -> which pieces are configured. Never reveals values.
 const { list } = require('@vercel/blob');
 const { json } = require('./_store');
-const { hubStatus } = require('./_hub');
+const { hubStatus, hubWriteStatus } = require('./_hub');
 const { windowCap, dayCap, openDays, openThrough, laNow } = require('./_slots');
 const mail = require('./_mail');
 
@@ -19,6 +19,7 @@ module.exports = async (req, res) => {
     holds: { openDays: openDays(), openThrough: openThrough(laNow().date), pattern: (process.env.VISIT_HOLDS || 'auto').trim() },
   };
   out.hubCalendar = await hubStatus();
+  out.hubCalendarWrite = out.hubCalendar === 'ok' ? await hubWriteStatus() : 'skipped';
   if (out.blobToken) {
     try { await list({ prefix: 'tickets/', limit: 1 }); out.store = 'ok'; }
     catch (e) { out.store = 'error: ' + String(e && e.message || e).slice(0, 120); }
