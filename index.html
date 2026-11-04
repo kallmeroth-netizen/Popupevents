@@ -50,7 +50,7 @@
   .ftr span{font-size:11px;line-height:1.5;color:var(--faint)}
 
   /* ---------- top: greeting ---------- */
-  .brand{flex:.82 1 0px;width:100%;padding:20px 0 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;opacity:0;transition:opacity .45s ease}
+  .brand{flex:.82 1 0px;width:100%;padding:36px 0 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;opacity:0;transition:opacity .45s ease}
   .brand.enter{opacity:1}
   .greet{display:flex;flex-direction:column;align-items:center}
   .greet .g1{font-family:var(--taya);font-size:clamp(36px,11vw,48px);line-height:1;letter-spacing:.02em;text-transform:uppercase;color:var(--ink);min-height:1em}
@@ -104,7 +104,7 @@
   .enter{animation:enter .9s cubic-bezier(.22,1,.36,1) both}
 
   /* ---------- controls ---------- */
-  .ctl{display:flex;flex-direction:column;align-items:center;gap:22px;flex:1.18 1 0px;width:100%;justify-content:center;text-align:center;padding:34px 0 14px;transition:opacity .18s ease}
+  .ctl{display:flex;flex-direction:column;align-items:center;gap:24px;flex:1.18 1 0px;width:100%;justify-content:center;text-align:center;padding:44px 0 40px;transition:opacity .18s ease}
   .ctl.out{opacity:0}
   .pill{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:15px 24px;min-width:220px;font-family:var(--futura);font-weight:600;font-size:14px;letter-spacing:.12em;text-transform:uppercase;transition:background .2s,opacity .2s,transform .15s,box-shadow .2s,border-color .2s}
   .pill:active{transform:scale(.97)}
@@ -213,7 +213,7 @@
   /* ---------- the menu, right under the ticket (drinks come from /menu.html) ---------- */
   .tmenu{border-top:1px solid var(--line);background:#fff;scroll-margin-top:var(--hdr)}
   .tmenu[hidden]{display:none}
-  .tmenu-in{max-width:760px;margin:0 auto;padding:clamp(36px,8vw,56px) 20px 28px}
+  .tmenu-in{max-width:760px;margin:0 auto;padding:clamp(52px,11vw,80px) 20px 36px}
   .tmenu-hd{text-align:center;margin-bottom:clamp(18px,4vw,28px)}
   .tmenu-hd h2{margin:0;font-family:var(--taya);font-weight:400;font-size:clamp(32px,8.5vw,44px);line-height:.95;text-transform:uppercase;color:var(--ink)}
   .tmenu-hd p{margin:6px 0 0;font-family:var(--tup);font-size:clamp(15px,3.8vw,17px);line-height:1.35;color:var(--muted)}
@@ -245,12 +245,12 @@
     /* phones: a fixed rhythm top to bottom instead of stretching to fill the screen */
     main{min-height:0}
     .hdr{position:relative;background:var(--bar);backdrop-filter:none;-webkit-backdrop-filter:none}
-    .brand{flex:none;padding:30px 0 22px;gap:6px}
+    .brand{flex:none;padding:42px 0 30px;gap:8px}
     .greet .g1{font-size:clamp(34px,10.2vw,40px)}
     .greet .g2{font-size:clamp(21px,6.3vw,24px);margin-top:6px}
     .stage{width:90%}
-    .ctl{flex:none;justify-content:flex-start;gap:14px;padding:28px 0 30px}
-    .ctl .note{margin-bottom:2px}
+    .ctl{flex:none;justify-content:flex-start;gap:18px;padding:38px 0 48px}
+    .ctl .note{margin-bottom:4px}
     .ctl .legal{margin-top:4px}
     .ctl .pill.primary{margin:2px 0}
     .guest{gap:8px}
