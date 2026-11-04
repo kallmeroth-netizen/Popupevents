@@ -4,6 +4,7 @@
   "private": true,
   "description": "Neighborly VIP drink tickets: per-guest links, bartender redemption, admin log.",
   "dependencies": {
-    "@vercel/blob": "^2.8.1"
+    "@vercel/blob": "^2.8.1",
+    "passkit-generator": "^3.7.0"
   }
 }

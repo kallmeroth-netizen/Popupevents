@@ -412,6 +412,8 @@
   }
 
   // ---------- visit planner ----------
+  const onApple = /iPhone|iPad|Macintosh/.test(navigator.userAgent);
+  const walletLink = () => { if (!(ticket && ticket.wallet && ticket.visit && onApple)) return null; const a = el('a', 'link', 'Add to Apple Wallet'); a.href = '/api/wallet?id=' + encodeURIComponent(id); return a; };
   const lbl = (text, hint) => { const n = el('div', 'lbl'); n.append(text); if (hint) n.append(el('span', null, hint)); return n; };
 
   // opens in a sheet over the ticket, like the team member step
@@ -516,7 +518,7 @@
     else line.append('We have ', el('b', null, ticket.email), ' for your confirmation.');
     const finish = el('button', 'link', 'Done'); finish.onclick = closePlan;
     const cal = el('button', 'link', 'Add to calendar'); cal.onclick = addToCalendar;
-    const acts = el('div', 'acts'); acts.append(cal, finish);
+    const acts = el('div', 'acts'); acts.append(cal, ...[walletLink()].filter(Boolean), finish);
     done.append(card, line, el('div', 'hint', 'On the day, open this ticket and tap I’m here when you arrive. We’ll be expecting you.'), acts);
     box.append(hd, done);
     planBody.replaceChildren(box);
@@ -529,6 +531,7 @@
     const t = el('span'); t.append('Your visit: ', el('b', null, ticket.visit.dateLabel + ' · ' + ticket.visit.label));
     const change = el('button', 'link', 'Change'); change.onclick = () => openPlanner(true);
     v.append(t, change);
+    const w = walletLink(); if (w) v.append(w);
     return v;
   }
 

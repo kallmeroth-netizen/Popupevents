@@ -4,6 +4,7 @@ const { json } = require('./_store');
 const { hubStatus, hubWriteStatus } = require('./_hub');
 const { windowCap, dayCap, openDays, openThrough, laNow } = require('./_slots');
 const mail = require('./_mail');
+const { walletConfigured } = require('./_slots');
 
 module.exports = async (req, res) => {
   const out = {
@@ -14,6 +15,7 @@ module.exports = async (req, res) => {
     store: 'untested',
     hubCalendar: 'untested',
     confirmationEmail: mail.configured(),
+    appleWallet: walletConfigured(),
     googleSyncPoke: !!(process.env.HUB_SYNC_URL || '').trim(),
     visitCaps: { window: windowCap(), day: dayCap() },
     holds: { openDays: openDays(), openThrough: openThrough(laNow().date), pattern: (process.env.VISIT_HOLDS || 'auto').trim() },

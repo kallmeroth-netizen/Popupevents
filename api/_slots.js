@@ -102,9 +102,12 @@ function visitLabels(visit) {
   return { ...visit, label: windowLabel(visit.hour), dateLabel: labels(visit.date).short, longLabel: labels(visit.date).long, time: `${pad(visit.hour)}:00`, location: LOCATION };
 }
 
+// Apple Wallet passes need the signing certificates in Vercel (see _wallet.js).
+const walletConfigured = () => ['WALLET_CERT_B64', 'WALLET_KEY_B64', 'WALLET_WWDR_B64', 'WALLET_PASS_TYPE_ID', 'WALLET_TEAM_ID'].every((k) => (process.env[k] || '').trim());
+
 // What the guest page gets to see.
 function ticketView(t) {
-  return { id: t.id, name: t.name, redeemed: t.redeemed, qty: t.qty, redeemedAt: t.redeemedAt, visit: visitLabels(t.visit), plusOne: t.plusOne || '', email: t.email || '', today: laNow().date };
+  return { id: t.id, name: t.name, redeemed: t.redeemed, qty: t.qty, redeemedAt: t.redeemedAt, visit: visitLabels(t.visit), plusOne: t.plusOne || '', email: t.email || '', today: laNow().date, wallet: walletConfigured() };
 }
 
-module.exports = { TZ, WINDOWS, START, END, LOCATION, openDays, openDates, openThrough, holdsFor, DATE_RE, laNow, addDays, labels, windowLabel, windowCap, dayCap, availability, visitLabels, ticketView };
+module.exports = { TZ, WINDOWS, START, END, LOCATION, openDays, openDates, openThrough, holdsFor, walletConfigured, DATE_RE, laNow, addDays, labels, windowLabel, windowCap, dayCap, availability, visitLabels, ticketView };
