@@ -224,7 +224,7 @@
       <button data-f="here">Here<i id="cHere"></i></button>
       <button data-f="redeemed">Redeemed<i id="cRedeemed"></i></button>
     </div>
-    <button class="linkbtn" id="exportCsv" type="button">Export CSV</button>
+    <span><button class="linkbtn" id="resync" type="button" title="Rebuild the Marketing Hub calendar from this list">Resync calendars</button> &nbsp; <button class="linkbtn" id="exportCsv" type="button">Export CSV</button></span>
   </div>
   <div class="summary" id="summary"></div>
   <div class="track"><i id="bar" style="width:0"></i></div>
@@ -424,7 +424,7 @@ const NBGate = {
     store.set('epAdminKey', state.key);
     state.tickets = tickets || []; state.loadedAt = Date.now();
     NBGate.close(); $('app').classList.remove('hidden');
-    render(); loadSlots();
+    render(); loadSlots(); resync(null);
     fetch('/api/health').then((r) => r.json()).then((h) => {
       if (h.bartenderPin === false) setNotice('BARTENDER_PIN isn’t set in Vercel, so bartenders can’t redeem tickets yet.');
     }).catch(() => {});
@@ -449,6 +449,14 @@ const NBGate = {
   });
   $('q').addEventListener('input', (e) => { state.q = e.target.value; render(); });
   $('exportCsv').onclick = exportCsv;
+  // the hub calendar is rebuilt from this list when the backend opens and on demand
+  async function resync(btn) {
+    if (btn) { btn.disabled = true; btn.textContent = 'Resyncing'; }
+    try { const r = await api('POST', { resync: true }); if (btn) btn.textContent = `Synced: ${r.written} on, ${r.removed} removed`; }
+    catch (e) { if (btn) btn.textContent = 'Resync failed'; }
+    finally { if (btn) setTimeout(() => { btn.disabled = false; btn.textContent = 'Resync calendars'; }, 2500); }
+  }
+  $('resync').onclick = () => resync($('resync'));
   $('clearAll').onclick = async () => {
     if (!state.tickets.length) return;
     if (!confirm('Delete every invite? All ' + state.tickets.length + ' links will stop working. This can’t be undone.')) return;

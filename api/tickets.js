@@ -1,6 +1,6 @@
 const { createTicket, createTickets, allTickets, getTicket, clearVisit, deleteTicket, deleteAllTickets, json, readBody, safeEqual, ID_RE } = require('./_store');
 const { visitLabels } = require('./_slots');
-const { syncVisit, removeVisit, removeAll } = require('./_hub');
+const { syncVisit, removeVisit, removeAll, reconcile } = require('./_hub');
 
 const withLabels = (t) => ({ ...t, visit: visitLabels(t.visit) });
 
@@ -20,6 +20,11 @@ module.exports = async (req, res) => {
     }
     if (req.method === 'POST') {
       const body = await readBody(req);
+      // Rebuild the hub calendar from the invite list: { resync: true }
+      if (body.resync === true) {
+        const result = await reconcile(await allTickets());
+        return json(res, result.ok ? 200 : 502, result);
+      }
       // Host frees a window: { id, clearVisit: true }
       if (body.clearVisit === true) {
         const id = String(body.id || '').toLowerCase();

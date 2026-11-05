@@ -65,6 +65,27 @@ async function pokeGoogleSync() {
   finally { clearTimeout(timer); }
 }
 
+// Rebuild the hub's visit list from the tickets: every booked, unredeemed visit
+// is written, and any node the hub still holds for a ticket that no longer has
+// one (deleted invite, cleared visit, a write that failed earlier) is removed.
+async function reconcile(tickets) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  let existing = {};
+  try {
+    const r = await fetch(`${BASE}/${PATH}.json?shallow=true${auth() ? '&' + auth().slice(1) : ''}`, { signal: ctrl.signal });
+    if (!r.ok) return { ok: false, error: 'read ' + r.status };
+    existing = (await r.json()) || {};
+  } catch { return { ok: false, error: 'unreachable' }; }
+  finally { clearTimeout(timer); }
+  const keep = new Map((tickets || []).filter((t) => t && t.visit && !t.redeemed).map((t) => [t.id, t]));
+  let written = 0, removed = 0, failed = 0;
+  for (const t of keep.values()) { (await call(nodeUrl(t.id), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(eventFor(t)) })) ? written++ : failed++; }
+  for (const key of Object.keys(existing)) { if (!keep.has(key)) { (await call(nodeUrl(key), { method: 'DELETE' })) ? removed++ : failed++; } }
+  pokeGoogleSync().catch(() => {});
+  return { ok: failed === 0, written, removed, failed };
+}
+
 // Can we write? Puts and removes a probe the calendar ignores (no start date).
 async function hubWriteStatus() {
   const url = `${BASE}/${PATH}/_probe.json${auth()}`;
@@ -83,4 +104,4 @@ async function hubStatus() {
   finally { clearTimeout(timer); }
 }
 
-module.exports = { eventFor, syncVisit, removeVisit, removeAll, pokeGoogleSync, hubStatus, hubWriteStatus, PATH };
+module.exports = { eventFor, syncVisit, removeVisit, removeAll, reconcile, pokeGoogleSync, hubStatus, hubWriteStatus, PATH };
