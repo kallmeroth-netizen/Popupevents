@@ -9,11 +9,11 @@
 //
 // HOLDS, so the picker never looks wide open. These are not bookings; the
 // backend shows them as "Held" so nobody mistakes them for guests:
-//   VISIT_OPEN_DAYS   how many days from today are bookable (default 6, so
+//   VISIT_OPEN_DAYS   how many days from today are bookable (default 0, all; 6 would be
 //                     today through five days out; the window rolls forward a
 //                     day each day). Days after that show every window as Full.
 //                     Set 0 to open every preview day.
-//   VISIT_HOLDS       off-peak windows held back. Unset: an automatic pattern,
+//   VISIT_HOLDS       off-peak windows held back. Default off. "auto": a pattern,
 //                     one off-peak window (4 to 5 or 8 to 9 PM) on about two
 //                     of every three of the next VISIT_HOLD_DAYS days (default 4).
 //                     Or an explicit list "2026-11-06:16,2026-11-08:20".
@@ -27,15 +27,16 @@ const END = () => (process.env.VISIT_END || '2026-11-15').trim();
 const LOCATION = 'Brentwood';
 
 const windowCap = () => Math.max(1, parseInt(process.env.VISIT_WINDOW_CAP, 10) || 1);
-const openDays = () => { const n = parseInt(process.env.VISIT_OPEN_DAYS, 10); return Number.isNaN(n) ? 6 : Math.max(0, n); };
+// Released Nov 5: every preview day is open and nothing is held unless the env says otherwise.
+const openDays = () => { const n = parseInt(process.env.VISIT_OPEN_DAYS, 10); return Number.isNaN(n) ? 0 : Math.max(0, n); };
 const holdDays = () => { const n = parseInt(process.env.VISIT_HOLD_DAYS, 10); return Number.isNaN(n) ? 4 : Math.max(0, n); };
 const OFF_PEAK = [16, 20];
 const hashOf = (s) => { let h = 7; for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 1000003; return h; };
 // Off-peak windows held back on a given date (see the HOLDS note above).
 function holdsFor(date, todayDate) {
-  const raw = (process.env.VISIT_HOLDS || '').trim();
+  const raw = (process.env.VISIT_HOLDS || 'off').trim();
   if (raw.toLowerCase() === 'off') return [];
-  if (raw) return raw.split(',').map((s) => s.trim()).filter((s) => s.startsWith(date + ':')).map((s) => Number(s.split(':')[1])).filter((h) => WINDOWS.includes(h));
+  if (raw && raw.toLowerCase() !== 'auto') return raw.split(',').map((s) => s.trim()).filter((s) => s.startsWith(date + ':')).map((s) => Number(s.split(':')[1])).filter((h) => WINDOWS.includes(h));
   const idx = Math.round((new Date(date + 'T12:00:00Z') - new Date(todayDate + 'T12:00:00Z')) / 86400000);
   if (idx < 0 || idx >= holdDays()) return [];
   const pick = hashOf(date) % 3;

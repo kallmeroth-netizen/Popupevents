@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
     appleWallet: walletConfigured(),
     googleSyncPoke: !!(process.env.HUB_SYNC_URL || '').trim(),
     visitCaps: { window: windowCap(), day: dayCap() },
-    holds: { openDays: openDays(), openThrough: openThrough(laNow().date), pattern: (process.env.VISIT_HOLDS || 'auto').trim() },
+    holds: { openDays: openDays(), openThrough: openThrough(laNow().date), pattern: (process.env.VISIT_HOLDS || 'off').trim() },
   };
   out.hubCalendar = await hubStatus();
   out.hubCalendarWrite = out.hubCalendar === 'ok' ? await hubWriteStatus() : 'skipped';

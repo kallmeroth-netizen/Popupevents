@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
     const mine = ID_RE.test(id) ? tickets.find((t) => t.id === id) || null : null;
     const days = availability(tickets, mine ? mine.id : null);
     const today = laNow().date;
-    const range = { start: START(), end: END(), label: `${labels(START()).long} through ${labels(END()).long}`, openThrough: openThrough(today), holds: (process.env.VISIT_HOLDS || 'auto').trim() };
+    const range = { start: START(), end: END(), label: `${labels(START()).long} through ${labels(END()).long}`, openThrough: openThrough(today), holds: (process.env.VISIT_HOLDS || 'off').trim() };
     return json(res, 200, { location: LOCATION, today, range, caps: { window: windowCap(), day: dayCap() }, days, mine: mine ? visitLabels(mine.visit) : null });
   } catch (e) {
     return json(res, 500, { error: 'store_error' });
