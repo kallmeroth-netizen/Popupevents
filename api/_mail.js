@@ -126,13 +126,13 @@ function surveyHtml(x) {
   <tr><td style="background:#FFFFFF;border:1px solid #E6E2DA;border-radius:22px;padding:34px 32px 30px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
       <tr><td style="${font('Futura Neighborly')}font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#6B7280;font-weight:700;padding-bottom:12px;">Neighbors Only Preview</td></tr>
-      <tr><td style="font-family:'Tuppence',Georgia,'Times New Roman',serif;font-weight:400;font-size:32px;line-height:1.1;color:#1E2329;padding-bottom:12px;">${e('headline')}</td></tr>
+      <tr><td style="${font('Futura Neighborly')}font-weight:700;font-size:22px;line-height:1.2;text-transform:uppercase;color:#1E2329;padding-bottom:12px;">${e('headline')}</td></tr>
       <tr><td style="${font('DM Sans')}font-size:15px;line-height:1.55;color:#3A4049;padding-bottom:24px;">${e('intro')}</td></tr>
       <tr><td style="padding-bottom:24px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#E87242" style="background:#E87242;border-radius:18px;">
           <tr><td style="padding:22px 24px 8px;"><img src="${site}/assets/neighborly-wordmark-white.png" width="104" alt="Neighborly" style="display:block;width:104px;height:auto;border:0;"></td></tr>
           <tr><td style="padding:14px 24px 0;${font('Futura Neighborly')}font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#FFFFFF;font-weight:700;opacity:.85;">Your visit</td></tr>
-          <tr><td style="padding:6px 24px 0;font-family:'Tuppence',Georgia,'Times New Roman',serif;font-size:26px;line-height:1.15;color:#FFFFFF;">${e('visit_day')}</td></tr>
+          <tr><td style="padding:6px 24px 0;${font('Futura Neighborly')}font-weight:700;font-size:20px;line-height:1.2;text-transform:uppercase;color:#FFFFFF;">${e('visit_day')}</td></tr>
           <tr><td style="padding:4px 24px 22px;${font('DM Sans')}font-size:16px;line-height:1.3;color:#FFFFFF;">${e('location')}</td></tr>
           <tr><td style="padding:0 24px 20px;${font('Futura Neighborly')}font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#FFFFFF;border-top:1px dashed rgba(255,255,255,.55);padding-top:14px;">Neighbor to neighbor</td></tr>
         </table>
@@ -140,11 +140,10 @@ function surveyHtml(x) {
       <tr><td align="center" style="padding-bottom:26px;">
         <a href="${e('survey_link')}" style="display:inline-block;background:#1E2329;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:16px 34px;${font('Futura Neighborly')}font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;">Tell us how it was</a>
       </td></tr>
-      <tr><td style="${font('DM Sans')}font-size:15px;line-height:1.6;color:#3A4049;padding-bottom:12px;">Two minutes. Your bar tasting notes, drink by drink, and room to say what you'd change. What you tell us shapes the menu before anyone else sees it.</td></tr>
-      <tr><td style="${font('DM Sans')}font-size:15px;line-height:1.6;color:#3A4049;">Your answers go to the Neighborly team only, with your name, so we can thank you properly.</td></tr>
+      <tr><td style="${font('DM Sans')}font-size:15px;line-height:1.6;color:#3A4049;">Neighbors only. We want all of your thoughts, the good and the not quite, so we can be nothing less than the best. Two minutes.</td></tr>
     </table>
   </td></tr>
-  <tr><td style="padding:20px 8px 0;${font('DM Sans')}font-size:11px;line-height:1.55;color:#A8ADB5;">You're getting this because you joined the Neighbors Only preview. One email, no follow-ups.<br>Neighborly, Brentwood, CA</td></tr>
+  <tr><td style="padding:20px 8px 0;${font('DM Sans')}font-size:11px;line-height:1.55;color:#A8ADB5;">One email, no follow-ups.</td></tr>
 </table>
 </td></tr></table>`;
 }
@@ -158,12 +157,12 @@ function survey(t) {
   const headline = 'We want to hear, neighbor to neighbor.';
   const intro = `${first}, you were one of the first through the door. Before the bar opens to anyone else, tell us what you really thought.`;
   const subject = `How was it, ${first}?`;
-  const text = [`Hey ${first},`, '', intro, '', `Tell us how it was: ${link}`, '', 'Two minutes. Your bar tasting notes, drink by drink, and room to say what you would change.', '', 'Thank you,', 'Neighborly'].join('\n');
+  const text = [`Hey ${first},`, '', intro, '', `Tell us how it was: ${link}`, '', 'Neighbors only. We want all of your thoughts, the good and the not quite, so we can be nothing less than the best. Two minutes.', '', 'Thank you,', 'Neighborly'].join('\n');
   const html = surveyHtml({ headline, intro, visit_day: day, location: `Neighborly ${LOCATION}`, survey_link: link });
   const params = {
     to_email: t.email || '', to_name: t.name || 'Neighbor', first_name: first, guest_name: t.name || '',
     subject, headline, intro, visit_day: day, visit_date: v ? v.dateLabel : '', visit_window: v ? v.label : '', location: `Neighborly ${LOCATION}`,
-    survey_link: link, ticket_link: link, wallet_link: '', plus_one: t.plusOne || '', plus_one_line: 'Two minutes. Your bar tasting notes, drink by drink, and room to say what you would change.',
+    survey_link: link, ticket_link: link, wallet_link: '', plus_one: t.plusOne || '', plus_one_line: 'Neighbors only. We want all of your thoughts, the good and the not quite, so we can be nothing less than the best. Two minutes.',
     moved: 'no', message: text, html_body: html,
   };
   return { subject, text, html, params, template: SURVEY_TEMPLATE() };
