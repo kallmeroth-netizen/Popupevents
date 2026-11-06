@@ -11,8 +11,8 @@ const env = (k, d) => { const v = (process.env[k] || '').trim(); return v || d; 
 const SERVICE = () => env('EMAILJS_SERVICE_ID', 'service_v4jp7sp');
 const TEMPLATE = () => env('EMAILJS_TEMPLATE_ID', 'template_lsjzf4n');
 // The feedback email needs its own template (body {{{html_body}}}, subject {{subject}}).
-// Nothing is sent until EMAILJS_SURVEY_TEMPLATE_ID is set, so a half-set-up account never mails guests.
-const SURVEY_TEMPLATE = () => env('EMAILJS_SURVEY_TEMPLATE_ID', '');
+// Default is the feedback template in the Neighborly EmailJS account; EMAILJS_SURVEY_TEMPLATE_ID overrides it.
+const SURVEY_TEMPLATE = () => env('EMAILJS_SURVEY_TEMPLATE_ID', 'template_njpzl8j');
 const surveyConfigured = () => configured() && !!SURVEY_TEMPLATE();
 const PUBLIC_KEY = () => env('EMAILJS_PUBLIC_KEY', 'pW4-kj71suA1OsbFa');
 const PRIVATE_KEY = () => env('EMAILJS_PRIVATE_KEY', '');

@@ -45,8 +45,7 @@ two short text answers and whether they are coming back. Answers live on the tic
 `/feedback.html` in the backend (same password), ranked cocktails, sweetness and strength gauges, every
 response by name, CSV export. Each guest is emailed once and can change their answers from the same link.
 
-Setup in Vercel (exclusivepreview): make an EmailJS template with subject `{{subject}}` and content
-`{{{html_body}}}` (the design is in `survey-email-template.html` if you would rather paste it), then set
-`EMAILJS_SURVEY_TEMPLATE_ID` to its id. Nothing sends until that is set. The schedule in `vercel.json`
+The email goes through EmailJS template `template_njpzl8j` (subject `{{subject}}`, content `{{{html_body}}}`;
+the design is in `survey-email-template.html`). `EMAILJS_SURVEY_TEMPLATE_ID` overrides it. The schedule in `vercel.json`
 runs `/api/survey-cron` every 10 minutes (set `CRON_SECRET` so only Vercel can call it); opening the
 backend also sends anything due, so a plan without frequent crons still works.
