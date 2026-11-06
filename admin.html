@@ -165,7 +165,48 @@
   @media (max-width:640px) { .nb-gate-logo { top:32px; } .nb-gate-logo img { width:110px; } }
   @media (prefers-reduced-motion: reduce) { .nb-gate-logo img, .nb-gate-art, .nb-gate-ey, .nb-gate-form { animation:none; opacity:1; } .nb-gate-ey { opacity:.7; } .nb-gate-row.error { animation:none; } }
 
+
+  /* ── Hub look: same as the Drop Shop backend and the Marketing Hub (cream page, Taya titles, flat white cards). Styling only. ── */
+  @font-face { font-family: 'NB Taya'; src: url('/fonts/TAYAmaya.otf') format('opentype'); font-display: swap; }
+  :root { --bg: #F7F6F3; --cream: #F0EEE9; --soft: #F0EEE9; --ink: #1f2328; --body: #3a3d44; --muted: #7a7770; --faint: #a8a59e; --line: rgba(31,35,40,.08); --line-strong: rgba(31,35,40,.14); --terra: #e87142; --terra-dark: #c25a30; --green: #2a7a4b; --green-bg: #e4f5ea; }
+  html, body { background: var(--bg); }
+  body { font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif; color: var(--ink); }
+  .hdr { background: rgba(247,246,243,.86); border-bottom-color: var(--line); }
+  .hdr-in, .shell, .foot-in { max-width: 1280px; }
+  .hdr img { height: 20px; filter: brightness(0); }
+  .hdr-right { gap: 12px; }
+  .hdr-ey { display: none; }
+  .hdr .linkbtn { border: 1px solid var(--line-strong); border-radius: 999px; padding: 10px 16px; background: #fff; color: var(--ink); letter-spacing: .16em; white-space: nowrap; }
+  @media (max-width: 560px) { .hdr .linkbtn { padding: 9px 12px; letter-spacing: .12em; } .hdr .tabs a { height: 32px; padding: 0 12px; letter-spacing: .1em; } .hdr-right { gap: 8px; } }
+  .hdr .linkbtn:hover { border-color: var(--ink); color: var(--ink); }
+  .hdr .tabs { gap: 8px; }
+  .hdr .tabs a { display: inline-flex; align-items: center; height: 34px; padding: 0 16px; border: 1px solid var(--line-strong); background: #fff; border-radius: 999px; color: var(--body); font-size: 10.5px; letter-spacing: .14em; }
+  .hdr .tabs a:hover { border-color: var(--ink); color: var(--ink); }
+  .hdr .tabs a.on { background: var(--terra); border-color: var(--terra); color: #fff; }
+  .page-ey { font-family: 'NB Futura', 'Futura Neighborly', 'Futura', 'Jost', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: .28em; font-size: 11px; color: var(--terra-dark); }
+  .shell h1 { font-family: 'NB Taya', 'Futura', sans-serif; font-weight: 400; text-transform: none; letter-spacing: 0; font-size: clamp(28px, 3.4vw, 44px); line-height: 1.05; color: #000; margin: 8px 0 6px; }
+  .shell .btn, .shell button:not(.x):not(.linkbtn) { border: 1px solid var(--line-strong); background: #fff; color: var(--ink); }
+  .shell .btn:hover, .shell button:not(.x):not(.linkbtn):hover { border-color: var(--ink); background: #fff; color: var(--ink); }
+  .shell .btn.primary, .shell button.primary { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .shell .btn.primary:hover, .shell button.primary:hover { background: var(--terra); border-color: var(--terra); color: #fff; }
+  .shell .seg button:not(.x):not(.linkbtn) { border: 0; background: none; color: var(--muted); }
+  .shell .seg button:not(.x):not(.linkbtn):hover { color: var(--ink); }
+  .shell .seg button.on:not(.x):not(.linkbtn), .shell .seg button.on:not(.x):not(.linkbtn):hover { background: var(--terra); color: #fff; }
+  .seg { border-color: var(--line-strong); }
+  .search, input.search { border-color: var(--line-strong); }
+  .search:focus, input.search:focus { border-color: var(--terra); background: #fffaf6; }
+  .order, .inv, .resp, .panel, .made-row, .sday { box-shadow: none; border-radius: 16px; border-color: var(--line); }
+  .order.refunded { background: #FBFAF7; }
+  .new { background: #fff; border: 1px solid var(--line); border-radius: 16px; }
+  .new input, .new textarea { border-color: var(--line-strong); }
+  .tile { background: #fff; border: 1px solid var(--line); }
+  .empty { background: #fff; border-color: var(--line-strong); border-radius: 16px; }
+  .foot { background: transparent; border-top-color: var(--line); }
+  @media (max-width: 560px) { .inv { grid-template-columns: minmax(0, 1fr); } .inv .actions { flex-wrap: wrap; } }
+  @media (hover: none) { .shell .btn:hover { background: #fff; color: var(--ink); } .shell .btn.primary:hover { background: var(--ink); color: #fff; } }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap">
 </head>
 <body>
 
@@ -193,7 +234,7 @@
 </div></header>
 <main class="shell">
   <div class="toolbar">
-    <div><h1>Guest invites</h1><div class="muted">Every VIP link and drink ticket, live &middot; <span id="sync">loading</span></div></div>
+    <div><div class="page-ey">Exclusive Previews &middot; Backend</div><h1>Guest invites</h1><div class="muted">Every VIP link and drink ticket, live &middot; <span id="sync">loading</span></div></div>
     <div class="controls"><input class="search" id="q" type="search" placeholder="Search guest name" autocomplete="off"><button class="btn primary" id="newBtn" type="button">New invite</button></div>
   </div>
 
