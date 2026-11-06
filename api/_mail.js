@@ -114,22 +114,22 @@ function surveyHtml(x) {
   const site = SITE();
   const e = (k) => esc(x[k]);
   const font = (f) => `font-family:'${f}','Helvetica Neue',Helvetica,Arial,sans-serif;`;
-  // The whole card is the designed image (assets/email/thank-you-for-visiting.jpg); the
-  // image links to the survey, with a text link beneath for inboxes that hide images.
+  // The designed card (assets/email/thank-you-for-visiting.jpg) runs full bleed to the
+  // top and sides; the white panel beneath carries the button. Both link to the survey.
   return `<style>
 @font-face{font-family:"Futura Neighborly";src:url(${site}/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600}
 @font-face{font-family:"DM Sans";src:url(${site}/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400}
 </style>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F1E9;">
-<tr><td align="center" style="padding:28px 16px 36px;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
-  <tr><td style="border-radius:22px;overflow:hidden;">
-    <a href="${e('survey_link')}" style="display:block;text-decoration:none;"><img src="${site}/assets/email/thank-you-for-visiting.jpg" width="600" alt="Thank you for visiting. We loved having you at the Neighbors Only preview. Two minutes, neighbor to neighbor: tell us how it was." style="display:block;width:100%;max-width:600px;height:auto;border:0;border-radius:22px;"></a>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;">
+<tr><td align="center" style="padding:0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#FFFFFF;">
+  <tr><td style="padding:0;line-height:0;">
+    <a href="${e('survey_link')}" style="display:block;text-decoration:none;line-height:0;"><img src="${site}/assets/email/thank-you-for-visiting.jpg" width="600" alt="Thank you for visiting. We loved having you at the Neighbors Only preview. Two minutes, neighbor to neighbor." style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a>
   </td></tr>
-  <tr><td align="center" style="padding:22px 8px 0;">
-    <a href="${e('survey_link')}" style="${font('Futura Neighborly')}font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#1E2329;text-decoration:underline;text-underline-offset:3px;">Tell us how it was</a>
+  <tr><td align="center" style="padding:34px 28px 14px;">
+    <a href="${e('survey_link')}" style="display:inline-block;background:#E87242;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:17px 40px;${font('Futura Neighborly')}font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Tell us how it was</a>
   </td></tr>
-  <tr><td align="center" style="padding:14px 8px 0;${font('DM Sans')}font-size:11px;line-height:1.55;color:#A8ADB5;">One email, no follow-ups.</td></tr>
+  <tr><td align="center" style="padding:0 28px 30px;${font('DM Sans')}font-size:12px;line-height:1.55;color:#A8ADB5;">One email, no follow-ups.</td></tr>
 </table>
 </td></tr></table>`;
 }
