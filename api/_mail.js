@@ -47,7 +47,7 @@ function designHtml(x) {
   <tr><td align="center" style="padding:4px 28px 0;${font('DM Sans')}font-size:16px;line-height:1.4;color:#1E2329;">${e('visit_window')} &middot; ${e('location')}</td></tr>
   <tr><td align="center" style="padding:6px 28px 0;${font('DM Sans')}font-size:13px;line-height:1.5;color:#6B7280;">${e('intro')}</td></tr>
   <tr><td align="center" style="padding:26px 28px ${x.wallet_link ? 12 : 26}px;">
-    <a href="${e('ticket_link')}" style="display:inline-block;background:#E87242;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:17px 40px;${font('Futura Neighborly')}font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Open my ticket</a>
+    <a href="${e('ticket_link')}" style="display:inline-block;background:#E87142;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:17px 40px;${font('Futura Neighborly')}font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Open my ticket</a>
   </td></tr>${x.wallet_link ? `
   <tr><td align="center" style="padding:0 28px 26px;">
     <a href="${e('wallet_link')}" style="display:inline-block;background:#FFFFFF;color:#1E2329;text-decoration:none;border:1px solid #1E2329;border-radius:999px;padding:13px 26px;${font('Futura Neighborly')}font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Add to Apple Wallet</a>
@@ -116,10 +116,9 @@ function surveyHtml(x) {
   <tr><td style="padding:0;line-height:0;">
     <a href="${e('survey_link')}" style="display:block;text-decoration:none;line-height:0;"><img src="${site}/assets/email/thank-you-for-visiting.jpg" width="600" alt="Thank you for visiting. We loved having you at the Neighbors Only preview. Two minutes, neighbor to neighbor." style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a>
   </td></tr>
-  <tr><td align="center" style="padding:34px 28px 14px;">
-    <a href="${e('survey_link')}" style="display:inline-block;background:#E87242;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:17px 40px;${font('Futura Neighborly')}font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Tell us how it was</a>
+  <tr><td align="center" style="padding:34px 28px 34px;">
+    <a href="${e('survey_link')}" style="display:inline-block;background:#E87142;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:17px 40px;${font('Futura Neighborly')}font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Tell us how it was</a>
   </td></tr>
-  <tr><td align="center" style="padding:0 28px 30px;${font('DM Sans')}font-size:12px;line-height:1.55;color:#A8ADB5;">One email, no follow-ups.</td></tr>
 </table>
 </td></tr></table>`;
 }

@@ -17,7 +17,7 @@
   @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
   :root{
     --ink:#1E2329; --text:#3A4049; --muted:#6B7280; --faint:#A8ADB5;
-    --orange:#E87242; --orange-deep:#C25A30; --blush:#FDF3EC; --lav:#CBC9D6;
+    --orange:#E87142; --orange-deep:#C25A30; --blush:#FDF3EC; --lav:#CBC9D6;
     --page:#FFFFFF; --bar:#F5F1E9; --field:#FAF6F0; --line:#E6E2DA; --rule:#F1EDE5; --err:#C0473A;
     --futura:"Futura Neighborly","Futura PT",sans-serif; --taya:"TAYA Maya","Oswald",sans-serif; --body:"Telegraf","DM Sans","Neue Haas Grotesk","Helvetica Neue",Arial,sans-serif;
   }
@@ -193,7 +193,7 @@
       return sec;
     });
     const done = document.createElement('section'); done.className = 'step'; done.dataset.title = 'Thank You'; done.id = 'doneStep';
-    const bits = Array.from({ length: 18 }, (_, i) => { const ang = (i / 18) * Math.PI * 2, d = 70 + (i % 3) * 26; return `<i style="--x:${Math.round(Math.cos(ang) * d)}px;--y:${Math.round(Math.sin(ang) * d - 20)}px;--r:${(i * 47) % 360}deg;background:${['#E87242', '#CBC9D6', '#1E2329', '#F5C9B3'][i % 4]};animation-delay:${0.25 + (i % 5) * 0.05}s"></i>`; }).join('');
+    const bits = Array.from({ length: 18 }, (_, i) => { const ang = (i / 18) * Math.PI * 2, d = 70 + (i % 3) * 26; return `<i style="--x:${Math.round(Math.cos(ang) * d)}px;--y:${Math.round(Math.sin(ang) * d - 20)}px;--r:${(i * 47) % 360}deg;background:${['#E87142', '#CBC9D6', '#1E2329', '#F5C9B3'][i % 4]};animation-delay:${0.25 + (i % 5) * 0.05}s"></i>`; }).join('');
     done.innerHTML = `<div class="done"><div class="confetti" aria-hidden="true">${bits}</div><img class="houses" src="/assets/neighborly-houses-mark.png" alt=""><div class="g1">Thank you, ${first}</div><div class="g2">cheers, neighbor.</div><p>Your notes go straight to our bar team as we finalize the menu. We look forward to serving the entire neighborhood on 11/11.</p><div class="home"><span class="ey" id="homeLine">Taking you home in a moment</span><a class="pill primary" href="https://beneighborly.com" id="homeBtn">Back to Neighborly</a><button type="button" class="link" id="again">Change an answer</button></div></div>`;
     steps.push(done);
     stepsEl.innerHTML = ''; steps.forEach((s) => stepsEl.append(s));
