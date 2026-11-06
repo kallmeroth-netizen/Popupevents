@@ -18,120 +18,126 @@
   @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
   :root{
     --ink:#1E2329; --text:#3A4049; --muted:#6B7280; --faint:#A8ADB5;
-    --orange:#E87242; --orange-deep:#C25A30; --lav:#CBC9D6;
-    --paper:#F5F1E9; --card:#FFFFFF; --soft:#FBF8F2; --line:#E6E0D4; --err:#B4471F;
-    --f-head:"TAYA Maya","Oswald",sans-serif; --f-sub:"Futura Neighborly","Futura PT",sans-serif; --f-accent:"Tuppence",Georgia,serif; --f-body:"Telegraf","DM Sans","Neue Haas Grotesk","Helvetica Neue",Arial,sans-serif;
+    --orange:#E87242; --orange-deep:#C25A30; --blush:#FDF3EC; --lav:#CBC9D6;
+    --page:#FFFFFF; --bar:#F5F1E9; --panel:#F5F2EB; --field:#FAF6F0; --line:#E6E2DA; --err:#C0473A;
+    --futura:"Futura Neighborly","Futura PT",sans-serif; --taya:"TAYA Maya","Oswald",sans-serif; --tup:"Tuppence",Georgia,serif; --body:"Telegraf","DM Sans","Neue Haas Grotesk","Helvetica Neue",Arial,sans-serif;
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
-  html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);-webkit-font-smoothing:antialiased}
-  body{padding:calc(28px + env(safe-area-inset-top)) 18px calc(40px + env(safe-area-inset-bottom))}
-  .wrap{max-width:480px;margin:0 auto}
-  header{text-align:center;margin-bottom:22px}
-  .mark{width:58px;height:auto;display:block;margin:0 auto 14px}
-  .tagline{font-family:var(--f-accent);font-weight:300;font-size:30px;line-height:1.1;margin:0 0 12px;letter-spacing:-.01em}
-  .pill{display:inline-block;background:var(--orange);color:#fff;font-family:var(--f-sub);font-weight:600;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:7px 12px 6px;border-radius:999px}
-  .card{background:var(--card);border-radius:22px;padding:26px 22px;box-shadow:0 1px 0 rgba(31,35,40,.04),0 10px 30px -18px rgba(31,35,40,.25)}
-  .ticket-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:16px;margin-bottom:18px;border-bottom:1.5px dashed var(--line)}
-  h1{font-family:var(--f-head);font-weight:400;font-size:34px;letter-spacing:.04em;text-transform:uppercase;margin:0;line-height:1}
-  .step-count{font-family:var(--f-sub);font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
-  .progress{height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin:-6px 0 22px}
+  body{margin:0;background:var(--page);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;overflow-x:clip}
+  /* site chrome, same as the ticket */
+  .hdr{position:sticky;top:0;z-index:20;background:rgba(245,241,233,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .hdr-in{max-width:1180px;margin:0 auto;padding:clamp(10px,2.4vw,14px) clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:center}
+  .hdr img{height:clamp(22px,5vw,30px);width:auto;display:block}
+  main{flex:1;width:100%;max-width:460px;margin:0 auto;padding:0 20px 48px}
+  .ftr{border-top:1px solid var(--line);background:var(--bar)}
+  .ftr-in{max-width:1180px;margin:0 auto;padding:16px 24px 18px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+  .ftr img{height:22px;width:auto;display:block}
+  .ftr span{font-size:11px;line-height:1.5;color:var(--faint)}
+
+  /* greeting, like the ticket */
+  .greet{padding:42px 0 26px;display:flex;flex-direction:column;align-items:center;text-align:center}
+  .greet .g1{font-family:var(--taya);font-size:clamp(36px,11vw,48px);line-height:1;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
+  .greet .g2{font-family:var(--tup);font-weight:400;font-size:clamp(26px,8vw,32px);line-height:1.1;color:var(--ink);margin-top:10px}
+  .greet .fine{margin-top:14px}
+  .fine{font-family:var(--futura);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+  /* the card: one page of the survey at a time */
+  .card{background:var(--panel);border-radius:24px;padding:20px 20px 24px}
+  .ticket-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
+  h1{font-family:var(--taya);font-weight:400;font-size:28px;letter-spacing:.02em;text-transform:uppercase;margin:0;line-height:1;color:var(--ink)}
+  .step-count{font-family:var(--futura);font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  .progress{height:3px;background:var(--line);border-radius:999px;overflow:hidden;margin:0 0 20px}
   .progress span{display:block;height:100%;background:var(--orange);width:25%;transition:width .35s ease}
-  .intro p{margin:0 0 10px;font-size:15.5px;line-height:1.55}
-  .intro p:first-child{font-weight:600}
-  .q{margin:22px 0 0}
+  .intro{font-size:15px;line-height:1.55;color:var(--text);margin-bottom:18px}
+  .intro p{margin:0 0 6px}
+  .intro p:first-child{font-family:var(--futura);font-weight:600;font-size:13px;text-transform:uppercase;color:var(--ink)}
+  .q{margin:20px 0 0}
   .q:first-child{margin-top:0}
-  .q-label{font-weight:600;font-size:15px;line-height:1.4;margin:0 0 4px}
-  .q-hint{font-size:12.5px;color:var(--muted);margin:0 0 12px}
+  .q-label{font-family:var(--futura);font-weight:600;font-size:13px;line-height:1.35;text-transform:uppercase;color:var(--ink);margin:0 0 4px}
+  .q-hint{font-size:12.5px;color:var(--muted);margin:0 0 10px;line-height:1.45}
   .req{color:var(--orange)}
-  .group-title{font-family:var(--f-sub);font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
-  .choice{position:relative;display:flex;align-items:center;gap:14px;text-align:left;padding:13px 14px;border:1.5px solid var(--line);border-radius:14px;margin-bottom:8px;cursor:pointer;transition:border-color .15s,background .15s;font-family:var(--f-head);font-weight:400;font-size:19px;letter-spacing:.04em;text-transform:uppercase;background:#fff}
-  .choice-name{flex:1;line-height:1.15;padding-top:2px}
+  .group-title{font-family:var(--futura);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:14px 0 8px}
+  /* cocktail chips, the day chips from the planner */
+  #menu{display:flex;flex-direction:column}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .choice{position:relative;appearance:none;cursor:pointer;background:#fff;color:var(--text);border:1px solid var(--line);border-radius:999px;padding:11px 16px;font-family:var(--futura);font-weight:600;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;line-height:1;white-space:nowrap;transition:border-color .2s,box-shadow .2s,color .2s,background .2s;display:inline-flex;align-items:center;gap:8px}
   .choice input{position:absolute;opacity:0;pointer-events:none}
-  .box{width:22px;height:22px;border-radius:7px;border:1.5px solid #C9C2B4;flex:none;display:grid;place-items:center;transition:all .15s}
-  .box svg{opacity:0;width:13px;height:13px}
-  .choice.on{border-color:var(--ink);background:var(--soft)}
-  .choice.on .box{background:var(--ink);border-color:var(--ink)}
-  .choice.on .box svg{opacity:1}
-  .drink{border:1.5px solid var(--line);border-radius:16px;padding:16px 14px;margin-bottom:12px}
-  .drink-name{font-family:var(--f-head);font-weight:400;font-size:22px;letter-spacing:.04em;text-transform:uppercase;margin:0 0 4px}
-  .sub-label{font-size:13px;font-weight:600;margin:14px 0 8px}
+  .box{display:none}
+  .choice.on{color:#fff;background:var(--ink);border-color:var(--ink)}
+  /* rating scales, the hour windows from the planner */
+  .drink{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 14px 4px;margin-bottom:10px}
+  .drink-name{font-family:var(--futura);font-weight:600;font-size:14px;text-transform:uppercase;margin:0 0 2px;color:var(--ink)}
+  .sub-label{font-size:13px;font-weight:500;color:var(--text);margin:12px 0 8px}
   .scale{display:grid;gap:6px}
   .scale.five{grid-template-columns:repeat(5,1fr)}
   .scale.three{grid-template-columns:repeat(3,1fr)}
   .scale.two{grid-template-columns:1fr 1fr}
   .seg{position:relative}
   .seg input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
-  .seg span{display:flex;align-items:center;justify-content:center;height:44px;border-radius:12px;border:1.5px solid var(--line);font-weight:600;font-size:15px;transition:all .15s;background:#fff}
+  .seg span{display:flex;align-items:center;justify-content:center;height:42px;border-radius:12px;border:1px solid var(--line);font-family:var(--body);font-weight:500;font-size:14px;transition:background .2s,border-color .2s,color .2s;background:#fff;color:var(--ink)}
   .seg input:checked + span{background:var(--ink);color:#fff;border-color:var(--ink)}
   .seg input:focus-visible + span{outline:2px solid var(--orange);outline-offset:2px}
-  .ends{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:6px}
-  .matrix-row{padding:14px 0;border-top:1px solid var(--line)}
-  .matrix-row:first-of-type{border-top:0;padding-top:4px}
+  .ends{display:flex;justify-content:space-between;font-size:11px;color:var(--faint);margin-top:6px}
+  .matrix-row{padding:12px 0 2px}
   .matrix-row .sub-label{margin-top:0}
-  textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--soft);border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;outline:none;transition:border-color .15s;min-height:96px;resize:vertical;line-height:1.45}
-  textarea:focus{border-color:var(--ink)}
-  .err{display:none;color:var(--err);font-size:13px;font-weight:600;margin-top:10px}
+  textarea{width:100%;font:400 15px/1.5 var(--body);color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:14px;padding:12px 14px;outline:none;transition:border-color .15s;min-height:88px;resize:vertical}
+  textarea:focus{border-color:var(--orange);background:#fff}
+  .err{display:none;color:var(--err);font-size:13px;margin-top:10px;line-height:1.4}
   .err.show{display:block}
-  .actions{display:flex;gap:10px;margin-top:26px}
-  button{font-family:var(--f-sub);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;border-radius:999px;height:52px;border:0;cursor:pointer;transition:transform .1s,opacity .15s}
-  button:active{transform:scale(.98)}
-  button:disabled{opacity:.6;cursor:default}
-  .primary{flex:1;background:var(--orange);color:#fff}
-  .primary:hover{background:var(--orange-deep)}
-  .secondary{background:transparent;color:var(--ink);border:1.5px solid var(--ink);padding:0 22px}
+  /* pills, the ticket's */
+  .actions{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:24px}
+  .pill{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:15px 24px;min-width:220px;font-family:var(--futura);font-weight:600;font-size:14px;letter-spacing:.12em;text-transform:uppercase;transition:background .2s,opacity .2s,transform .15s,box-shadow .2s,border-color .2s}
+  .pill:active{transform:scale(.97)}
+  .pill.primary{background:var(--orange);color:#fff;box-shadow:0 8px 20px rgba(232,114,66,.28)}
+  .pill.primary:hover{background:var(--orange-deep)}
+  .pill:disabled{opacity:.45;box-shadow:none;cursor:not-allowed}
+  a.pill{display:inline-block;text-decoration:none;text-align:center}
+  .link{background:none;border:0;font:500 14px var(--body);color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:4px}
   .step{display:none}
   .step.active{display:block;animation:fade .3s ease}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  .done{text-align:center;padding:12px 0 6px}
-  .done .tagline{font-size:34px;margin-top:6px}
-  .done p{font-size:15.5px;line-height:1.55;margin:0 auto;max-width:330px}
-  .done .link{display:inline-block;margin-top:18px;background:none;border:0;height:auto;font:500 14px var(--f-body);color:var(--muted);text-decoration:underline;text-underline-offset:2px;letter-spacing:0;text-transform:none}
   .wait{display:flex;gap:7px;justify-content:center;padding:40px 0}
   .wait i{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:blink 1s infinite}
   .wait i:nth-child(2){animation-delay:.2s}.wait i:nth-child(3){animation-delay:.4s}
   @keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
-  footer{text-align:center;margin-top:28px}
-  .wordmark{display:block;width:150px;height:auto;margin:0 auto}
-  .foot-line{font-family:var(--f-sub);font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:10px 0 0}
-  .terms{font-size:11.5px;color:var(--muted);line-height:1.5;margin:12px auto 0;max-width:340px}
-  @media (prefers-reduced-motion:reduce){.step.active{animation:none}}
+
+  /* thank you: the houses land, the line writes itself, a little confetti, then home */
+  .done{text-align:center;padding:18px 0 6px;position:relative}
+  .done .houses{width:76px;height:auto;display:block;margin:0 auto 16px;animation:land .7s cubic-bezier(.22,1,.36,1) both}
+  @keyframes land{from{opacity:0;transform:translateY(-26px) scale(.8)}60%{transform:translateY(4px) scale(1.02)}to{opacity:1;transform:none}}
+  .done .g1{font-family:var(--taya);font-size:clamp(34px,10vw,44px);line-height:1;letter-spacing:.02em;text-transform:uppercase;color:var(--ink);animation:fade .5s ease .35s both}
+  .done .g2{font-family:var(--tup);font-weight:400;font-size:clamp(24px,7.5vw,30px);line-height:1.1;color:var(--ink);margin-top:8px;animation:fade .5s ease .6s both}
+  .done p{font-size:15px;line-height:1.55;color:var(--text);margin:14px auto 0;max-width:320px;animation:fade .5s ease .85s both}
+  .done .home{margin-top:18px;animation:fade .5s ease 1.1s both}
+  .done .home .fine{display:block;margin-bottom:10px;color:var(--faint)}
+  .confetti{position:absolute;inset:0;pointer-events:none;overflow:visible}
+  .confetti i{position:absolute;left:50%;top:38px;width:7px;height:7px;border-radius:2px;opacity:0;animation:pop 1.1s cubic-bezier(.2,.7,.3,1) .25s both}
+  @keyframes pop{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}}
+  @media (prefers-reduced-motion:reduce){.step.active,.done .houses,.done .g1,.done .g2,.done p,.done .home{animation:none}.confetti{display:none}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <img class="mark" src="/assets/neighborly-houses-mark.png" alt="Neighborly">
-    <p class="tagline">your bar tasting notes.</p>
-    <span class="pill">Neighbors Only Preview</span>
-  </header>
-
+<header class="hdr"><div class="hdr-in"><img src="/assets/neighborly-houses-mark.png" alt="Neighborly"></div></header>
+<main>
+  <div class="greet" id="greet"><span class="g1" id="g1">Hi, neighbor</span><span class="g2">your bar tasting notes.</span><span class="fine">Neighbors Only Preview</span></div>
   <form class="card" id="survey" novalidate>
-    <div class="ticket-head">
-      <h1 id="stepTitle">Your Bar Order</h1>
-      <span class="step-count" id="stepCount">1 of 4</span>
-    </div>
+    <div class="ticket-head"><h1 id="stepTitle">Your Bar Order</h1><span class="step-count" id="stepCount">1 of 4</span></div>
     <div class="progress"><span id="bar"></span></div>
     <div id="steps"><div class="wait" aria-label="Loading"><i></i><i></i><i></i></div></div>
     <div class="actions" id="actions" style="display:none">
-      <button type="button" class="secondary" id="back" style="display:none">Back</button>
-      <button type="button" class="primary" id="next">Next</button>
+      <button type="button" class="pill primary" id="next">Next</button>
+      <button type="button" class="link" id="back" style="display:none">Back</button>
     </div>
   </form>
-
-  <footer>
-    <img class="wordmark" src="/assets/neighborly-wordmark-dark.png" alt="Neighborly">
-    <p class="foot-line">Neighbors Only Preview · Brentwood, CA</p>
-    <p class="terms">Your answers go to the Neighborly team only, with your name, so we can thank you properly.</p>
-  </footer>
-</div>
+</main>
+<footer class="ftr"><div class="ftr-in"><img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly"><span>Neighbors Only Preview · Brentwood, CA</span><span>Your answers go to the Neighborly team only, with your name, so we can thank you properly.</span></div></footer>
 
 <script>
 (() => {
   const id = (location.pathname.match(/\/f\/([a-z0-9]+)/i) || [])[1] || new URLSearchParams(location.search).get('id') || '';
   const esc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_');
-  const check = '<svg viewBox="0 0 14 14"><path d="M2.5 7.5l3 3 6-7" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const $ = (s) => document.querySelector(s);
   const form = $('#survey'), stepsEl = $('#steps');
   let info = null, cocktails = [], steps = [], cur = 0;
@@ -148,12 +154,12 @@
     steps = info.steps.map((st, si) => {
       const sec = document.createElement('section'); sec.className = 'step'; sec.dataset.title = st.title;
       let html = '';
-      if (si === 0) html += `<div class="intro"><p>Hi, ${first}!</p><p>Thank you for joining us for our bar preview! Your feedback is everything. Please consider taking this two-minute survey.</p></div>`;
+      if (si === 0) html += `<div class="intro"><p>Thank you for joining us</p><p>Your feedback is everything. Two minutes, neighbor to neighbor, and the menu gets better before anyone else sees it.</p></div>`;
       st.questions.forEach((q) => {
         if (q.kind === 'cocktails') {
           html += `<div class="q"><p class="q-label">${esc(q.q)}${req(q)}</p><p class="q-hint">${esc(q.hint)}</p><div id="menu">`;
           for (const [group, items] of Object.entries(info.menu)) {
-            html += `<p class="group-title">${esc(group)}</p>` + items.map((n) => `<label class="choice ${selected.has(n) ? 'on' : ''}"><input type="checkbox" value="${esc(n)}" data-drink="${esc(n)}"${selected.has(n) ? ' checked' : ''}><span class="box">${check}</span><span class="choice-name">${esc(n)}</span></label>`).join('');
+            html += `<p class="group-title">${esc(group)}</p><div class="chips">` + items.map((n) => `<label class="choice ${selected.has(n) ? 'on' : ''}"><input type="checkbox" value="${esc(n)}" data-drink="${esc(n)}"${selected.has(n) ? ' checked' : ''}><span class="choice-name">${esc(n)}</span></label>`).join('') + '</div>';
           }
           html += `</div><p class="err" data-err="${q.key}">${esc(q.error)}</p></div>`;
         } else if (q.kind === 'drinkRatings') {
@@ -170,7 +176,8 @@
       return sec;
     });
     const done = document.createElement('section'); done.className = 'step'; done.dataset.title = 'Thank You'; done.id = 'doneStep';
-    done.innerHTML = `<div class="done"><img class="mark" src="/assets/neighborly-houses-mark.png" alt=""><p class="tagline">cheers, neighbor.</p><p>Thanks for sharing. Your feedback goes straight to our bar team as we finalize the menu. We look forward to serving the entire neighborhood on 11/11.</p><button type="button" class="link" id="again">Change an answer</button></div>`;
+    const bits = Array.from({ length: 18 }, (_, i) => { const ang = (i / 18) * Math.PI * 2, d = 70 + (i % 3) * 26; return `<i style="--x:${Math.round(Math.cos(ang) * d)}px;--y:${Math.round(Math.sin(ang) * d - 20)}px;--r:${(i * 47) % 360}deg;background:${['#E87242', '#CBC9D6', '#1E2329', '#F5C9B3'][i % 4]};animation-delay:${0.25 + (i % 5) * 0.05}s"></i>`; }).join('');
+    done.innerHTML = `<div class="done"><div class="confetti" aria-hidden="true">${bits}</div><img class="houses" src="/assets/neighborly-houses-mark.png" alt=""><div class="g1">Thank you, ${first}</div><div class="g2">cheers, neighbor.</div><p>Your notes go straight to our bar team as we finalize the menu. We look forward to serving the entire neighborhood on 11/11.</p><div class="home"><span class="fine" id="homeLine">Taking you home in a moment</span><a class="pill primary" href="https://beneighborly.com" id="homeBtn">Back to Neighborly</a><br><button type="button" class="link" id="again">Change an answer</button></div></div>`;
     steps.push(done);
     stepsEl.innerHTML = ''; steps.forEach((s) => stepsEl.append(s));
     $('#actions').style.display = '';
@@ -207,6 +214,7 @@
   form.addEventListener('submit', (e) => e.preventDefault());
 
   const total = 4;
+  let homeTimer = null;
   function show(i) {
     steps[cur].classList.remove('active');
     cur = i;
@@ -214,6 +222,8 @@
     $('#stepTitle').textContent = steps[cur].dataset.title;
     const done = cur === total;
     $('#stepCount').textContent = done ? 'Complete' : `${cur + 1} of ${total}`;
+    clearTimeout(homeTimer);
+    if (done) homeTimer = setTimeout(() => { location.href = 'https://beneighborly.com'; }, 6000);
     $('#bar').style.width = `${Math.min(cur + 1, total) / total * 100}%`;
     $('#back').style.display = cur > 0 && !done ? '' : 'none';
     $('#next').textContent = cur === total - 1 ? (info.answered ? 'Update' : 'Submit') : 'Next';
@@ -252,7 +262,7 @@
     show(cur + 1);
   });
   $('#back').addEventListener('click', () => show(cur - 1));
-  stepsEl.addEventListener('click', (e) => { if (e.target.id === 'again') show(0); });
+  stepsEl.addEventListener('click', (e) => { if (e.target.id === 'again') { clearTimeout(homeTimer); show(0); } });
 
   async function boot() {
     if (!id) return fail('This link is missing its ticket. Open the one from your email.');
@@ -262,6 +272,7 @@
       if (!r.ok) throw new Error();
       info = await r.json();
       cocktails = Object.values(info.menu).flat();
+      $('#g1').textContent = `Hi, ${info.first}`;
       if (info.answers) {
         Object.assign(a, info.answers);
         a.drinks = { ...(info.answers.drinks || {}) }; a.menu = { ...(info.answers.menu || {}) }; a.service = { ...(info.answers.service || {}) };
