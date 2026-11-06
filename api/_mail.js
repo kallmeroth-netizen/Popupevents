@@ -155,7 +155,7 @@ function survey(t) {
   const link = `${SITE()}/f/${t.id}`;
   const day = v ? v.longLabel : (t.redeemedAt ? new Date(t.redeemedAt).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Los_Angeles' }) : 'Your visit');
   const headline = 'We want to hear, neighbor to neighbor.';
-  const intro = `${first}, you were one of the first through the door. Before the bar opens to anyone else, tell us what you really thought.`;
+  const intro = `${first}, thank you for visiting. You were one of the first through the door, and before the bar opens to anyone else we want to know what you really thought.`;
   const subject = `How was it, ${first}?`;
   const text = [`Hey ${first},`, '', intro, '', `Tell us how it was: ${link}`, '', 'Neighbors only. We want all of your thoughts, the good and the not quite, so we can be nothing less than the best. Two minutes.', '', 'Thank you,', 'Neighborly'].join('\n');
   const html = surveyHtml({ headline, intro, visit_day: day, location: `Neighborly ${LOCATION}`, survey_link: link });
