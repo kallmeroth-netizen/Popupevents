@@ -140,7 +140,7 @@ function surveyHtml(x) {
       <tr><td align="center" style="padding-bottom:26px;">
         <a href="${e('survey_link')}" style="display:inline-block;background:#1E2329;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:16px 34px;${font('Futura Neighborly')}font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;">Tell us how it was</a>
       </td></tr>
-      <tr><td style="${font('DM Sans')}font-size:15px;line-height:1.6;color:#3A4049;padding-bottom:12px;">Two minutes. A few taps, a couple of sliders, and room to say what you'd change. What you tell us shapes the menu before anyone else sees it.</td></tr>
+      <tr><td style="${font('DM Sans')}font-size:15px;line-height:1.6;color:#3A4049;padding-bottom:12px;">Two minutes. Your bar tasting notes, drink by drink, and room to say what you'd change. What you tell us shapes the menu before anyone else sees it.</td></tr>
       <tr><td style="${font('DM Sans')}font-size:15px;line-height:1.6;color:#3A4049;">Your answers go to the Neighborly team only, with your name, so we can thank you properly.</td></tr>
     </table>
   </td></tr>
@@ -158,12 +158,12 @@ function survey(t) {
   const headline = 'We want to hear, neighbor to neighbor.';
   const intro = `${first}, you were one of the first through the door. Before the bar opens to anyone else, tell us what you really thought.`;
   const subject = `How was it, ${first}?`;
-  const text = [`Hey ${first},`, '', intro, '', `Tell us how it was: ${link}`, '', 'Two minutes. A few taps, a couple of sliders, and room to say what you would change.', '', 'Thank you,', 'Neighborly'].join('\n');
+  const text = [`Hey ${first},`, '', intro, '', `Tell us how it was: ${link}`, '', 'Two minutes. Your bar tasting notes, drink by drink, and room to say what you would change.', '', 'Thank you,', 'Neighborly'].join('\n');
   const html = surveyHtml({ headline, intro, visit_day: day, location: `Neighborly ${LOCATION}`, survey_link: link });
   const params = {
     to_email: t.email || '', to_name: t.name || 'Neighbor', first_name: first, guest_name: t.name || '',
     subject, headline, intro, visit_day: day, visit_date: v ? v.dateLabel : '', visit_window: v ? v.label : '', location: `Neighborly ${LOCATION}`,
-    survey_link: link, ticket_link: link, wallet_link: '', plus_one: t.plusOne || '', plus_one_line: 'Two minutes. A few taps, a couple of sliders, and room to say what you would change.',
+    survey_link: link, ticket_link: link, wallet_link: '', plus_one: t.plusOne || '', plus_one_line: 'Two minutes. Your bar tasting notes, drink by drink, and room to say what you would change.',
     moved: 'no', message: text, html_body: html,
   };
   return { subject, text, html, params, template: SURVEY_TEMPLATE() };

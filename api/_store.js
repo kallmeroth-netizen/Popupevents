@@ -8,8 +8,10 @@
 //   tickets/<id>/plus~<b64url name>~<setMs>         (newest wins; empty name removes)
 //   tickets/<id>/email~<b64url address>~<setMs>     (newest wins; for the confirmation email)
 //   tickets/<id>/survey~<sentMs>                     (the feedback email went out)
-//   tickets/<id>/feedback~<b64url json>~<setMs>      (the guest's answers; newest wins)
-const { put, list, del } = require('@vercel/blob');
+//   tickets/<id>/feedback~<setMs>                    (the guest answered; newest wins)
+// The answers themselves are a JSON file, one per submission, never overwritten
+// (so no stale cache): feedback/<id>/<setMs>.json
+const { put, list, del, get } = require('@vercel/blob');
 
 const ID_RE = /^[a-z0-9]{10,32}$/;
 
@@ -62,8 +64,8 @@ function parseFolder(id, blobs) {
       const at = Number(parts[1]) || 0;
       if (at && (!t.surveySentAt || at < t.surveySentAt)) t.surveySentAt = at;
     } else if (parts[0] === 'feedback') {
-      const at = Number(parts[2]) || 0;
-      if (at >= t.feedbackAt) { t.feedbackAt = at; try { t.feedback = JSON.parse(unb64u(parts[1] || '')) || null; } catch { t.feedback = null; } }
+      const at = Number(parts[1]) || 0;
+      if (at >= t.feedbackAt) t.feedbackAt = at;
     } else if (parts[0] === 'redeemed') {
       const at = Number(parts[2]) || 0;
       if (!t.redeemed || at < (t.redeemedAt || Infinity)) {
@@ -132,13 +134,30 @@ async function setPlusOne(id, name) {
   return getTicket(id);
 }
 
-// Feedback: stamps the survey as sent, and stores the guest's answers (compact JSON in the pathname).
+// Feedback: stamps the survey as sent; stores the guest's answers as a file and marks the ticket.
 async function markSurveySent(id) {
   await marker(`tickets/${id}/survey~${Date.now()}`);
 }
 async function setFeedback(id, answers) {
-  await marker(`tickets/${id}/feedback~${b64u(JSON.stringify(answers))}~${Date.now()}`);
+  const at = Date.now();
+  await put(`feedback/${id}/${at}.json`, JSON.stringify(answers), { access: 'private', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' });
+  await marker(`tickets/${id}/feedback~${at}`);
   return getTicket(id);
+}
+// The newest answers for a ticket (null if none). Fills t.feedback.
+async function loadFeedback(t) {
+  if (!t || !t.feedbackAt) return t;
+  try {
+    const r = await get(`feedback/${t.id}/${t.feedbackAt}.json`, { access: 'private', useCache: false });
+    if (!r || !r.stream) return t;
+    t.feedback = JSON.parse(await new Response(r.stream).text());
+  } catch { t.feedback = null; }
+  return t;
+}
+async function loadAllFeedback(tickets) {
+  const need = tickets.filter((t) => t.feedbackAt);
+  for (let i = 0; i < need.length; i += 8) await Promise.all(need.slice(i, i + 8).map(loadFeedback));
+  return tickets;
 }
 
 async function redeemTicket(id, qty) {
@@ -155,11 +174,11 @@ async function deleteBlobs(blobs) {
 
 async function deleteTicket(id) {
   if (!ID_RE.test(id)) return 0;
-  return deleteBlobs(await listAll(`tickets/${id}/`));
+  return deleteBlobs([...(await listAll(`tickets/${id}/`)), ...(await listAll(`feedback/${id}/`))]);
 }
 
 async function deleteAllTickets() {
-  return deleteBlobs(await listAll('tickets/'));
+  return deleteBlobs([...(await listAll('tickets/')), ...(await listAll('feedback/'))]);
 }
 
 async function allTickets() {
@@ -198,4 +217,4 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(x, y);
 }
 
-module.exports = { ID_RE, getTicket, createTicket, createTickets, markOnce, setVisit, clearVisit, setPlusOne, setEmail, markSurveySent, setFeedback, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };
+module.exports = { ID_RE, getTicket, createTicket, createTickets, markOnce, setVisit, clearVisit, setPlusOne, setEmail, markSurveySent, setFeedback, loadFeedback, loadAllFeedback, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };

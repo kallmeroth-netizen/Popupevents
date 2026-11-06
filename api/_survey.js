@@ -1,68 +1,73 @@
-// The post-visit feedback survey. Questions live here so the page, the API and
-// the backend agree. Answers are stored compact (short keys, capped text) in the
-// ticket's folder, see _store.js. Env:
+// The post-visit survey ("your bar tasting notes"). Questions live here so the
+// page, the API and the backend agree. Answers are stored as a JSON file per
+// response (see _store.js setFeedback). Env:
 //   SURVEY_DELAY_MIN  minutes after the bartender redeems before the email goes (default 120)
-const COCKTAILS = [
-  'Frozen Espresso Martini', 'The Opalite', 'Signature Skinny Margarita', 'Cafe 43', 'The Greenhouse', 'Bad Bunny',
-  'Espresso Martini', 'Riviera Spritz', 'Neighborhood Margarita', 'Sunset Sangria', 'Hot Girl Pickle Margarita',
-];
-const RETURN = ['Already planning it', 'Probably', 'Not sure yet'];
+const MENU = {
+  Frozen: ['Frozen Espresso Martini', 'The Opalite'],
+  Signatures: ['Signature Skinny Margarita', 'Cafe 43', 'The Greenhouse', 'Bad Bunny', 'Espresso Martini'],
+  'The Classics': ['Riviera Spritz', 'Neighborhood Margarita', 'Sunset Sangria', 'Hot Girl Pickle Margarita'],
+};
+const COCKTAILS = Object.values(MENU).flat();
+const AGAIN = ['Yes', 'Maybe', 'No'];
+const MENU_ROWS = { variety: 'Variety of options', flavor: 'Range of flavor profiles', value: 'Price / value', clarity: 'Clarity of menu descriptions' };
+const SERVICE_ROWS = { knowledge: 'Knowledge of the cocktails', friendliness: 'Friendliness', speed: 'Speed and attentiveness' };
+const FOLLOWUP = ['Yes', 'No thanks'];
+const TEXT_MAX = 600;
 
-// key, label, kind, extra. Stars are 1 to 5, sliders 0 to 10, text capped.
-const QUESTIONS = [
-  { key: 'overall', q: 'How was the night, all in?', kind: 'stars', required: true },
-  { key: 'drinks', q: 'Which cocktails did you try?', kind: 'drinks', hint: 'Tap each one and give it stars.' },
-  { key: 'sweet', q: 'How did the cocktails land?', kind: 'slider', lo: 'Too dry', hi: 'Too sweet', mid: 'Just right' },
-  { key: 'strong', q: '', kind: 'slider', lo: 'Too light', hi: 'Too strong', mid: 'Just right' },
-  { key: 'food', q: 'And the food?', kind: 'stars' },
-  { key: 'service', q: 'How did the team take care of you?', kind: 'stars' },
-  { key: 'recommend', q: 'Would you send a neighbor our way?', kind: 'nps', lo: 'Not yet', hi: 'In a heartbeat', required: true },
-  { key: 'change', q: 'If you could change one thing about the cocktails, what would it be?', kind: 'text', max: 240 },
-  { key: 'keep', q: 'What should we never touch?', kind: 'text', max: 240 },
-  { key: 'back', q: 'Will we see you again?', kind: 'choice', options: RETURN },
+// The four pages, in order. The page renders from this; the API validates against it.
+const STEPS = [
+  { title: 'Your Bar Order', questions: [
+    { key: 'drinks', q: 'Which cocktail(s) did you order?', hint: 'Select all that apply.', kind: 'cocktails', required: true, error: 'Select at least one cocktail to continue.' },
+  ] },
+  { title: 'Rate Your Drinks', questions: [
+    { key: 'ratings', q: 'Rate each cocktail you ordered.', kind: 'drinkRatings', required: true, rows: [
+      { key: 'taste', label: 'Taste', kind: 'five', ends: ['Poor', 'Excellent'] },
+      { key: 'again', label: 'Would you order it again?', kind: 'choice', options: AGAIN },
+      { key: 'sat', label: 'Satisfaction', kind: 'five', ends: ['Very dissatisfied', 'Very satisfied'] },
+    ] },
+    { key: 'standout', q: 'What stood out about your drink(s), good or bad?', kind: 'text', placeholder: 'Tell us anything', required: true },
+  ] },
+  { title: 'The Menu', questions: [
+    { key: 'menu', q: 'Rate the overall cocktail menu.', hint: '1 = Poor, 5 = Excellent', kind: 'matrix', rows: MENU_ROWS, required: true },
+    { key: 'changes', q: 'What, if anything, would you add, change, or remove from the menu?', kind: 'text', placeholder: 'Your ideas', required: true },
+    { key: 'service', q: 'Rate your experience with our bar team.', hint: '1 = Poor, 5 = Excellent', kind: 'matrix', rows: SERVICE_ROWS, required: true },
+  ] },
+  { title: 'Final Thoughts', questions: [
+    { key: 'favorite', q: "What's your favorite drink and who makes it best?", kind: 'text', placeholder: 'Drink and bartender', required: true, error: 'Please tell us your favorite drink to submit.' },
+    { key: 'notes', q: "Anything else you'd like the team to know?", kind: 'text', placeholder: 'Optional' },
+    { key: 'followup', q: 'May we follow up with you?', kind: 'choice', options: FOLLOWUP, required: true, error: 'Please choose an option to submit.' },
+  ] },
 ];
 
 const delayMin = () => { const n = parseInt(process.env.SURVEY_DELAY_MIN, 10); return Number.isNaN(n) ? 120 : Math.max(0, n); };
 
-const star = (v) => { if (v == null || v === '') return null; const n = Math.round(Number(v)); return n >= 1 && n <= 5 ? n : null; };
-const ten = (v) => { if (v == null || v === '') return null; const n = Math.round(Number(v)); return n >= 0 && n <= 10 ? n : null; };
-// Capped in bytes, not characters: the answers travel in a Blob pathname (950 max), and emoji are wide.
-const text = (v, max) => { let t = String(v == null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, max); while (Buffer.byteLength(t, 'utf8') > max) t = t.slice(0, -1); return t; };
+const five = (v) => { if (v == null || v === '') return null; const n = Math.round(Number(v)); return n >= 1 && n <= 5 ? n : null; };
+const text = (v) => String(v == null ? '' : v).replace(/\r\n?/g, '\n').replace(/[ \t]+/g, ' ').trim().slice(0, TEXT_MAX);
+const pick = (v, options) => (options.includes(v) ? v : null);
 
-// Validates and compacts what the page sends. Returns { answers } or { error }.
+// Validates what the page sends. Returns { answers } or { error, field }.
 function clean(raw) {
   if (!raw || typeof raw !== 'object') return { error: 'bad_answers' };
-  const a = {};
-  const overall = star(raw.overall); if (!overall) return { error: 'overall_required' };
-  const recommend = ten(raw.recommend); if (recommend == null) return { error: 'recommend_required' };
-  a.o = overall; a.r = recommend;
-  const d = {};
-  if (raw.drinks && typeof raw.drinks === 'object') {
-    for (const [name, v] of Object.entries(raw.drinks)) { const i = COCKTAILS.indexOf(name); const s = star(v); if (i >= 0 && s) d[i] = s; }
+  const a = { drinks: {} };
+  const rd = raw.drinks && typeof raw.drinks === 'object' ? raw.drinks : {};
+  for (const name of COCKTAILS) {
+    const d = rd[name]; if (!d || typeof d !== 'object') continue;
+    const taste = five(d.taste), again = pick(d.again, AGAIN), sat = five(d.sat);
+    if (!taste || !again || !sat) return { error: 'drink_incomplete', field: name };
+    a.drinks[name] = { taste, again, sat };
   }
-  if (Object.keys(d).length) a.d = d;
-  const sw = ten(raw.sweet); if (sw != null) a.sw = sw;
-  const st = ten(raw.strong); if (st != null) a.st = st;
-  const f = star(raw.food); if (f) a.f = f;
-  const s = star(raw.service); if (s) a.s = s;
-  const c = text(raw.change, 240); if (c) a.c = c;
-  const k = text(raw.keep, 240); if (k) a.k = k;
-  const b = RETURN.indexOf(raw.back); if (b >= 0) a.b = b;
+  if (!Object.keys(a.drinks).length) return { error: 'drinks_required', field: 'drinks' };
+  a.standout = text(raw.standout); if (!a.standout) return { error: 'required', field: 'standout' };
+  a.menu = {}; for (const k of Object.keys(MENU_ROWS)) { const v = five(raw.menu && raw.menu[k]); if (!v) return { error: 'required', field: 'menu' }; a.menu[k] = v; }
+  a.changes = text(raw.changes); if (!a.changes) return { error: 'required', field: 'changes' };
+  a.service = {}; for (const k of Object.keys(SERVICE_ROWS)) { const v = five(raw.service && raw.service[k]); if (!v) return { error: 'required', field: 'service' }; a.service[k] = v; }
+  a.favorite = text(raw.favorite); if (!a.favorite) return { error: 'required', field: 'favorite' };
+  a.notes = text(raw.notes);
+  a.followup = pick(raw.followup, FOLLOWUP); if (!a.followup) return { error: 'required', field: 'followup' };
   return { answers: a };
-}
-
-// The stored shape, spelled out for the page and the backend.
-function expand(a) {
-  if (!a) return null;
-  return {
-    overall: a.o || null, recommend: a.r == null ? null : a.r,
-    drinks: Object.fromEntries(Object.entries(a.d || {}).map(([i, v]) => [COCKTAILS[Number(i)], v]).filter(([n]) => n)),
-    sweet: a.sw == null ? null : a.sw, strong: a.st == null ? null : a.st,
-    food: a.f || null, service: a.s || null, change: a.c || '', keep: a.k || '', back: a.b == null ? '' : RETURN[a.b] || '',
-  };
 }
 
 // Tickets whose feedback email is due: redeemed long enough ago, we have an address, not sent yet.
 const due = (t, now = Date.now()) => !!(t && t.redeemed && t.redeemedAt && t.email && !t.surveySentAt && now - t.redeemedAt >= delayMin() * 60000);
 
-module.exports = { COCKTAILS, RETURN, QUESTIONS, delayMin, clean, expand, due };
+module.exports = { MENU, COCKTAILS, AGAIN, MENU_ROWS, SERVICE_ROWS, FOLLOWUP, STEPS, TEXT_MAX, delayMin, clean, due };

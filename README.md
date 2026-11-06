@@ -39,11 +39,14 @@ Per-guest ticket links, a bartender PIN + quantity flow, and an admin log.
 ## Guest feedback (after the visit)
 
 Two hours after the bartender redeems a ticket (`SURVEY_DELAY_MIN`, default 120), the guest gets a
-"How was it?" email at the address they left when booking, with a link to `/f/<ticket>`: stars for the
-night, each cocktail they tried, food and service; sliders for sweetness, strength and would-recommend;
-two short text answers and whether they are coming back. Answers live on the ticket and show on
-`/feedback.html` in the backend (same password), ranked cocktails, sweetness and strength gauges, every
-response by name, CSV export. Each guest is emailed once and can change their answers from the same link.
+"How was it?" email at the address they left when booking, with a link to `/f/<ticket>`, "your bar tasting
+notes": four pages. Which cocktails they ordered; taste, order-again and satisfaction for each; what stood
+out; the menu on variety, flavor range, price/value and clarity; what to add, change or remove; the bar team
+on knowledge, friendliness and speed; favorite drink and who makes it best; anything else; may we follow up.
+Answers are saved as a JSON file per submission (`feedback/<ticket>/<ms>.json`, private) and show on
+`/feedback.html` in the backend (same password, Feedback tab): tiles, cocktails ranked by taste, menu and
+team rows, every response by name, CSV export. Each guest is emailed once and can change their answers from
+the same link.
 
 The email goes through EmailJS template `template_njpzl8j` (subject `{{subject}}`, content `{{{html_body}}}`;
 the design is in `survey-email-template.html`). `EMAILJS_SURVEY_TEMPLATE_ID` overrides it. The schedule in `vercel.json`

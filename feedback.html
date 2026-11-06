@@ -170,17 +170,14 @@
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 22px; }
   .tile { background: var(--cream); border-radius: 16px; padding: 16px 18px 14px; }
   .tile .k { display: block; margin-bottom: 8px; }
-  .tile b { font-family: var(--f-label); font-weight: 600; font-size: 26px; line-height: 1; color: var(--ink); }
+  .tile b { font-family: var(--f-label); font-weight: 600; font-size: 28px; line-height: 1; color: var(--ink); }
+  .tile .of { font-family: var(--f-label); font-weight: 600; font-size: 12px; color: var(--faint); margin-left: 2px; }
   .tile small { display: block; font-size: 12px; color: var(--muted); margin-top: 6px; }
-  .tile .st { display: flex; margin-top: 8px; }
-  .st { display: inline-flex; gap: 3px; align-items: center; } .st i.h { display: inline-block; width: 13px; height: 13px; color: #DAD7E0; font-style: normal; line-height: 0; } .st i.h.on { color: var(--terra); } .st i.h svg { width: 100%; height: 100%; display: block; }
-  .tile .st i.h { width: 14px; height: 14px; } .resp > div > .st i.h { width: 15px; height: 15px; }
-  .nums .step { gap: 6px; } .nums .step .st i.h { width: 11px; height: 11px; }
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
   .panel { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 16px 20px 10px; }
   .panel h2 { font-family: var(--f-label); font-weight: 600; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); margin: 0 0 10px; display: flex; justify-content: space-between; gap: 10px; }
   .panel h2 span { color: var(--faint); font-weight: 600; }
-  .drow { display: grid; grid-template-columns: minmax(0, 1fr) 80px 44px; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px dashed var(--line); font-size: 13px; color: var(--ink); }
+  .drow { display: grid; grid-template-columns: minmax(0, 1fr) 80px auto; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px dashed var(--line); font-size: 13px; color: var(--ink); }
   .drow:first-of-type { border-top: 0; }
   .drow .bar { height: 5px; background: var(--soft); border-radius: 999px; overflow: hidden; }
   .drow .bar i { display: block; height: 100%; background: var(--terra); border-radius: 999px; }
@@ -193,12 +190,30 @@
   .gauge .line s { position: absolute; left: 50%; top: -3px; width: 1px; height: 11px; background: var(--faint); }
   .gauge .read { font-size: 12.5px; color: var(--muted); }
   .gauge .read b { color: var(--ink); font-weight: 600; }
-  .resp { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 12px 24px; padding: 16px 20px; background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 1px 2px rgba(30,35,41,.03); }
-  .resp .st { vertical-align: middle; }
-  .resp .nums { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .resp { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 12px 28px; padding: 18px 22px; background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 1px 2px rgba(30,35,41,.03); }
+  .resp .big { display: flex; align-items: baseline; gap: 3px; margin-top: 12px; font-family: var(--f-label); font-weight: 600; color: var(--ink); }
+  .resp .big b { font-size: 30px; line-height: 1; }
+  .resp .big .of { font-size: 12px; color: var(--faint); }
+  .resp .big small { margin-left: 10px; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .scores { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+  .scores .wide { grid-column: span 2; }
+  .score { background: var(--cream); border-radius: 12px; padding: 10px 12px 9px; min-width: 0; }
+  .score .k { display: block; margin-bottom: 6px; font-size: 8.5px; line-height: 1.3; }
+  .score b { font-family: var(--f-label); font-weight: 600; font-size: 16px; color: var(--ink); }
+  .score .of { font-size: 11px; color: var(--faint); margin-left: 1px; }
+  .score i { font-style: normal; font-size: 12.5px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  .tried div { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: baseline; gap: 12px; padding: 6px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; color: var(--ink); }
+  .tried div > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tried em { font-style: normal; font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .tried em b { font-size: 12.5px; margin-right: 1px; }
+  .tried .again { font-family: var(--f-label); font-weight: 600; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .tried .again.yes { color: var(--green); } .tried .again.no { color: #B3261E; }
+  .tried div:last-child { border-bottom: 0; }
+  .tried b { font-family: var(--f-label); font-weight: 600; font-size: 13px; color: var(--ink); }
+  .tried .of { font-size: 10px; color: var(--faint); }
   .resp .say { font-size: 13.5px; line-height: 1.55; color: var(--body); }
-  .resp .say b { display: block; font-family: var(--f-label); font-weight: 600; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 10px 0 2px; }
-  .resp .say b:first-child { margin-top: 0; }
+  .resp .say > b { display: block; font-family: var(--f-label); font-weight: 600; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 10px 0 2px; }
+  .resp .say > b:first-child { margin-top: 0; }
   .resp .say q { quotes: none; }
   .resp .say .none { color: var(--faint); }
   .pend { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -238,8 +253,8 @@
 
   <div class="tiles" id="tiles"></div>
   <div class="two">
-    <section class="panel"><h2>Cocktails, by stars <span id="drinkN"></span></h2><div id="drinks"></div></section>
-    <section class="panel"><h2>How the cocktails land</h2><div id="feel"></div><h2 style="margin-top:14px">Coming back? <span id="backN"></span></h2><div id="back"></div></section>
+    <section class="panel"><h2>Cocktails, ranked by taste <span id="drinkN"></span></h2><div id="drinks"></div></section>
+    <section class="panel"><h2>The menu</h2><div id="menuRows"></div><h2 style="margin-top:14px">The bar team</h2><div id="serviceRows"></div></section>
   </div>
 
   <div class="filters">
@@ -251,7 +266,7 @@
   </div>
   <div class="list" id="list"></div>
 
-  <div class="help"><span>The feedback email goes out <span id="delay">two hours</span> after the bartender redeems a ticket, to the address the guest gave when they booked. Guests without an address get nothing. Each guest is emailed once and can change their answers from the same link. The night rating and the recommend number are the only required answers.</span></div>
+  <div class="help"><span>The feedback email goes out <span id="delay">two hours</span> after the bartender redeems a ticket, to the address the guest gave when they booked. Guests without an address get nothing. Each guest is emailed once and can change their answers from the same link. Every question but the last open one is required, so answers are complete.</span></div>
 </main>
 <footer class="foot"><div class="foot-in"><span>Neighbors Only Preview &middot; Brentwood</span><span class="fine">&copy; 2026 Neighborly</span></div></footer>
 </div>
@@ -283,8 +298,7 @@ const NBGate = {
   const esc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const state = { key: store.get('epAdminKey') || '', tickets: [], filter: 'answered', q: '', loadedAt: 0, timers: null, survey: null };
   const when = (ms) => ms ? new Date(ms).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
-  const HOUSE = '<svg viewBox="0 0 100 100" aria-hidden="true"><path fill="currentColor" d="M0 46 L50 10 L100 46 V100 H0 Z"/><circle fill="currentColor" cx="50" cy="9" r="7"/><circle fill="currentColor" cx="40" cy="16" r="6.5"/><circle fill="currentColor" cx="60" cy="16" r="6.5"/><circle fill="currentColor" cx="30" cy="23.5" r="6.5"/><circle fill="currentColor" cx="70" cy="23.5" r="6.5"/><circle fill="currentColor" cx="20" cy="31" r="6.5"/><circle fill="currentColor" cx="80" cy="31" r="6.5"/><circle fill="currentColor" cx="10" cy="38.5" r="6.5"/><circle fill="currentColor" cx="90" cy="38.5" r="6.5"/><circle fill="currentColor" cx="2" cy="45" r="5"/><circle fill="currentColor" cx="98" cy="45" r="5"/></svg>';
-  const stars = (n) => Array.from({ length: 5 }, (_, i) => `<i class="h ${i < (n || 0) ? 'on' : ''}">${HOUSE}</i>`).join('');
+  const of5 = (n) => n ? `<b>${n}</b><span class="of">/5</span>` : '<span class="of">–</span>';
   const avg = (xs) => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
   const one = (x) => x == null ? '–' : (Math.round(x * 10) / 10).toFixed(1);
 
@@ -307,7 +321,10 @@ const NBGate = {
   async function loadSurvey() { try { const r = await fetch('/api/health', { cache: 'no-store' }); if (r.ok) { const h = await r.json(); state.survey = h.survey || null; if (state.survey) { $('delay').textContent = state.survey.delayMin === 120 ? 'two hours' : state.survey.delayMin + ' minutes'; if (!state.survey.template) setNotice('EMAILJS_SURVEY_TEMPLATE_ID isn’t set in Vercel yet, so feedback emails are on hold. Answers from the survey link still land here.'); } } } catch {} }
 
   const COCKTAILS = ['Frozen Espresso Martini', 'The Opalite', 'Signature Skinny Margarita', 'Cafe 43', 'The Greenhouse', 'Bad Bunny', 'Espresso Martini', 'Riviera Spritz', 'Neighborhood Margarita', 'Sunset Sangria', 'Hot Girl Pickle Margarita'];
-  const BACK = ['Already planning it', 'Probably', 'Not sure yet'];
+  const MENU_ROWS = { variety: 'Variety of options', flavor: 'Range of flavor profiles', value: 'Price / value', clarity: 'Clarity of menu descriptions' };
+  const SERVICE_ROWS = { knowledge: 'Knowledge of the cocktails', friendliness: 'Friendliness', speed: 'Speed and attentiveness' };
+  const SHORT = { variety: 'Variety', flavor: 'Flavor range', value: 'Price / value', clarity: 'Clarity', knowledge: 'Knowledge', friendliness: 'Friendliness', speed: 'Speed' };
+  const mean = (o) => avg(Object.values(o || {}).filter((x) => typeof x === 'number'));
   const kind = (t) => t.feedback ? 'answered' : t.surveySentAt ? 'waiting' : 'due';
 
   function render() {
@@ -318,34 +335,30 @@ const NBGate = {
     $('cAnswered').textContent = n.answered; $('cWaiting').textContent = n.waiting; $('cDue').textContent = n.due;
     renderSync();
 
-    const overall = avg(A.map((a) => a.overall).filter(Boolean));
-    const food = avg(A.map((a) => a.food).filter(Boolean));
-    const service = avg(A.map((a) => a.service).filter(Boolean));
-    const rec = A.map((a) => a.recommend).filter((x) => x != null);
-    const promoters = rec.filter((x) => x >= 9).length, detractors = rec.filter((x) => x <= 6).length;
-    const nps = rec.length ? Math.round((promoters - detractors) / rec.length * 100) : null;
+    const menuAvg = avg(A.map((a) => mean(a.menu)).filter((x) => x != null));
+    const serviceAvg = avg(A.map((a) => mean(a.service)).filter((x) => x != null));
+    const allDrinks = A.flatMap((a) => Object.values(a.drinks || {}));
+    const taste = avg(allDrinks.map((d) => d.taste).filter(Boolean));
+    const again = allDrinks.length ? Math.round(allDrinks.filter((d) => d.again === 'Yes').length / allDrinks.length * 100) : null;
+    const follow = A.filter((a) => a.followup === 'Yes').length;
     const sent = T.filter((t) => t.surveySentAt).length;
-    const tile = (k, v, sub, st) => `<div class="tile"><span class="k">${k}</span><b>${v}</b>${st ? `<div class="st">${st}</div>` : ''}<small>${sub}</small></div>`;
+    const tile = (k, v, sub, of) => `<div class="tile"><span class="k">${k}</span><b>${v}</b>${of ? `<span class="of">${of}</span>` : ''}<small>${sub}</small></div>`;
     $('tiles').innerHTML = [
       tile('Responses', F.length, sent ? `of ${sent} emailed · ${Math.round(F.length / sent * 100)}%` : 'no emails out yet'),
-      tile('The night', one(overall), 'out of 5, overall', overall ? stars(Math.round(overall)) : ''),
-      tile('Would recommend', nps == null ? '–' : (nps > 0 ? '+' : '') + nps, rec.length ? `net score · ${one(avg(rec))} of 10 on average` : 'from 0 to 10'),
-      tile('Food', one(food), 'out of 5', food ? stars(Math.round(food)) : ''),
-      tile('Service', one(service), 'out of 5', service ? stars(Math.round(service)) : ''),
+      tile('Cocktail taste', one(taste), allDrinks.length ? `across ${allDrinks.length} drink${allDrinks.length === 1 ? '' : 's'} rated` : 'average per drink', '/5'),
+      tile('Would order again', again == null ? '–' : again + '%', 'of drinks rated'),
+      tile('The menu', one(menuAvg), 'variety, flavor, value, clarity', '/5'),
+      tile('Bar team', one(serviceAvg), 'knowledge, friendliness, speed', '/5'),
+      tile('Open to follow-up', follow, F.length ? `of ${F.length} guests` : 'guests'),
     ].join('');
 
-    // cocktails ranked by average stars, with how many tried each
-    const byDrink = COCKTAILS.map((name) => { const xs = A.map((a) => a.drinks && a.drinks[name]).filter(Boolean); return { name, n: xs.length, avg: avg(xs) }; }).filter((d) => d.n).sort((a, b) => b.avg - a.avg || b.n - a.n);
-    $('drinkN').textContent = byDrink.length ? byDrink.reduce((s, d) => s + d.n, 0) + ' ratings' : '';
-    $('drinks').innerHTML = byDrink.length ? byDrink.map((d) => `<div class="drow"><span>${esc(d.name)}</span><span class="bar"><i style="width:${d.avg / 5 * 100}%"></i></span><em><b>${one(d.avg)}</b> · ${d.n}</em></div>`).join('') : '<div class="muted" style="padding:6px 0 10px">No cocktail ratings yet.</div>';
-
-    const sweet = avg(A.map((a) => a.sweet).filter((x) => x != null)), strong = avg(A.map((a) => a.strong).filter((x) => x != null));
-    const gauge = (lo, hi, v, word) => `<div class="gauge"><div class="ends"><span>${lo}</span><span>${hi}</span></div><div class="line"><s></s>${v == null ? '' : `<i style="left:${v * 10}%"></i>`}</div><div class="read">${v == null ? 'No answers yet' : word(v)}</div></div>`;
-    const word = (v, lo, hi) => { const d = Math.round((v - 5) * 10) / 10; return d === 0 ? '<b>Just right</b>, on average' : `Leaning <b>${d < 0 ? lo : hi}</b> by ${Math.abs(d)} on a 10 point scale`; };
-    $('feel').innerHTML = gauge('Too dry', 'Too sweet', sweet, (v) => word(v, 'dry', 'sweet')) + gauge('Too light', 'Too strong', strong, (v) => word(v, 'light', 'strong'));
-    const backs = A.map((a) => a.back).filter(Boolean);
-    $('backN').textContent = backs.length ? backs.length + ' answered' : '';
-    $('back').innerHTML = BACK.map((o) => { const c = backs.filter((b) => b === o).length; return `<div class="drow"><span>${o}</span><span class="bar"><i style="width:${backs.length ? c / backs.length * 100 : 0}%"></i></span><em><b>${c}</b></em></div>`; }).join('');
+    // cocktails ranked by taste, with how many ordered each and how many would again
+    const byDrink = COCKTAILS.map((name) => { const xs = A.map((a) => a.drinks && a.drinks[name]).filter(Boolean); return { name, n: xs.length, avg: avg(xs.map((d) => d.taste)), sat: avg(xs.map((d) => d.sat)), again: xs.length ? Math.round(xs.filter((d) => d.again === 'Yes').length / xs.length * 100) : 0 }; }).filter((d) => d.n).sort((a, b) => b.avg - a.avg || b.n - a.n);
+    $('drinkN').textContent = byDrink.length ? byDrink.reduce((s, d) => s + d.n, 0) + ' ordered' : '';
+    $('drinks').innerHTML = byDrink.length ? byDrink.map((d) => `<div class="drow"><span>${esc(d.name)}</span><span class="bar"><i style="width:${d.avg / 5 * 100}%"></i></span><em><b>${one(d.avg)}</b> · ${d.n} · ${d.again}% again</em></div>`).join('') : '<div class="muted" style="padding:6px 0 10px">No cocktail ratings yet.</div>';
+    const rows = (defs, key) => Object.entries(defs).map(([k, label]) => { const v = avg(A.map((a) => a[key] && a[key][k]).filter(Boolean)); return `<div class="drow"><span>${label}</span><span class="bar"><i style="width:${v ? v / 5 * 100 : 0}%"></i></span><em><b>${one(v)}</b></em></div>`; }).join('');
+    $('menuRows').innerHTML = rows(MENU_ROWS, 'menu');
+    $('serviceRows').innerHTML = rows(SERVICE_ROWS, 'service');
 
     const q = state.q.trim().toLowerCase();
     const shown = T.filter((t) => (state.filter === 'due' ? t.redeemed && kind(t) === 'due' : kind(t) === state.filter) && (!q || String(t.name || '').toLowerCase().includes(q)));
@@ -362,10 +375,15 @@ const NBGate = {
         return `<div class="resp">${head}<div class="pend"><span class="step ${t.surveySentAt ? 'on' : ''}">${why}</span>${t.email ? `<span class="step on">${esc(t.email)}</span>` : ''}${t.email && t.redeemed && !t.surveySentAt ? `<button class="btn ghost" data-send="${esc(t.id)}" type="button">Send now</button>` : ''}</div></div></div>`;
       }
       const drinks = Object.entries(a.drinks || {});
-      const chip = (k, v) => `<span class="step on">${k} <span class="st">${v}</span></span>`;
-      const nums = [chip('Night', stars(a.overall)), a.recommend != null ? chip('Recommend', a.recommend + '/10') : '', a.food ? chip('Food', stars(a.food)) : '', a.service ? chip('Service', stars(a.service)) : '', a.sweet != null ? chip('Sweetness', a.sweet + '/10') : '', a.strong != null ? chip('Strength', a.strong + '/10') : '', a.back ? chip('Back?', a.back) : ''].join('');
-      return `<div class="resp">${head}<div class="st">${stars(a.overall)}</div><div class="nums">${nums}</div><div class="sub">Answered ${esc(when(t.feedbackAt))}</div></div>
-        <div class="say"><b>Cocktails tried</b>${drinks.length ? drinks.map(([k, v]) => `<div>${esc(k)} <span class="st">${stars(v)}</span></div>`).join('') : '<span class="none">None picked</span>'}<b>Would change</b><q>${a.change ? esc(a.change) : '<span class="none">Nothing written</span>'}</q><b>Never touch</b><q>${a.keep ? esc(a.keep) : '<span class="none">Nothing written</span>'}</q></div></div>`;
+      const score = (k, v, cls) => `<div class="score ${cls || ''}"><span class="k">${k}</span>${v}</div>`;
+      const scores = [
+        ...Object.keys(MENU_ROWS).map((k) => score(SHORT[k], of5(a.menu && a.menu[k]))),
+        ...Object.keys(SERVICE_ROWS).map((k) => score(SHORT[k], of5(a.service && a.service[k]))),
+        score('Follow up', `<i>${esc(a.followup || '–')}</i>`),
+      ].join('');
+      const say = (label, v) => `<b>${label}</b><q>${v ? esc(v) : '<span class="none">Nothing written</span>'}</q>`;
+      return `<div class="resp">${head}<div class="big">${of5(mean(a.menu) == null ? null : Math.round(mean(a.menu) * 10) / 10)}<small>Menu</small><span style="width:14px"></span>${of5(mean(a.service) == null ? null : Math.round(mean(a.service) * 10) / 10)}<small>Bar team</small></div><div class="scores">${scores}</div><div class="sub" style="margin-top:10px">Answered ${esc(when(t.feedbackAt))}</div></div>
+        <div class="say"><b>Ordered</b>${drinks.length ? `<div class="tried">${drinks.map(([k, d]) => `<div><span>${esc(k)}</span><em>Taste <b>${d.taste}</b>/5</em><em>Sat. <b>${d.sat}</b>/5</em><span class="again ${d.again === 'Yes' ? 'yes' : d.again === 'No' ? 'no' : ''}">${esc(d.again)}</span></div>`).join('')}</div>` : '<span class="none">None picked</span>'}${say('Stood out', a.standout)}${say('Add, change or remove', a.changes)}${say('Favorite drink, and who makes it best', a.favorite)}${a.notes ? say('Anything else', a.notes) : ''}</div></div>`;
     }).join('');
     $('list').querySelectorAll('[data-send]').forEach((b) => b.onclick = () => sendNow(b.dataset.send, b));
   }
@@ -378,8 +396,8 @@ const NBGate = {
 
   function exportCsv() {
     const cell = (v) => { const s = String(v == null ? '' : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
-    const rows = [['Guest', 'Email', 'Visit date', 'Window', 'Redeemed', 'Email sent', 'Answered', 'Night', 'Recommend', 'Food', 'Service', 'Sweetness', 'Strength', 'Coming back', 'Would change', 'Never touch', ...COCKTAILS]];
-    state.tickets.filter((t) => t.feedback).forEach((t) => { const a = t.feedback; rows.push([t.name, t.email || '', t.visit ? t.visit.date : '', t.visit ? t.visit.label : '', when(t.redeemedAt), when(t.surveySentAt), when(t.feedbackAt), a.overall, a.recommend, a.food || '', a.service || '', a.sweet == null ? '' : a.sweet, a.strong == null ? '' : a.strong, a.back || '', a.change || '', a.keep || '', ...COCKTAILS.map((c) => (a.drinks || {})[c] || '')]); });
+    const rows = [['Guest', 'Email', 'Visit date', 'Window', 'Redeemed', 'Email sent', 'Answered', 'Ordered', 'Stood out', ...Object.values(MENU_ROWS), 'Add, change or remove', ...Object.values(SERVICE_ROWS), 'Favorite drink', 'Anything else', 'Follow up', ...COCKTAILS.flatMap((c) => [c + ' taste', c + ' again', c + ' satisfaction'])]];
+    state.tickets.filter((t) => t.feedback).forEach((t) => { const a = t.feedback; rows.push([t.name, t.email || '', t.visit ? t.visit.date : '', t.visit ? t.visit.label : '', when(t.redeemedAt), when(t.surveySentAt), when(t.feedbackAt), Object.keys(a.drinks || {}).join('; '), a.standout || '', ...Object.keys(MENU_ROWS).map((k) => (a.menu || {})[k] || ''), a.changes || '', ...Object.keys(SERVICE_ROWS).map((k) => (a.service || {})[k] || ''), a.favorite || '', a.notes || '', a.followup || '', ...COCKTAILS.flatMap((c) => { const d = (a.drinks || {})[c]; return d ? [d.taste, d.again, d.sat] : ['', '', '']; })]); });
     const url = URL.createObjectURL(new Blob(['\ufeff' + rows.map((r) => r.map(cell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' }));
     const el = document.createElement('a'); el.href = url; el.download = 'neighbors-only-feedback.csv'; document.body.appendChild(el); el.click(); el.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
