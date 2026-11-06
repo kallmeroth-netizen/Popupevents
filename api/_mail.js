@@ -36,24 +36,27 @@ function designHtml(x) {
 @font-face{font-family:"Futura Neighborly";src:url(${site}/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600}
 @font-face{font-family:"DM Sans";src:url(${site}/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400}
 </style>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F2F2F2;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;">
 <tr><td align="center" style="padding:0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#F2F2F2;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#FFFFFF;">
   <tr><td style="padding:0;line-height:0;">
     <a href="${e('ticket_link')}" style="display:block;text-decoration:none;line-height:0;"><img src="${site}/assets/email/your-ticket-is-ready.jpg" width="600" alt="Your ticket is ready. Open your ticket and tap I'm here when you arrive. Your first drink and your meal are both on us." style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a>
   </td></tr>
-  <tr><td align="center" style="padding:30px 28px 0;${font('Futura Neighborly')}font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B7280;font-weight:700;">Your visit</td></tr>
-  <tr><td align="center" style="padding:8px 28px 0;${font('Futura Neighborly')}font-weight:700;font-size:20px;line-height:1.2;text-transform:uppercase;color:#1E2329;">${e('visit_day')}</td></tr>
-  <tr><td align="center" style="padding:4px 28px 0;${font('DM Sans')}font-size:16px;line-height:1.4;color:#1E2329;">${e('visit_window')} &middot; ${e('location')}</td></tr>
-  <tr><td align="center" style="padding:6px 28px 0;${font('DM Sans')}font-size:13px;line-height:1.5;color:#6B7280;">${e('intro')}</td></tr>
-  <tr><td align="center" style="padding:26px 28px ${x.wallet_link ? 12 : 26}px;">
-    <a href="${e('ticket_link')}" style="display:inline-block;background:#E87142;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:17px 40px;${font('Futura Neighborly')}font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Open my ticket</a>
-  </td></tr>${x.wallet_link ? `
-  <tr><td align="center" style="padding:0 28px 26px;">
-    <a href="${e('wallet_link')}" style="display:inline-block;background:#FFFFFF;color:#1E2329;text-decoration:none;border:1px solid #1E2329;border-radius:999px;padding:13px 26px;${font('Futura Neighborly')}font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Add to Apple Wallet</a>
-  </td></tr>` : ''}
-  <tr><td style="padding:0 28px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="border-top:1px solid #E6E2DA;font-size:0;line-height:0;">&nbsp;</td></tr></table></td></tr>
-  <tr><td align="center" style="padding:20px 28px 0;${font('DM Sans')}font-size:13.5px;line-height:1.6;color:#3A4049;">${e('plus_one_line')}</td></tr>
+  <tr><td style="padding:14px 14px 0;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F2F2F2" style="background:#F2F2F2;border-radius:22px;">
+      <tr><td align="center" style="padding:28px 24px 0;${font('Futura Neighborly')}font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B7280;font-weight:700;">Your visit</td></tr>
+      <tr><td align="center" style="padding:8px 24px 0;${font('Futura Neighborly')}font-weight:700;font-size:20px;line-height:1.2;text-transform:uppercase;color:#1E2329;">${e('visit_day')}</td></tr>
+      <tr><td align="center" style="padding:4px 24px 0;${font('DM Sans')}font-size:16px;line-height:1.4;color:#1E2329;">${e('visit_window')} &middot; ${e('location')}</td></tr>
+      <tr><td align="center" style="padding:6px 24px 0;${font('DM Sans')}font-size:13px;line-height:1.5;color:#6B7280;">${e('intro')}</td></tr>
+      <tr><td align="center" style="padding:24px 24px ${x.wallet_link ? 12 : 28}px;">
+        <a href="${e('ticket_link')}" style="display:inline-block;background:#E87142;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:17px 40px;${font('Futura Neighborly')}font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Open my ticket</a>
+      </td></tr>${x.wallet_link ? `
+      <tr><td align="center" style="padding:0 24px 28px;">
+        <a href="${e('wallet_link')}" style="display:inline-block;background:#FFFFFF;color:#1E2329;text-decoration:none;border:1px solid #1E2329;border-radius:999px;padding:13px 26px;${font('Futura Neighborly')}font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Add to Apple Wallet</a>
+      </td></tr>` : ''}
+    </table>
+  </td></tr>
+  <tr><td align="center" style="padding:22px 28px 0;${font('DM Sans')}font-size:13.5px;line-height:1.6;color:#3A4049;">${e('plus_one_line')}</td></tr>
   <tr><td align="center" style="padding:10px 28px 28px;${font('DM Sans')}font-size:13.5px;line-height:1.6;color:#3A4049;">Need a different time? Open the ticket and tap Change.</td></tr>
   <tr><td align="center" style="padding:0 28px 30px;${font('DM Sans')}font-size:11px;line-height:1.55;color:#A8ADB5;">Must be 21 or older with a valid government-issued ID to redeem. One per guest. No cash value.</td></tr>
 </table>
@@ -110,14 +113,18 @@ function surveyHtml(x) {
 @font-face{font-family:"Futura Neighborly";src:url(${site}/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600}
 @font-face{font-family:"DM Sans";src:url(${site}/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400}
 </style>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F2F2F2;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;">
 <tr><td align="center" style="padding:0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#F2F2F2;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#FFFFFF;">
   <tr><td style="padding:0;line-height:0;">
     <a href="${e('survey_link')}" style="display:block;text-decoration:none;line-height:0;"><img src="${site}/assets/email/thank-you-for-visiting.jpg" width="600" alt="Thank you for visiting. We loved having you at the Neighbors Only preview. Two minutes, neighbor to neighbor." style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a>
   </td></tr>
-  <tr><td align="center" style="padding:34px 28px 34px;">
-    <a href="${e('survey_link')}" style="display:inline-block;background:#E87142;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:17px 40px;${font('Futura Neighborly')}font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Tell us how it was</a>
+  <tr><td style="padding:14px 14px 20px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F2F2F2" style="background:#F2F2F2;border-radius:22px;">
+      <tr><td align="center" style="padding:28px 24px;">
+        <a href="${e('survey_link')}" style="display:inline-block;background:#E87142;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:17px 40px;${font('Futura Neighborly')}font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Tell us how it was</a>
+      </td></tr>
+    </table>
   </td></tr>
 </table>
 </td></tr></table>`;
