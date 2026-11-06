@@ -4,6 +4,7 @@ const { json } = require('./_store');
 const { hubStatus, hubWriteStatus } = require('./_hub');
 const { windowCap, dayCap, openDays, openThrough, laNow } = require('./_slots');
 const mail = require('./_mail');
+const { delayMin } = require('./_survey');
 const { walletConfigured } = require('./_slots');
 
 module.exports = async (req, res) => {
@@ -17,6 +18,7 @@ module.exports = async (req, res) => {
     confirmationEmail: mail.configured(),
     appleWallet: walletConfigured(),
     googleSyncPoke: !!(process.env.HUB_SYNC_URL || '').trim(),
+    survey: { delayMin: delayMin(), template: mail.SURVEY_TEMPLATE() || null, mail: mail.surveyConfigured(), cronSecret: !!(process.env.CRON_SECRET || '').trim() },
     visitCaps: { window: windowCap(), day: dayCap() },
     holds: { openDays: openDays(), openThrough: openThrough(laNow().date), pattern: (process.env.VISIT_HOLDS || 'off').trim() },
   };

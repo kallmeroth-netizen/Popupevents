@@ -185,7 +185,7 @@
 <div id="app" class="hidden">
 <header class="hdr"><div class="hdr-in">
   <img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly">
-  <div class="hdr-right"><span class="hdr-ey">Exclusive Previews &middot; Backend</span><button class="linkbtn" id="signOut" type="button">Sign out</button></div>
+  <div class="hdr-right"><span class="hdr-ey">Exclusive Previews &middot; Backend</span><a class="linkbtn" href="/feedback.html">Feedback</a><button class="linkbtn" id="signOut" type="button">Sign out</button></div>
 </div></header>
 <main class="shell">
   <div class="toolbar">
@@ -234,7 +234,7 @@
     <span><b>Held</b> windows are kept off the picker on purpose so it never looks wide open: guests can book through <span id="openThrough"></span> (rolls forward a day each day) and a few off-peak windows are held. Nobody is in a held window. To release them, set VISIT_HOLDS to off and VISIT_OPEN_DAYS to 0 in Vercel.</span>
     <button class="linkbtn danger" id="clearAll" type="button">Delete all invites</button></div>
 </main>
-<footer class="foot"><div class="foot-in"><span>Neighbors Only Preview &middot; Brentwood</span><span class="fine">&copy; 2026 Neighborly</span></div></footer>
+<footer class="foot"><div class="foot-in"><span>Neighbors Only Preview &middot; Brentwood</span><span class="fine"><a href="/feedback.html" style="color:inherit">Guest feedback</a> &middot; &copy; 2026 Neighborly</span></div></footer>
 </div>
 
 <script>
@@ -343,6 +343,7 @@ const NBGate = {
         `<span class="step ${t.visit ? 'on' : ''}">${t.visit ? 'Visit ' + esc(t.visit.dateLabel) + ' · ' + esc(t.visit.label) : 'No time picked'}</span>`,
         `<span class="step ${t.plusOne ? 'on' : ''}">${t.plusOne ? '+1 ' + esc(t.plusOne) : 'No plus one'}</span>`,
         t.email ? `<span class="step on" title="Confirmation email">${esc(t.email)}</span>` : '',
+        t.feedback ? `<span class="step ok" title="Feedback in">Feedback ${'★'.repeat(t.feedback.overall || 0)}</span>` : t.surveySentAt ? `<span class="step on">Feedback email sent</span>` : '',
         `<span class="step ${opened ? 'on' : ''}">${opened ? 'Opened' + (t.openedAt ? ' ' + esc(when(t.openedAt)) : '') : 'Not opened'}</span>`,
         `<span class="step ${t.hereAt || t.redeemed ? 'on' : ''}">${t.hereAt ? 'Here ' + esc(when(t.hereAt)) : t.redeemed ? 'Here' : 'Not here yet'}</span>`,
         `<span class="step ${t.redeemed ? 'ok' : ''}">${t.redeemed ? 'Redeemed · ' + t.qty + (t.qty === 1 ? ' drink' : ' drinks') + (t.redeemedAt ? ' · ' + esc(when(t.redeemedAt)) : '') : 'Not redeemed'}</span>`,
@@ -425,6 +426,8 @@ const NBGate = {
     state.tickets = tickets || []; state.loadedAt = Date.now();
     NBGate.close(); $('app').classList.remove('hidden');
     render(); loadSlots(); resync(null);
+    // feedback emails that are due go out now too, not only on the schedule
+    fetch('/api/survey-cron', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-key': state.key }, body: '{}' }).catch(() => {});
     fetch('/api/health').then((r) => r.json()).then((h) => {
       if (h.bartenderPin === false) setNotice('BARTENDER_PIN isn’t set in Vercel, so bartenders can’t redeem tickets yet.');
     }).catch(() => {});

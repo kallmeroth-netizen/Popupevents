@@ -1,8 +1,9 @@
 const { createTicket, createTickets, allTickets, getTicket, clearVisit, deleteTicket, deleteAllTickets, json, readBody, safeEqual, ID_RE } = require('./_store');
 const { visitLabels } = require('./_slots');
+const { expand } = require('./_survey');
 const { syncVisit, removeVisit, removeAll, reconcile } = require('./_hub');
 
-const withLabels = (t) => ({ ...t, visit: visitLabels(t.visit) });
+const withLabels = (t) => ({ ...t, visit: visitLabels(t.visit), feedback: expand(t.feedback) });
 
 // The backend accepts the ADMIN_KEY, or ADMIN_PASSWORD if one is set in Vercel.
 function authed(req) {

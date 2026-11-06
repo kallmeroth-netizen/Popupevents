@@ -35,3 +35,18 @@ Per-guest ticket links, a bartender PIN + quantity flow, and an admin log.
 - `index.html` ticket page, `menu.html` cocktail menu (served at `/menu`, linked from the ticket), `admin.html` admin page, `fonts/` the brand fonts (TAYA Maya, Tuppence, Futura Demi), `assets/` wordmarks
 - `api/ticket.js` read a ticket (stamps the first open; POST `here` stamps "I'm here"), `api/redeem.js` bartender redemption, `api/tickets.js` admin create (one or many) + list + delete
 - `api/_store.js` ticket state kept in Vercel Blob, `api/_slots.js` visit windows and capacity, `api/_hub.js` the Marketing Hub calendar mirror, `api/slots.js` and `api/visit.js` the guest's day and time
+
+## Guest feedback (after the visit)
+
+Two hours after the bartender redeems a ticket (`SURVEY_DELAY_MIN`, default 120), the guest gets a
+"How was it?" email at the address they left when booking, with a link to `/f/<ticket>`: stars for the
+night, each cocktail they tried, food and service; sliders for sweetness, strength and would-recommend;
+two short text answers and whether they are coming back. Answers live on the ticket and show on
+`/feedback.html` in the backend (same password), ranked cocktails, sweetness and strength gauges, every
+response by name, CSV export. Each guest is emailed once and can change their answers from the same link.
+
+Setup in Vercel (exclusivepreview): make an EmailJS template with subject `{{subject}}` and content
+`{{{html_body}}}` (the design is in `survey-email-template.html` if you would rather paste it), then set
+`EMAILJS_SURVEY_TEMPLATE_ID` to its id. Nothing sends until that is set. The schedule in `vercel.json`
+runs `/api/survey-cron` every 10 minutes (set `CRON_SECRET` so only Vercel can call it); opening the
+backend also sends anything due, so a plan without frequent crons still works.

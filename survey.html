@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F5F1E9">
+<title>Neighborly · How was it?</title>
+<meta name="description" content="Neighbors Only. Tell us how it was.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<style>
+  @font-face{font-family:"Futura Neighborly";src:url(/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600;font-display:swap}
+  @font-face{font-family:"Tuppence";src:url(/fonts/Tuppence-Variable.otf) format("opentype");font-weight:100 900;font-display:swap}
+  @font-face{font-family:"TAYA Maya";src:url(/fonts/TAYAmaya.otf) format("opentype");font-weight:400;font-display:swap}
+  @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"DM Sans";src:url(/fonts/dm-sans-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+  :root{
+    --ink:#1E2329; --text:#3A4049; --muted:#6B7280; --faint:#A8ADB5;
+    --orange:#E87242; --orange-deep:#C25A30; --blush:#FDF3EC;
+    --page:#FFFFFF; --bar:#F5F1E9; --line:#E6E2DA; --soft:#FAF8F4; --err:#C0473A;
+    --gold1:#C9A96E; --gold2:#E8D7A8; --gold3:#BD9655; --gold4:#DCC694; --gold-ink:#5E4A24;
+    --futura:"Futura Neighborly","Futura PT",sans-serif; --taya:"TAYA Maya","Oswald",sans-serif; --tup:"Tuppence",Georgia,serif; --body:"Telegraf","DM Sans","Neue Haas Grotesk","Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;overflow-x:clip}
+  .hdr{position:sticky;top:0;z-index:20;background:rgba(245,241,233,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .hdr-in{max-width:1180px;margin:0 auto;padding:clamp(10px,2.4vw,14px) clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:center}
+  .hdr img{height:clamp(22px,5vw,30px);width:auto;display:block}
+  main{flex:1;width:100%;max-width:520px;margin:0 auto;padding:38px 20px 56px}
+  .ftr{border-top:1px solid var(--line);background:var(--bar)}
+  .ftr-in{max-width:1180px;margin:0 auto;padding:16px 24px 18px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+  .ftr img{height:22px;width:auto;display:block}
+  .ftr span{font-size:11px;line-height:1.5;color:var(--faint)}
+
+  .ey{font-family:var(--futura);font-weight:600;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .hero{text-align:center;margin-bottom:30px}
+  .hero h1{margin:12px 0 0;font-family:var(--taya);font-weight:400;font-size:clamp(36px,11vw,50px);line-height:.95;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
+  .hero p{margin:12px auto 0;font-family:var(--tup);font-weight:400;font-size:clamp(20px,5.6vw,24px);line-height:1.2;color:var(--ink);max-width:380px}
+  .hero .sub{font-family:var(--body);font-size:14.5px;line-height:1.55;color:var(--text);margin-top:12px;max-width:360px}
+  .hero .visit{display:inline-flex;align-items:center;gap:10px;margin-top:16px;background:var(--blush);border:1px solid #F3D6C6;border-radius:999px;padding:9px 16px;font-size:13px;color:var(--ink)}
+  .hero .visit b{font-weight:600}
+
+  .q{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 20px 22px;margin-bottom:12px;animation:fade .5s ease both}
+  .q .n{font-family:var(--futura);font-weight:600;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+  .q h2{margin:0;font-family:var(--tup);font-weight:400;font-size:21px;line-height:1.2;color:var(--ink)}
+  .q h2 + h2{margin-top:22px}
+  .q .hint{font-size:13px;line-height:1.45;color:var(--muted);margin:6px 0 0}
+  .q .req{color:var(--orange);margin-left:4px}
+
+  /* stars */
+  .stars{display:flex;align-items:center;gap:6px;margin-top:14px}
+  .stars button{appearance:none;background:none;border:0;padding:4px;cursor:pointer;color:#E3DED4;transition:transform .15s,color .15s;line-height:0}
+  .stars button svg{width:30px;height:30px;display:block}
+  .stars button.on,.stars:hover button.hov{color:var(--orange)}
+  .stars button:active{transform:scale(.9)}
+  .stars .word{margin-left:10px;font-family:var(--futura);font-weight:600;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);min-height:1em}
+  .stars.sm button svg{width:22px;height:22px}
+  .stars.sm button{padding:3px}
+
+  /* drinks */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .chip{appearance:none;cursor:pointer;background:#fff;color:var(--text);border:1px solid var(--line);border-radius:999px;padding:10px 15px;font-family:var(--futura);font-weight:600;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;line-height:1;transition:border-color .2s,box-shadow .2s,color .2s,background .2s}
+  .chip.on{color:var(--ink);border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+  .chip.fill.on{background:var(--ink);color:#fff;box-shadow:none}
+  .rated{display:flex;flex-direction:column;gap:4px;margin-top:14px}
+  .rated .row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px dashed var(--line)}
+  .rated .row span{font-size:14px;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rated:empty{display:none}
+
+  /* sliders */
+  .slide{margin-top:16px}
+  .slide .ends{display:flex;justify-content:space-between;font-family:var(--futura);font-weight:600;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .slide .ends b{font-weight:600;color:var(--ink)}
+  .range{position:relative;height:34px;display:flex;align-items:center}
+  .range input{-webkit-appearance:none;appearance:none;width:100%;height:34px;background:transparent;margin:0;cursor:pointer}
+  .range input:focus{outline:none}
+  .range input::-webkit-slider-runnable-track{height:3px;background:linear-gradient(90deg,var(--orange) 0,var(--orange) var(--p,50%),#E6E2DA var(--p,50%),#E6E2DA 100%);border-radius:999px}
+  .range input::-moz-range-track{height:3px;background:#E6E2DA;border-radius:999px}
+  .range input::-moz-range-progress{height:3px;background:var(--orange);border-radius:999px}
+  .range input::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;margin-top:-11.5px;border-radius:50%;background:#fff;border:1.5px solid var(--ink);box-shadow:0 3px 10px rgba(30,35,41,.16);transition:transform .15s}
+  .range input::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#fff;border:1.5px solid var(--ink);box-shadow:0 3px 10px rgba(30,35,41,.16)}
+  .range input:active::-webkit-slider-thumb{transform:scale(1.1)}
+  .range .mid{position:absolute;left:50%;top:50%;width:1px;height:11px;background:var(--faint);transform:translate(-50%,-50%);pointer-events:none;opacity:.7}
+  .slide .read{font-family:var(--futura);font-weight:600;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);text-align:center;margin-top:6px;min-height:1em}
+  .nps .big{font-family:var(--taya);font-size:54px;line-height:1;text-align:center;color:var(--ink);margin-top:10px;letter-spacing:.02em}
+  .nps .big small{font-family:var(--futura);font-size:10px;letter-spacing:.14em;color:var(--faint);margin-left:6px;vertical-align:middle;text-transform:uppercase}
+
+  /* text */
+  textarea{width:100%;margin-top:14px;font:400 15px/1.5 var(--body);border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--soft);color:var(--ink);outline:none;resize:vertical;min-height:84px}
+  textarea:focus{border-color:var(--orange);background:#fff}
+  .count{text-align:right;font-size:11px;color:var(--faint);margin-top:6px}
+
+  .send{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:26px;text-align:center}
+  .pill{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:16px 30px;min-width:240px;font-family:var(--futura);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;background:var(--orange);color:#fff;box-shadow:0 8px 20px rgba(232,114,66,.28);transition:background .2s,transform .15s,opacity .2s}
+  .pill:hover{background:var(--orange-deep)}
+  .pill:active{transform:scale(.97)}
+  .pill:disabled{opacity:.5;box-shadow:none;cursor:default}
+  .err{color:var(--err);font-size:13px;min-height:18px}
+  .fine{font-size:12px;line-height:1.5;color:var(--faint);max-width:320px}
+  .link{background:none;border:0;font:500 14px var(--body);color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+
+  /* done */
+  .done{text-align:center;animation:fade .6s ease both}
+  .gold{background:linear-gradient(135deg,var(--gold1) 0%,var(--gold2) 38%,var(--gold3) 62%,var(--gold4) 100%);border-radius:18px;padding:26px 24px 22px;text-align:left;margin:26px 0 22px;position:relative;overflow:hidden}
+  .gold::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.35) 48%,transparent 62%);transform:translateX(-120%);animation:shimmer 2.6s ease .6s 1 forwards}
+  @keyframes shimmer{to{transform:translateX(120%)}}
+  .gold img{width:104px;height:auto;display:block;opacity:.85}
+  .gold .ey{color:var(--gold-ink);margin-top:16px}
+  .gold b{display:block;font-family:var(--tup);font-weight:400;font-size:28px;line-height:1.1;color:var(--ink);margin-top:6px}
+  .gold span{display:block;font-size:15px;line-height:1.45;color:var(--ink);margin-top:6px}
+  .gold .rule{border-top:1px dashed rgba(94,74,36,.45);margin-top:18px;padding-top:12px;font-family:var(--futura);font-weight:600;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-ink)}
+  .done p{font-size:15px;line-height:1.55;color:var(--text);max-width:360px;margin:0 auto}
+  .done .acts{display:flex;gap:18px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+  .menu-link{display:inline-flex;align-items:center;gap:8px;font-family:var(--futura);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);text-decoration:none;padding:6px 2px;border-bottom:1px solid var(--orange)}
+
+  .wait{display:flex;gap:7px;justify-content:center;padding:60px 0}
+  .wait i{width:7px;height:7px;border-radius:50%;background:var(--orange);animation:blink 1s infinite}
+  .wait i:nth-child(2){animation-delay:.2s}.wait i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .lost{text-align:center;padding:60px 0}
+  .lost h1{font-family:var(--taya);font-weight:400;font-size:40px;text-transform:uppercase;letter-spacing:.02em;margin:0 0 10px}
+  .lost p{color:var(--text);font-size:15px;line-height:1.55}
+  @media (prefers-reduced-motion:reduce){.q,.done{animation:none}.gold::after{display:none}}
+</style>
+</head>
+<body>
+<header class="hdr"><div class="hdr-in"><img src="/assets/neighborly-houses-mark.png" alt="Neighborly"></div></header>
+<main id="main"><div class="wait" aria-label="Loading"><i></i><i></i><i></i></div></main>
+<footer class="ftr"><div class="ftr-in"><img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly"><span>Neighbors Only Preview · Brentwood, CA</span><span>Your answers go to the Neighborly team only.</span></div></footer>
+
+<script>
+(() => {
+  const main = document.getElementById('main');
+  const id = (location.pathname.match(/\/f\/([a-z0-9]+)/i) || [])[1] || new URLSearchParams(location.search).get('id') || '';
+  const esc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.6l2.9 6.1 6.7.8-4.9 4.6 1.3 6.6L12 17.4l-6 3.3 1.3-6.6L2.4 9.5l6.7-.8z"/></svg>';
+  const WORDS = ['', 'Not for me', 'It was fine', 'Good', 'Really good', 'Loved it'];
+  const a = { drinks: {} };
+  let info = null;
+
+  function lost(msg) {
+    main.innerHTML = `<div class="lost"><h1>Hmm.</h1><p>${esc(msg)}</p></div>`;
+  }
+
+  function stars(key, size, obj, k) {
+    const wrap = document.createElement('div'); wrap.className = 'stars' + (size === 'sm' ? ' sm' : '');
+    const word = document.createElement('span'); word.className = 'word';
+    const btns = [];
+    const paint = (n, hover) => { btns.forEach((b, i) => { b.classList.toggle('on', i < (obj[k] || 0)); b.classList.toggle('hov', hover && i < n); }); if (size !== 'sm') word.textContent = WORDS[hover ? n : (obj[k] || 0)]; };
+    for (let i = 1; i <= 5; i++) {
+      const b = document.createElement('button'); b.type = 'button'; b.innerHTML = STAR; b.setAttribute('aria-label', i + (i === 1 ? ' star' : ' stars')); b.dataset.star = i;
+      b.onclick = () => { obj[k] = i; paint(i, false); check(); };
+      b.onmouseenter = () => paint(i, true); b.onmouseleave = () => paint(0, false);
+      btns.push(b); wrap.append(b);
+    }
+    if (size !== 'sm') wrap.append(word);
+    paint(0, false);
+    return wrap;
+  }
+
+  function slider(key, lo, hi, read, min, max, start) {
+    const box = document.createElement('div'); box.className = 'slide';
+    box.innerHTML = `<div class="ends"><span>${esc(lo)}</span><span>${esc(hi)}</span></div><div class="range"><span class="mid"></span><input type="range" min="${min}" max="${max}" step="1" value="${a[key] == null ? start : a[key]}" aria-label="${esc(lo)} to ${esc(hi)}"></div><div class="read"></div>`;
+    const inp = box.querySelector('input'), out = box.querySelector('.read');
+    const paint = () => { const v = Number(inp.value); inp.style.setProperty('--p', ((v - min) / (max - min) * 100) + '%'); out.textContent = read(v); };
+    inp.oninput = () => { a[key] = Number(inp.value); paint(); check(); };
+    paint();
+    return box;
+  }
+
+  function drinks(q) {
+    const chips = document.createElement('div'); chips.className = 'chips';
+    const rated = document.createElement('div'); rated.className = 'rated';
+    const rows = {};
+    info.cocktails.forEach((name) => {
+      const c = document.createElement('button'); c.type = 'button'; c.className = 'chip' + (a.drinks[name] ? ' on' : ''); c.textContent = name; c.dataset.drink = name;
+      c.onclick = () => {
+        if (rows[name]) { rows[name].remove(); delete rows[name]; delete a.drinks[name]; c.classList.remove('on'); return; }
+        c.classList.add('on');
+        const row = document.createElement('div'); row.className = 'row'; row.dataset.rating = name;
+        row.innerHTML = `<span>${esc(name)}</span>`; row.append(stars('d', 'sm', a.drinks, name));
+        rows[name] = row; rated.append(row);
+      };
+      chips.append(c);
+      if (a.drinks[name]) { const v = a.drinks[name]; c.click(); a.drinks[name] = v; rows[name].querySelectorAll('button').forEach((b, i) => b.classList.toggle('on', i < v)); }
+    });
+    return [chips, rated];
+  }
+
+  function textbox(key, max) {
+    const t = document.createElement('textarea'); t.maxLength = max; t.placeholder = 'Say as much or as little as you like'; t.value = a[key] || '';
+    const c = document.createElement('div'); c.className = 'count';
+    const paint = () => { c.textContent = t.value.length ? `${t.value.length} / ${max}` : ''; };
+    t.oninput = () => { a[key] = t.value; paint(); };
+    paint();
+    return [t, c];
+  }
+
+  function choice(key, options) {
+    const chips = document.createElement('div'); chips.className = 'chips';
+    options.forEach((o) => {
+      const c = document.createElement('button'); c.type = 'button'; c.className = 'chip fill' + (a[key] === o ? ' on' : ''); c.textContent = o;
+      c.onclick = () => { a[key] = o; chips.querySelectorAll('.chip').forEach((x) => x.classList.toggle('on', x === c)); };
+      chips.append(c);
+    });
+    return chips;
+  }
+
+  let sendBtn;
+  function check() { if (sendBtn) sendBtn.disabled = !(a.overall && a.recommend != null); }
+
+  function form() {
+    const v = info.visit;
+    const first = esc(info.first);
+    main.innerHTML = `<div class="hero"><div class="ey">Neighbors Only Preview</div><h1>How was it, ${first}?</h1><p>Two minutes, neighbor to neighbor.</p><div class="sub">You were one of the first through the door, so what you tell us shapes the menu before anyone else sees it.</div>${v ? `<div class="visit"><b>${esc(v.longLabel)}</b> · ${esc(v.label)}</div>` : ''}</div>`;
+    const qs = info.questions;
+    let n = 0;
+    const card = (q, title) => { const d = document.createElement('section'); d.className = 'q'; d.dataset.key = q.key; n++; d.innerHTML = `<div class="n">${String(n).padStart(2, '0')} / ${String(qs.filter((x) => x.q).length).padStart(2, '0')}</div><h2>${esc(title || q.q)}${q.required ? '<span class="req" aria-hidden="true">*</span>' : ''}</h2>${q.hint ? `<p class="hint">${esc(q.hint)}</p>` : ''}`; return d; };
+    let feel = null;
+    qs.forEach((q) => {
+      if (q.kind === 'stars') { const d = card(q); d.append(stars(q.key, 'lg', a, q.key)); main.append(d); }
+      else if (q.kind === 'drinks') { const d = card(q); d.append(...drinks(q)); main.append(d); }
+      else if (q.kind === 'slider') {
+        if (q.q) { feel = card(q); main.append(feel); }
+        const read = (x) => x === 5 ? q.mid : x < 5 ? `${q.lo}${x <= 1 ? '' : ' · ' + (5 - x)}` : `${q.hi}${x >= 9 ? '' : ' · ' + (x - 5)}`;
+        feel.append(slider(q.key, q.lo, q.hi, read, 0, 10, 5));
+      }
+      else if (q.kind === 'nps') {
+        const d = card(q); d.classList.add('nps');
+        const big = document.createElement('div'); big.className = 'big'; big.innerHTML = '<span>–</span><small>out of 10</small>';
+        const s = slider(q.key, q.lo, q.hi, (x) => '', 0, 10, 7);
+        const inp = s.querySelector('input');
+        const paintBig = () => { big.firstChild.textContent = a.recommend == null ? '–' : a.recommend; };
+        inp.addEventListener('input', paintBig);
+        inp.addEventListener('change', paintBig);
+        // a slider starts somewhere; count the first touch as an answer
+        inp.addEventListener('pointerdown', () => { if (a.recommend == null) { a.recommend = Number(inp.value); paintBig(); check(); } });
+        inp.addEventListener('keydown', () => { if (a.recommend == null) { a.recommend = Number(inp.value); paintBig(); check(); } });
+        s.querySelector('.read').remove();
+        d.append(big, s); paintBig(); main.append(d);
+      }
+      else if (q.kind === 'text') { const d = card(q); d.append(...textbox(q.key, q.max)); main.append(d); }
+      else if (q.kind === 'choice') { const d = card(q); d.append(choice(q.key, q.options)); main.append(d); }
+    });
+    const send = document.createElement('div'); send.className = 'send';
+    sendBtn = document.createElement('button'); sendBtn.className = 'pill'; sendBtn.id = 'send'; sendBtn.type = 'button'; sendBtn.textContent = info.answered ? 'Update my answers' : 'Send it to the team';
+    const err = document.createElement('div'); err.className = 'err'; err.id = 'err';
+    const fine = document.createElement('div'); fine.className = 'fine'; fine.textContent = 'Starred questions are the only must. Your answers go to the Neighborly team, with your name, so we can thank you properly.';
+    send.append(sendBtn, err, fine); main.append(send);
+    sendBtn.onclick = submit;
+    check();
+  }
+
+  async function submit() {
+    sendBtn.disabled = true; sendBtn.textContent = 'Sending'; document.getElementById('err').textContent = '';
+    try {
+      const r = await fetch('/api/survey', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, answers: a }) });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error === 'overall_required' || d.error === 'recommend_required' ? 'Give the night its stars and a number first.' : 'That didn’t go through. Try once more.');
+      done();
+    } catch (e) { document.getElementById('err').textContent = e.message; sendBtn.disabled = false; sendBtn.textContent = 'Try again'; }
+  }
+
+  function done() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    main.innerHTML = `<div class="done"><div class="ey">Neighbors Only Preview</div>
+      <div class="gold"><img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly"><div class="ey">Received</div><b>Thank you, ${esc(info.first)}.</b><span>Your notes are with the team. A few of them will make it on to the menu before the doors open to anyone else.</span><div class="rule">Neighbors only. Always.</div></div>
+      <p>We're glad you were one of the first. See you back at the bar.</p>
+      <div class="acts"><a class="menu-link" href="/menu">The menu</a><button class="link" id="again" type="button">Change an answer</button></div></div>`;
+    document.getElementById('again').onclick = () => { info.answered = true; form(); };
+  }
+
+  async function boot() {
+    if (!id) return lost('This link is missing its ticket. Open the one from your email.');
+    try {
+      const r = await fetch('/api/survey?id=' + encodeURIComponent(id), { cache: 'no-store' });
+      if (r.status === 404) return lost('We couldn’t find that ticket. Open the link from your email.');
+      if (!r.ok) throw new Error();
+      info = await r.json();
+      if (info.answers) {
+        Object.assign(a, info.answers);
+        a.drinks = { ...(info.answers.drinks || {}) };
+        if (!a.change) a.change = ''; if (!a.keep) a.keep = '';
+      }
+      form();
+    } catch { lost('Something went wrong loading this. Give it another try in a moment.'); }
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

@@ -1,20 +1,50 @@
 {
   "rewrites": [
-    { "source": "/t/:id", "destination": "/index.html" },
-    { "source": "/menu", "destination": "/menu.html" }
+    {
+      "source": "/t/:id",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/menu",
+      "destination": "/menu.html"
+    },
+    {
+      "source": "/f/:id",
+      "destination": "/survey.html"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "no-referrer" }
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        }
       ]
     },
     {
       "source": "/api/(.*)",
-      "headers": [ { "key": "Cache-Control", "value": "no-store" } ]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/survey-cron",
+      "schedule": "*/10 * * * *"
     }
   ]
 }

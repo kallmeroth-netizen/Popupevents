@@ -7,6 +7,8 @@
 //   tickets/<id>/visit~<YYYY-MM-DD>~<hour>~<setMs>   (newest wins; date "none" clears)
 //   tickets/<id>/plus~<b64url name>~<setMs>         (newest wins; empty name removes)
 //   tickets/<id>/email~<b64url address>~<setMs>     (newest wins; for the confirmation email)
+//   tickets/<id>/survey~<sentMs>                     (the feedback email went out)
+//   tickets/<id>/feedback~<b64url json>~<setMs>      (the guest's answers; newest wins)
 const { put, list, del } = require('@vercel/blob');
 
 const ID_RE = /^[a-z0-9]{10,32}$/;
@@ -36,7 +38,7 @@ async function marker(pathname) {
 }
 
 function parseFolder(id, blobs) {
-  const t = { id, name: '', createdAt: null, openedAt: null, hereAt: null, redeemed: false, qty: 0, redeemedAt: null, visit: null, visitAt: 0, plusOne: '', plusAt: 0, email: '', emailAt: 0 };
+  const t = { id, name: '', createdAt: null, openedAt: null, hereAt: null, redeemed: false, qty: 0, redeemedAt: null, visit: null, visitAt: 0, plusOne: '', plusAt: 0, email: '', emailAt: 0, surveySentAt: null, feedback: null, feedbackAt: 0 };
   for (const b of blobs) {
     const leaf = b.pathname.split('/').pop();
     const parts = leaf.split('~');
@@ -56,6 +58,12 @@ function parseFolder(id, blobs) {
     } else if (parts[0] === 'email') {
       const at = Number(parts[2]) || 0;
       if (at >= t.emailAt) { t.emailAt = at; t.email = unb64u(parts[1] || ''); }
+    } else if (parts[0] === 'survey') {
+      const at = Number(parts[1]) || 0;
+      if (at && (!t.surveySentAt || at < t.surveySentAt)) t.surveySentAt = at;
+    } else if (parts[0] === 'feedback') {
+      const at = Number(parts[2]) || 0;
+      if (at >= t.feedbackAt) { t.feedbackAt = at; try { t.feedback = JSON.parse(unb64u(parts[1] || '')) || null; } catch { t.feedback = null; } }
     } else if (parts[0] === 'redeemed') {
       const at = Number(parts[2]) || 0;
       if (!t.redeemed || at < (t.redeemedAt || Infinity)) {
@@ -124,6 +132,15 @@ async function setPlusOne(id, name) {
   return getTicket(id);
 }
 
+// Feedback: stamps the survey as sent, and stores the guest's answers (compact JSON in the pathname).
+async function markSurveySent(id) {
+  await marker(`tickets/${id}/survey~${Date.now()}`);
+}
+async function setFeedback(id, answers) {
+  await marker(`tickets/${id}/feedback~${b64u(JSON.stringify(answers))}~${Date.now()}`);
+  return getTicket(id);
+}
+
 async function redeemTicket(id, qty) {
   await marker(`tickets/${id}/redeemed~${qty}~${Date.now()}`);
   return getTicket(id);
@@ -181,4 +198,4 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(x, y);
 }
 
-module.exports = { ID_RE, getTicket, createTicket, createTickets, markOnce, setVisit, clearVisit, setPlusOne, setEmail, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };
+module.exports = { ID_RE, getTicket, createTicket, createTickets, markOnce, setVisit, clearVisit, setPlusOne, setEmail, markSurveySent, setFeedback, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };

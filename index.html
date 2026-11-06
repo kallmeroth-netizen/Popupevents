@@ -640,7 +640,8 @@
   function showRedeemed(animate) {
     const line = el('div', 'fine', 'Redeemed · ' + ticket.qty + (ticket.qty === 1 ? ' drink' : ' drinks') + (ticket.redeemedAt ? ' · ' + fmt(ticket.redeemedAt) : ''));
     const thanks = el('div', 'note', 'You were one of the very first through the door. Thank you for trying the Neighbors Only bar; we can’t wait to have you back.');
-    setCtl(thanks, menuLink(), line);
+    const say = el('a', 'link', 'Tell us how it was'); say.href = '/f/' + ticket.id; say.id = 'sayLink';
+    setCtl(thanks, menuLink(), say, line);
     card.classList.add('redeemed');
     if (animate) {
       stamp.classList.add('show');
