@@ -435,7 +435,7 @@
   function showPlanner(changing) {
     const box = el('div', 'plan');
     const hd = el('div', 'plan-hd');
-    const intro = el('p', null, 'Pick the day and hour that suit you. We’ll keep the spot just for you.');
+    const intro = el('p', null, 'Pick a day and an hour window. We’ll hold the spot for you.');
     const short = (d) => new Date(d + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
     const where = el('p', 'where', 'Neighborly Brentwood' + (slots.range ? ' · ' + short(slots.range.start) + ' to ' + short(slots.range.end) : ''));
     hd.append(el('h3', null, changing ? 'Move your visit' : 'When will we see you?'), intro, where);
