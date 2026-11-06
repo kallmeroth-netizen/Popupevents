@@ -114,41 +114,37 @@ function surveyHtml(x) {
   const site = SITE();
   const e = (k) => esc(x[k]);
   const font = (f) => `font-family:'${f}','Helvetica Neue',Helvetica,Arial,sans-serif;`;
+  // The whole card is the designed image (assets/email/thank-you-for-visiting.jpg); the
+  // image links to the survey, with a text link beneath for inboxes that hide images.
   return `<style>
 @font-face{font-family:"Futura Neighborly";src:url(${site}/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600}
 @font-face{font-family:"DM Sans";src:url(${site}/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400}
 </style>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F1E9;">
-<tr><td align="center" style="padding:36px 16px 40px;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;">
-  <tr><td style="padding:0 6px 18px;"><img src="${site}/assets/neighborly-wordmark-dark.png" width="150" alt="Neighborly" style="display:block;width:150px;height:auto;border:0;"></td></tr>
-  <tr><td style="background:#FFFFFF;border:1px solid #E6E2DA;border-radius:22px;padding:36px 34px 34px;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-      <tr><td style="${font('Futura Neighborly')}font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6B7280;font-weight:700;padding-bottom:14px;">Neighbors Only Preview</td></tr>
-      <tr><td style="${font('Futura Neighborly')}font-weight:700;font-size:21px;line-height:1.25;text-transform:uppercase;color:#1E2329;padding-bottom:14px;">${e('headline')}</td></tr>
-      <tr><td style="${font('DM Sans')}font-size:15px;line-height:1.6;color:#3A4049;padding-bottom:28px;">${e('intro')}</td></tr>
-      <tr><td align="left" style="padding-bottom:22px;">
-        <a href="${e('survey_link')}" style="display:inline-block;background:#E87242;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:16px 32px;${font('Futura Neighborly')}font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Tell us how it was</a>
-      </td></tr>
-      <tr><td style="${font('Futura Neighborly')}font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#A8ADB5;font-weight:700;">Two minutes. Neighbor to neighbor.</td></tr>
-    </table>
+<tr><td align="center" style="padding:28px 16px 36px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
+  <tr><td style="border-radius:22px;overflow:hidden;">
+    <a href="${e('survey_link')}" style="display:block;text-decoration:none;"><img src="${site}/assets/email/thank-you-for-visiting.jpg" width="600" alt="Thank you for visiting. We loved having you at the Neighbors Only preview. Two minutes, neighbor to neighbor: tell us how it was." style="display:block;width:100%;max-width:600px;height:auto;border:0;border-radius:22px;"></a>
   </td></tr>
-  <tr><td style="padding:18px 8px 0;${font('DM Sans')}font-size:11px;line-height:1.55;color:#A8ADB5;">One email, no follow-ups.</td></tr>
+  <tr><td align="center" style="padding:22px 8px 0;">
+    <a href="${e('survey_link')}" style="${font('Futura Neighborly')}font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#1E2329;text-decoration:underline;text-underline-offset:3px;">Tell us how it was</a>
+  </td></tr>
+  <tr><td align="center" style="padding:14px 8px 0;${font('DM Sans')}font-size:11px;line-height:1.55;color:#A8ADB5;">One email, no follow-ups.</td></tr>
 </table>
 </td></tr></table>`;
 }
-const surveyTemplateHtml = () => surveyHtml(Object.fromEntries(['headline', 'intro', 'survey_link'].map((k) => [k, `{{${k}}}`])));
+const surveyTemplateHtml = () => surveyHtml({ survey_link: '{{survey_link}}' });
 
 function survey(t) {
   const v = visitLabels(t.visit);
   const first = (t.name || 'neighbor').split(' ')[0];
   const link = `${SITE()}/f/${t.id}`;
   const day = v ? v.longLabel : (t.redeemedAt ? new Date(t.redeemedAt).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Los_Angeles' }) : 'Your visit');
-  const headline = `Thank you for visiting, ${first}.`;
-  const intro = 'You were one of the first through the door. Before the bar opens to anyone else, we want all of it, the good and the not quite, so we can be nothing less than the best.';
+  const headline = 'Thank you for visiting.';
+  const intro = 'We loved having you at the Neighbors Only preview. Two minutes. Neighbor to neighbor.';
   const subject = `How was it, ${first}?`;
-  const text = [`Thank you for visiting, ${first}.`, '', intro, '', `Tell us how it was: ${link}`, 'Two minutes. Neighbor to neighbor.', '', 'Neighborly'].join('\n');
-  const html = surveyHtml({ headline, intro, survey_link: link });
+  const text = [`Thank you for visiting, ${first}.`, '', intro, '', `Tell us how it was: ${link}`, '', 'Neighborly'].join('\n');
+  const html = surveyHtml({ survey_link: link });
   const params = {
     to_email: t.email || '', to_name: t.name || 'Neighbor', first_name: first, guest_name: t.name || '',
     subject, headline, intro, visit_day: day, visit_date: v ? v.dateLabel : '', visit_window: v ? v.label : '', location: `Neighborly ${LOCATION}`,
