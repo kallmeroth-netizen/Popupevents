@@ -36,9 +36,9 @@ function designHtml(x) {
 @font-face{font-family:"Futura Neighborly";src:url(${site}/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600}
 @font-face{font-family:"DM Sans";src:url(${site}/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400}
 </style>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F2F2F2;">
 <tr><td align="center" style="padding:0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#FFFFFF;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#F2F2F2;">
   <tr><td style="padding:0;line-height:0;">
     <a href="${e('ticket_link')}" style="display:block;text-decoration:none;line-height:0;"><img src="${site}/assets/email/your-ticket-is-ready.jpg" width="600" alt="Your ticket is ready. Open your ticket and tap I'm here when you arrive. Your first drink and your meal are both on us." style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a>
   </td></tr>
@@ -110,9 +110,9 @@ function surveyHtml(x) {
 @font-face{font-family:"Futura Neighborly";src:url(${site}/fonts/FuturaCyrillicDemi.ttf) format("truetype");font-weight:600}
 @font-face{font-family:"DM Sans";src:url(${site}/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400}
 </style>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F2F2F2;">
 <tr><td align="center" style="padding:0;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#FFFFFF;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#F2F2F2;">
   <tr><td style="padding:0;line-height:0;">
     <a href="${e('survey_link')}" style="display:block;text-decoration:none;line-height:0;"><img src="${site}/assets/email/thank-you-for-visiting.jpg" width="600" alt="Thank you for visiting. We loved having you at the Neighbors Only preview. Two minutes, neighbor to neighbor." style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a>
   </td></tr>
