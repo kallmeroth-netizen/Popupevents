@@ -33,7 +33,7 @@ const STEPS = [
     { key: 'service', q: 'Rate your experience with our bar team.', hint: '1 = Poor, 5 = Excellent', kind: 'matrix', rows: SERVICE_ROWS, required: true },
   ] },
   { title: 'Final Thoughts', questions: [
-    { key: 'favorite', q: "What's your favorite drink and who makes it best?", kind: 'text', placeholder: 'Drink and bartender', required: true, error: 'Please tell us your favorite drink to submit.' },
+    { key: 'favorite', q: "What's your favorite drink, and which bar or restaurant makes it best?", kind: 'text', placeholder: 'The drink, and where', required: true, error: 'Please tell us your favorite drink to submit.' },
     { key: 'notes', q: "Anything else you'd like the team to know?", kind: 'text', placeholder: 'Optional' },
     { key: 'followup', q: 'May we follow up with you?', kind: 'choice', options: FOLLOWUP, required: true, error: 'Please choose an option to submit.' },
   ] },
