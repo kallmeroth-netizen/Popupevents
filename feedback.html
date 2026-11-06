@@ -372,7 +372,7 @@ const NBGate = {
       const head = `<div><div class="who">${esc(t.name || 'Guest')}${t.plusOne ? ' <span class="muted">and ' + esc(t.plusOne) + '</span>' : ''}</div><div class="sub">${t.visit ? esc(t.visit.dateLabel) + ' · ' + esc(t.visit.label) : 'No visit on record'}${t.redeemedAt ? ' · redeemed ' + esc(when(t.redeemedAt)) : ''}</div>`;
       if (!a) {
         const why = t.surveySentAt ? `Email sent ${esc(when(t.surveySentAt))}` : !t.email ? 'No email address, so nothing to send' : t.redeemedAt ? 'Goes out after the wait' : 'Not redeemed yet';
-        return `<div class="resp">${head}<div class="pend"><span class="step ${t.surveySentAt ? 'on' : ''}">${why}</span>${t.email ? `<span class="step on">${esc(t.email)}</span>` : ''}${t.email && t.redeemed && !t.surveySentAt ? `<button class="btn ghost" data-send="${esc(t.id)}" type="button">Send now</button>` : ''}</div></div></div>`;
+        return `<div class="resp">${head}<div class="pend"><span class="step ${t.surveySentAt ? 'on' : ''}">${why}</span>${t.email ? `<span class="step on">${esc(t.email)}</span>` : ''}${t.email ? `<button class="btn ghost" data-send="${esc(t.id)}" type="button">${t.surveySentAt ? 'Send again' : 'Send now'}</button>` : ''}</div></div></div>`;
       }
       const drinks = Object.entries(a.drinks || {});
       const score = (k, v, cls) => `<div class="score ${cls || ''}"><span class="k">${k}</span>${v}</div>`;
@@ -389,6 +389,8 @@ const NBGate = {
   }
 
   async function sendNow(id, btn) {
+    const t = state.tickets.find((x) => x.id === id);
+    if (t && t.surveySentAt && !confirm('Send the feedback email to ' + (t.name || 'this guest') + ' again?')) return;
     btn.disabled = true; btn.textContent = 'Sending';
     try { await api('POST', { id }, '/api/survey-cron'); await load(); }
     catch (e) { btn.textContent = 'Failed'; setTimeout(() => { btn.disabled = false; btn.textContent = 'Send now'; }, 2000); }

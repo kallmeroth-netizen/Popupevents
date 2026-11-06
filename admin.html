@@ -355,12 +355,28 @@ const NBGate = {
       return `<div class="inv">
         <div><div class="who">${esc(t.name || 'Guest')}</div><div class="sub">Invited ${esc(day(t.createdAt))}</div></div>
         <div class="steps">${steps}</div>
-        <div class="actions">${t.visit && !t.redeemed ? `<button class="btn ghost" data-cv="${esc(t.id)}" type="button">Clear visit</button>` : ''}<button class="btn ghost" data-copy="${esc(t.id)}" type="button">Copy link</button><a class="btn ghost open" href="/t/${esc(t.id)}" target="_blank" rel="noopener">Open</a><button class="x" data-del="${esc(t.id)}" type="button" title="Delete invite" aria-label="Delete invite for ${esc(t.name || 'guest')}">&times;</button></div>
+        <div class="actions">${t.email ? `<button class="btn ghost" data-fb="${esc(t.id)}" type="button" title="${t.surveySentAt ? 'Sent ' + esc(when(t.surveySentAt)) + '. Sends it again.' : 'Email the feedback survey now'}">${t.surveySentAt ? 'Resend feedback' : 'Send feedback'}</button>` : ''}${t.visit && !t.redeemed ? `<button class="btn ghost" data-cv="${esc(t.id)}" type="button">Clear visit</button>` : ''}<button class="btn ghost" data-copy="${esc(t.id)}" type="button">Copy link</button><a class="btn ghost open" href="/t/${esc(t.id)}" target="_blank" rel="noopener">Open</a><button class="x" data-del="${esc(t.id)}" type="button" title="Delete invite" aria-label="Delete invite for ${esc(t.name || 'guest')}">&times;</button></div>
       </div>`;
     }).join('');
     $('list').querySelectorAll('[data-copy]').forEach((b) => b.onclick = () => copy(linkFor(b.dataset.copy), b, 'Copy link'));
     $('list').querySelectorAll('[data-del]').forEach((b) => b.onclick = () => del(b.dataset.del, b));
     $('list').querySelectorAll('[data-cv]').forEach((b) => b.onclick = () => clearVisit(b.dataset.cv, b));
+    $('list').querySelectorAll('[data-fb]').forEach((b) => b.onclick = () => sendFeedback(b.dataset.fb, b));
+  }
+
+  // force the feedback email to one guest, whatever their state
+  async function sendFeedback(id, btn) {
+    const t = state.tickets.find((x) => x.id === id);
+    if (!t || !confirm('Send the feedback email to ' + (t.name || 'this guest') + ' at ' + t.email + (t.surveySentAt ? ' again' : '') + '?')) return;
+    btn.disabled = true; const label = btn.textContent; btn.textContent = 'Sending';
+    try {
+      const r = await fetch('/api/survey-cron', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-key': state.key }, body: JSON.stringify({ id }) });
+      const d = await r.json().catch(() => ({}));
+      if (r.status === 401) { signOut('Wrong password.'); return; }
+      if (!r.ok) throw new Error(d.error === 'survey_mail_not_configured' ? 'EmailJS isn’t set up for the survey yet.' : d.error === 'no_email' ? 'No email on this invite.' : 'The email didn’t send. Check EmailJS.');
+      btn.textContent = 'Sent'; setTimeout(load, 800);
+    } catch (e) { alert(e.message); btn.textContent = label; }
+    finally { setTimeout(() => { btn.disabled = false; }, 1500); }
   }
 
   async function clearVisit(id, btn) {
