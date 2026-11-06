@@ -37,10 +37,10 @@ function designHtml(x) {
 @font-face{font-family:"DM Sans";src:url(${site}/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400}
 </style>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;">
-<tr><td align="center" style="padding:16px 12px 32px;">
+<tr><td align="center" style="padding:0 0 32px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
-  <tr><td bgcolor="#F2F2F2" style="padding:0;line-height:0;background:#F2F2F2;border-radius:22px 22px 0 0;">
-    <a href="${e('ticket_link')}" style="display:block;text-decoration:none;line-height:0;"><img src="${site}/assets/email/your-ticket-is-ready.jpg" width="600" alt="Your ticket is ready. Open your ticket and tap I'm here when you arrive. Your first drink and your meal are both on us." style="display:block;width:100%;max-width:600px;height:auto;border:0;border-radius:22px 22px 0 0;"></a>
+  <tr><td bgcolor="#F2F2F2" style="padding:0;line-height:0;background:#F2F2F2;">
+    <a href="${e('ticket_link')}" style="display:block;text-decoration:none;line-height:0;"><img src="${site}/assets/email/your-ticket-is-ready.jpg" width="600" alt="Your ticket is ready. Open your ticket and tap I'm here when you arrive. Your first drink and your meal are both on us." style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a>
   </td></tr>
   <tr><td bgcolor="#F2F2F2" style="background:#F2F2F2;border-radius:0 0 22px 22px;padding:40px 36px 44px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -114,12 +114,12 @@ function surveyHtml(x) {
 @font-face{font-family:"DM Sans";src:url(${site}/fonts/dm-sans-latin-400-normal.woff2) format("woff2");font-weight:400}
 </style>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;">
-<tr><td align="center" style="padding:16px 12px 32px;">
+<tr><td align="center" style="padding:0 0 32px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
-  <tr><td bgcolor="#F2F2F2" style="padding:0;line-height:0;background:#F2F2F2;border-radius:22px 22px 0 0;">
-    <a href="${e('survey_link')}" style="display:block;text-decoration:none;line-height:0;"><img src="${site}/assets/email/thank-you-for-visiting.jpg" width="600" alt="Thank you for visiting. We loved having you at the Neighbors Only preview, and would love to hear your thoughts." style="display:block;width:100%;max-width:600px;height:auto;border:0;border-radius:22px 22px 0 0;"></a>
+  <tr><td bgcolor="#F2F2F2" style="padding:0;line-height:0;background:#F2F2F2;">
+    <a href="${e('survey_link')}" style="display:block;text-decoration:none;line-height:0;"><img src="${site}/assets/email/thank-you-for-visiting.jpg" width="600" alt="Thank you for visiting. We loved having you at the Neighbors Only preview, and would love to hear your thoughts." style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a>
   </td></tr>
-  <tr><td bgcolor="#F2F2F2" style="background:#F2F2F2;border-radius:0 0 22px 22px;padding:34px 36px 38px;">
+  <tr><td bgcolor="#F2F2F2" style="background:#F2F2F2;border-radius:0 0 22px 22px;padding:36px 36px 36px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
       <tr><td align="center" style="padding:0;">
         <a href="${e('survey_link')}" style="display:inline-block;background:#E87142;color:#FFFFFF;text-decoration:none;border-radius:999px;padding:17px 40px;${font('Futura Neighborly')}font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">Tell us how it was</a>
