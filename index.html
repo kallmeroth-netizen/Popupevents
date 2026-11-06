@@ -616,7 +616,7 @@
 
     // step 2, on the day: check in
     if (ticket.visit.date === today) {
-      note.append('Today’s the day. Tap ', el('strong', null, 'I’m here'), ' when you arrive and show this to your host. Your seat and your meal are waiting.');
+      note.append('Tap ', el('strong', null, 'I’m here'), ' when you arrive and show this to your host. Your seat and your meal are waiting.');
       const b = el('button', 'pill primary', "I'm here"); b.id = 'hereBtn'; b.onclick = arrive;
       setCtl(note, visitRow(), b, guestRow(false), menuLink(), legal);
       return;
