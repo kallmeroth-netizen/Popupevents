@@ -142,7 +142,7 @@ function survey(t) {
   const day = v ? v.longLabel : (t.redeemedAt ? new Date(t.redeemedAt).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Los_Angeles' }) : 'Your visit');
   const headline = 'Thank you for visiting.';
   const intro = 'We loved having you at the Neighbors Only preview. Two minutes. Neighbor to neighbor.';
-  const subject = `How was it, ${first}?`;
+  const subject = 'We would love to hear your thoughts';
   const text = [`Thank you for visiting, ${first}.`, '', intro, '', `Tell us how it was: ${link}`, '', 'Neighborly'].join('\n');
   const html = surveyHtml({ survey_link: link });
   const params = {
