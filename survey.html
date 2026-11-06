@@ -20,7 +20,6 @@
     --ink:#1E2329; --text:#3A4049; --muted:#6B7280; --faint:#A8ADB5;
     --orange:#E87242; --orange-deep:#C25A30; --blush:#FDF3EC;
     --page:#FFFFFF; --bar:#F5F1E9; --line:#E6E2DA; --soft:#FAF8F4; --err:#C0473A;
-    --gold1:#C9A96E; --gold2:#E8D7A8; --gold3:#BD9655; --gold4:#DCC694; --gold-ink:#5E4A24;
     --futura:"Futura Neighborly","Futura PT",sans-serif; --taya:"TAYA Maya","Oswald",sans-serif; --tup:"Tuppence",Georgia,serif; --body:"Telegraf","DM Sans","Neue Haas Grotesk","Helvetica Neue",Arial,sans-serif;
   }
   *{box-sizing:border-box}
@@ -39,25 +38,26 @@
   .hero{text-align:center;margin-bottom:30px}
   .hero h1{margin:12px 0 0;font-family:var(--taya);font-weight:400;font-size:clamp(36px,11vw,50px);line-height:.95;letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
   .hero p{margin:12px auto 0;font-family:var(--tup);font-weight:400;font-size:clamp(20px,5.6vw,24px);line-height:1.2;color:var(--ink);max-width:380px}
+  .hero .sub{font-family:var(--body)}
   .hero .sub{font-family:var(--body);font-size:14.5px;line-height:1.55;color:var(--text);margin-top:12px;max-width:360px}
   .hero .visit{display:inline-flex;align-items:center;gap:10px;margin-top:16px;background:var(--blush);border:1px solid #F3D6C6;border-radius:999px;padding:9px 16px;font-size:13px;color:var(--ink)}
   .hero .visit b{font-weight:600}
 
   .q{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 20px 22px;margin-bottom:12px;animation:fade .5s ease both}
   .q .n{font-family:var(--futura);font-weight:600;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
-  .q h2{margin:0;font-family:var(--tup);font-weight:400;font-size:21px;line-height:1.2;color:var(--ink)}
+  .q h2{margin:0;font-family:var(--futura);font-weight:600;font-size:15px;line-height:1.3;text-transform:uppercase;color:var(--ink)}
   .q h2 + h2{margin-top:22px}
-  .q .hint{font-size:13px;line-height:1.45;color:var(--muted);margin:6px 0 0}
+  .q .hint{font-family:var(--body);font-size:13px;line-height:1.45;color:var(--muted);margin:6px 0 0}
   .q .req{color:var(--orange);margin-left:4px}
 
   /* stars */
   .stars{display:flex;align-items:center;gap:6px;margin-top:14px}
-  .stars button{appearance:none;background:none;border:0;padding:4px;cursor:pointer;color:#E3DED4;transition:transform .15s,color .15s;line-height:0}
-  .stars button svg{width:30px;height:30px;display:block}
+  .stars button{appearance:none;background:none;border:0;padding:4px;cursor:pointer;color:#DAD7E0;transition:transform .15s,color .15s;line-height:0}
+  .stars button svg{width:28px;height:28px;display:block}
   .stars button.on,.stars:hover button.hov{color:var(--orange)}
   .stars button:active{transform:scale(.9)}
   .stars .word{margin-left:10px;font-family:var(--futura);font-weight:600;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);min-height:1em}
-  .stars.sm button svg{width:22px;height:22px}
+  .stars.sm button svg{width:20px;height:20px}
   .stars.sm button{padding:3px}
 
   /* drinks */
@@ -104,14 +104,12 @@
 
   /* done */
   .done{text-align:center;animation:fade .6s ease both}
-  .gold{background:linear-gradient(135deg,var(--gold1) 0%,var(--gold2) 38%,var(--gold3) 62%,var(--gold4) 100%);border-radius:18px;padding:26px 24px 22px;text-align:left;margin:26px 0 22px;position:relative;overflow:hidden}
-  .gold::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.35) 48%,transparent 62%);transform:translateX(-120%);animation:shimmer 2.6s ease .6s 1 forwards}
-  @keyframes shimmer{to{transform:translateX(120%)}}
-  .gold img{width:104px;height:auto;display:block;opacity:.85}
-  .gold .ey{color:var(--gold-ink);margin-top:16px}
-  .gold b{display:block;font-family:var(--tup);font-weight:400;font-size:28px;line-height:1.1;color:var(--ink);margin-top:6px}
-  .gold span{display:block;font-size:15px;line-height:1.45;color:var(--ink);margin-top:6px}
-  .gold .rule{border-top:1px dashed rgba(94,74,36,.45);margin-top:18px;padding-top:12px;font-family:var(--futura);font-weight:600;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-ink)}
+  .pass{background:var(--orange);color:#fff;border-radius:18px;padding:26px 24px 22px;text-align:left;margin:26px 0 22px}
+  .pass img{width:104px;height:auto;display:block;opacity:.95}
+  .pass .ey{color:rgba(255,255,255,.85);margin-top:16px}
+  .pass b{display:block;font-family:var(--tup);font-weight:400;font-size:28px;line-height:1.1;color:#fff;margin-top:6px}
+  .pass span{display:block;font-size:15px;line-height:1.45;color:#fff;margin-top:6px}
+  .pass .rule{border-top:1px dashed rgba(255,255,255,.5);margin-top:18px;padding-top:12px;font-family:var(--futura);font-weight:600;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.9)}
   .done p{font-size:15px;line-height:1.55;color:var(--text);max-width:360px;margin:0 auto}
   .done .acts{display:flex;gap:18px;justify-content:center;margin-top:18px;flex-wrap:wrap}
   .menu-link{display:inline-flex;align-items:center;gap:8px;font-family:var(--futura);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);text-decoration:none;padding:6px 2px;border-bottom:1px solid var(--orange)}
@@ -124,7 +122,7 @@
   .lost{text-align:center;padding:60px 0}
   .lost h1{font-family:var(--taya);font-weight:400;font-size:40px;text-transform:uppercase;letter-spacing:.02em;margin:0 0 10px}
   .lost p{color:var(--text);font-size:15px;line-height:1.55}
-  @media (prefers-reduced-motion:reduce){.q,.done{animation:none}.gold::after{display:none}}
+  @media (prefers-reduced-motion:reduce){.q,.done{animation:none}}
 </style>
 </head>
 <body>
@@ -137,7 +135,7 @@
   const main = document.getElementById('main');
   const id = (location.pathname.match(/\/f\/([a-z0-9]+)/i) || [])[1] || new URLSearchParams(location.search).get('id') || '';
   const esc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.6l2.9 6.1 6.7.8-4.9 4.6 1.3 6.6L12 17.4l-6 3.3 1.3-6.6L2.4 9.5l6.7-.8z"/></svg>';
+  const STAR = '<svg viewBox="0 0 100 100" aria-hidden="true"><path fill="currentColor" d="M0 46 L50 10 L100 46 V100 H0 Z"/><circle fill="currentColor" cx="50" cy="9" r="7"/><circle fill="currentColor" cx="40" cy="16" r="6.5"/><circle fill="currentColor" cx="60" cy="16" r="6.5"/><circle fill="currentColor" cx="30" cy="23.5" r="6.5"/><circle fill="currentColor" cx="70" cy="23.5" r="6.5"/><circle fill="currentColor" cx="20" cy="31" r="6.5"/><circle fill="currentColor" cx="80" cy="31" r="6.5"/><circle fill="currentColor" cx="10" cy="38.5" r="6.5"/><circle fill="currentColor" cx="90" cy="38.5" r="6.5"/><circle fill="currentColor" cx="2" cy="45" r="5"/><circle fill="currentColor" cx="98" cy="45" r="5"/></svg>';
   const WORDS = ['', 'Not for me', 'It was fine', 'Good', 'Really good', 'Loved it'];
   const a = { drinks: {} };
   let info = null;
@@ -152,7 +150,7 @@
     const btns = [];
     const paint = (n, hover) => { btns.forEach((b, i) => { b.classList.toggle('on', i < (obj[k] || 0)); b.classList.toggle('hov', hover && i < n); }); if (size !== 'sm') word.textContent = WORDS[hover ? n : (obj[k] || 0)]; };
     for (let i = 1; i <= 5; i++) {
-      const b = document.createElement('button'); b.type = 'button'; b.innerHTML = STAR; b.setAttribute('aria-label', i + (i === 1 ? ' star' : ' stars')); b.dataset.star = i;
+      const b = document.createElement('button'); b.type = 'button'; b.innerHTML = STAR; b.setAttribute('aria-label', i + ' of 5'); b.dataset.star = i;
       b.onclick = () => { obj[k] = i; paint(i, false); check(); };
       b.onmouseenter = () => paint(i, true); b.onmouseleave = () => paint(0, false);
       btns.push(b); wrap.append(b);
@@ -216,7 +214,7 @@
   function form() {
     const v = info.visit;
     const first = esc(info.first);
-    main.innerHTML = `<div class="hero"><div class="ey">Neighbors Only Preview</div><h1>How was it, ${first}?</h1><p>Two minutes, neighbor to neighbor.</p><div class="sub">You were one of the first through the door, so what you tell us shapes the menu before anyone else sees it.</div>${v ? `<div class="visit"><b>${esc(v.longLabel)}</b> · ${esc(v.label)}</div>` : ''}</div>`;
+    main.innerHTML = `<div class="hero"><div class="ey">Neighbors Only Preview</div><h1>How was it, ${first}?</h1><p>We want to hear, neighbor to neighbor.</p><div class="sub">You were one of the first through the door. What you tell us shapes the menu before anyone else sees it.</div>${v ? `<div class="visit"><b>${esc(v.longLabel)}</b> · ${esc(v.label)}</div>` : ''}</div>`;
     const qs = info.questions;
     let n = 0;
     const card = (q, title) => { const d = document.createElement('section'); d.className = 'q'; d.dataset.key = q.key; n++; d.innerHTML = `<div class="n">${String(n).padStart(2, '0')} / ${String(qs.filter((x) => x.q).length).padStart(2, '0')}</div><h2>${esc(title || q.q)}${q.required ? '<span class="req" aria-hidden="true">*</span>' : ''}</h2>${q.hint ? `<p class="hint">${esc(q.hint)}</p>` : ''}`; return d; };
@@ -249,7 +247,7 @@
     const send = document.createElement('div'); send.className = 'send';
     sendBtn = document.createElement('button'); sendBtn.className = 'pill'; sendBtn.id = 'send'; sendBtn.type = 'button'; sendBtn.textContent = info.answered ? 'Update my answers' : 'Send it to the team';
     const err = document.createElement('div'); err.className = 'err'; err.id = 'err';
-    const fine = document.createElement('div'); fine.className = 'fine'; fine.textContent = 'Starred questions are the only must. Your answers go to the Neighborly team, with your name, so we can thank you properly.';
+    const fine = document.createElement('div'); fine.className = 'fine'; fine.textContent = 'The two marked questions are the only must. Your answers go to the Neighborly team, with your name, so we can thank you properly.';
     send.append(sendBtn, err, fine); main.append(send);
     sendBtn.onclick = submit;
     check();
@@ -268,7 +266,7 @@
   function done() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     main.innerHTML = `<div class="done"><div class="ey">Neighbors Only Preview</div>
-      <div class="gold"><img src="/assets/neighborly-wordmark-dark.png" alt="Neighborly"><div class="ey">Received</div><b>Thank you, ${esc(info.first)}.</b><span>Your notes are with the team. A few of them will make it on to the menu before the doors open to anyone else.</span><div class="rule">Neighbors only. Always.</div></div>
+      <div class="pass"><img src="/assets/neighborly-wordmark-white.png" alt="Neighborly"><div class="ey">Received</div><b>Thank you, ${esc(info.first)}.</b><span>Your notes are with the team. A few of them will make it on to the menu before the doors open to anyone else.</span><div class="rule">Neighbor to neighbor</div></div>
       <p>We're glad you were one of the first. See you back at the bar.</p>
       <div class="acts"><a class="menu-link" href="/menu">The menu</a><button class="link" id="again" type="button">Change an answer</button></div></div>`;
     document.getElementById('again').onclick = () => { info.answered = true; form(); };

@@ -343,7 +343,7 @@ const NBGate = {
         `<span class="step ${t.visit ? 'on' : ''}">${t.visit ? 'Visit ' + esc(t.visit.dateLabel) + ' · ' + esc(t.visit.label) : 'No time picked'}</span>`,
         `<span class="step ${t.plusOne ? 'on' : ''}">${t.plusOne ? '+1 ' + esc(t.plusOne) : 'No plus one'}</span>`,
         t.email ? `<span class="step on" title="Confirmation email">${esc(t.email)}</span>` : '',
-        t.feedback ? `<span class="step ok" title="Feedback in">Feedback ${'★'.repeat(t.feedback.overall || 0)}</span>` : t.surveySentAt ? `<span class="step on">Feedback email sent</span>` : '',
+        t.feedback ? `<span class="step ok" title="Feedback in">Feedback ${t.feedback.overall || 0}/5</span>` : t.surveySentAt ? `<span class="step on">Feedback email sent</span>` : '',
         `<span class="step ${opened ? 'on' : ''}">${opened ? 'Opened' + (t.openedAt ? ' ' + esc(when(t.openedAt)) : '') : 'Not opened'}</span>`,
         `<span class="step ${t.hereAt || t.redeemed ? 'on' : ''}">${t.hereAt ? 'Here ' + esc(when(t.hereAt)) : t.redeemed ? 'Here' : 'Not here yet'}</span>`,
         `<span class="step ${t.redeemed ? 'ok' : ''}">${t.redeemed ? 'Redeemed · ' + t.qty + (t.qty === 1 ? ' drink' : ' drinks') + (t.redeemedAt ? ' · ' + esc(when(t.redeemedAt)) : '') : 'Not redeemed'}</span>`,
