@@ -46,5 +46,18 @@
       "path": "/api/survey-cron",
       "schedule": "*/10 * * * *"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "exclusivepreview.vercel.app"
+        }
+      ],
+      "destination": "https://www.beneighborly.vip/$1",
+      "permanent": false
+    }
   ]
 }

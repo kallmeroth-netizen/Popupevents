@@ -16,7 +16,7 @@ const SURVEY_TEMPLATE = () => env('EMAILJS_SURVEY_TEMPLATE_ID', 'template_njpzl8
 const surveyConfigured = () => configured() && !!SURVEY_TEMPLATE();
 const PUBLIC_KEY = () => env('EMAILJS_PUBLIC_KEY', 'pW4-kj71suA1OsbFa');
 const PRIVATE_KEY = () => env('EMAILJS_PRIVATE_KEY', '');
-const SITE = () => env('SITE_URL', 'https://exclusivepreview.vercel.app').replace(/\/+$/, '');
+const SITE = () => env('SITE_URL', 'https://www.beneighborly.vip').replace(/\/+$/, '');
 const configured = () => !!(SERVICE() && TEMPLATE() && PUBLIC_KEY());
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

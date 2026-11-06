@@ -13,7 +13,7 @@ const images = require('./_wallet_assets');
 
 const env = (k) => (process.env[k] || '').trim();
 const pem = (k) => Buffer.from(env(k), 'base64');
-const SITE = () => env('SITE_URL') || 'https://exclusivepreview.vercel.app';
+const SITE = () => env('SITE_URL') || 'https://www.beneighborly.vip';
 
 // Local time in Brentwood as an ISO string with the right offset for that date.
 function relevantDate(date, hour) {

@@ -36,6 +36,12 @@ Per-guest ticket links, a bartender PIN + quantity flow, and an admin log.
 - `api/ticket.js` read a ticket (stamps the first open; POST `here` stamps "I'm here"), `api/redeem.js` bartender redemption, `api/tickets.js` admin create (one or many) + list + delete
 - `api/_store.js` ticket state kept in Vercel Blob, `api/_slots.js` visit windows and capacity, `api/_hub.js` the Marketing Hub calendar mirror, `api/slots.js` and `api/visit.js` the guest's day and time
 
+## Domain
+
+The site lives at `https://www.beneighborly.vip` (bare `beneighborly.vip` redirects there in Vercel). Email
+links, the Apple Wallet pass and the share image use that address by default; `SITE_URL` overrides it. Requests
+to the old `exclusivepreview.vercel.app` host are redirected to the new domain by `vercel.json`.
+
 ## Guest feedback (after the visit)
 
 Two hours after the bartender redeems a ticket (`SURVEY_DELAY_MIN`, default 120), the guest gets a
