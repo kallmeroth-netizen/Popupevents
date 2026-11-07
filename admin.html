@@ -205,6 +205,13 @@
   .empty { background: #fff; border-color: var(--line-strong); border-radius: 16px; }
   .foot { background: transparent; border-top-color: var(--line); }
   @media (max-width: 560px) { .inv { grid-template-columns: minmax(0, 1fr); } .inv .actions { flex-wrap: wrap; } }
+  @media (max-width: 560px) {
+    .hdr-in { flex-wrap: wrap; row-gap: 12px; }
+    .hdr-right { display: contents; }
+    .hdr .linkbtn { order: 1; }
+    .hdr .tabs { order: 2; width: 100%; }
+    .hdr .tabs a { flex: 1 1 0; justify-content: center; }
+  }
   @media (hover: none) { .shell .btn:hover { background: #fff; color: var(--ink); } .shell .btn.primary:hover { background: var(--ink); color: #fff; } }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
