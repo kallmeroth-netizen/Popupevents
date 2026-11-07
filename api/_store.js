@@ -7,6 +7,7 @@
 //   tickets/<id>/visit~<YYYY-MM-DD>~<hour>~<setMs>   (newest wins; date "none" clears)
 //   tickets/<id>/plus~<b64url name>~<setMs>         (newest wins; empty name removes)
 //   tickets/<id>/email~<b64url address>~<setMs>     (newest wins; for the confirmation email)
+//   tickets/<id>/note~<b64url text>~<setMs>          (host's note; newest wins, empty clears)
 //   tickets/<id>/survey~<sentMs>                     (the feedback email went out)
 //   tickets/<id>/feedback~<setMs>                    (the guest answered; newest wins)
 // The answers themselves are a JSON file, one per submission, never overwritten
@@ -40,7 +41,7 @@ async function marker(pathname) {
 }
 
 function parseFolder(id, blobs) {
-  const t = { id, name: '', createdAt: null, openedAt: null, hereAt: null, redeemed: false, qty: 0, redeemedAt: null, visit: null, visitAt: 0, plusOne: '', plusAt: 0, email: '', emailAt: 0, surveySentAt: null, feedback: null, feedbackAt: 0 };
+  const t = { id, name: '', createdAt: null, openedAt: null, hereAt: null, redeemed: false, qty: 0, redeemedAt: null, visit: null, visitAt: 0, plusOne: '', plusAt: 0, email: '', emailAt: 0, note: '', noteAt: 0, surveySentAt: null, feedback: null, feedbackAt: 0 };
   for (const b of blobs) {
     const leaf = b.pathname.split('/').pop();
     const parts = leaf.split('~');
@@ -60,6 +61,9 @@ function parseFolder(id, blobs) {
     } else if (parts[0] === 'email') {
       const at = Number(parts[2]) || 0;
       if (at >= t.emailAt) { t.emailAt = at; t.email = unb64u(parts[1] || ''); }
+    } else if (parts[0] === 'note') {
+      const at = Number(parts[2]) || 0;
+      if (at >= t.noteAt) { t.noteAt = at; t.note = unb64u(parts[1] || ''); }
     } else if (parts[0] === 'survey') {
       const at = Number(parts[1]) || 0;
       if (at && (!t.surveySentAt || at < t.surveySentAt)) t.surveySentAt = at;
@@ -127,6 +131,11 @@ async function clearVisit(id) {
 }
 async function setEmail(id, email) {
   await marker(`tickets/${id}/email~${b64u(email || '')}~${Date.now()}`);
+  return getTicket(id);
+}
+// Host's note about the guest; goes on to the hub calendar event (and Google) with the visit.
+async function setNote(id, note) {
+  await marker(`tickets/${id}/note~${b64u(note || '')}~${Date.now()}`);
   return getTicket(id);
 }
 async function setPlusOne(id, name) {
@@ -217,4 +226,4 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(x, y);
 }
 
-module.exports = { ID_RE, getTicket, createTicket, createTickets, markOnce, setVisit, clearVisit, setPlusOne, setEmail, markSurveySent, setFeedback, loadFeedback, loadAllFeedback, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };
+module.exports = { ID_RE, getTicket, createTicket, createTickets, markOnce, setVisit, clearVisit, setPlusOne, setEmail, setNote, markSurveySent, setFeedback, loadFeedback, loadAllFeedback, redeemTicket, allTickets, deleteTicket, deleteAllTickets, json, readBody, safeEqual };

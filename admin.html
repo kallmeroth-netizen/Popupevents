@@ -113,6 +113,8 @@
   .step.on::before { background: var(--terra); opacity: 1; }
   .step.ok { background: var(--green-bg); color: var(--green); }
   .step.ok::before { background: var(--green); opacity: 1; }
+  .step.note { background: #FFF2D6; color: #8A5A00; max-width: 100%; white-space: normal; }
+  .step.note::before { background: #C98A1C; opacity: 1; }
   .actions { display: flex; align-items: center; gap: 8px; }
   .x { background: none; border: 0; cursor: pointer; color: var(--faint); font-size: 18px; line-height: 1; padding: 6px 8px; border-radius: 8px; }
   .x:hover { color: #B3261E; background: #FBE4E1; }
@@ -388,6 +390,7 @@ const NBGate = {
         `<span class="step ${t.visit ? 'on' : ''}">${t.visit ? 'Visit ' + esc(t.visit.dateLabel) + ' · ' + esc(t.visit.label) : 'No time picked'}</span>`,
         `<span class="step ${t.plusOne ? 'on' : ''}">${t.plusOne ? '+1 ' + esc(t.plusOne) : 'No plus one'}</span>`,
         t.email ? `<span class="step on" title="Confirmation email">${esc(t.email)}</span>` : '',
+        t.note ? `<span class="step on note" title="Note, shown on the calendar">${esc(t.note)}</span>` : '',
         t.feedback ? `<span class="step ok" title="Feedback in">Feedback in</span>` : t.surveySentAt ? `<span class="step on">Feedback email sent</span>` : '',
         `<span class="step ${opened ? 'on' : ''}">${opened ? 'Opened' + (t.openedAt ? ' ' + esc(when(t.openedAt)) : '') : 'Not opened'}</span>`,
         `<span class="step ${t.hereAt || t.redeemed ? 'on' : ''}">${t.hereAt ? 'Here ' + esc(when(t.hereAt)) : t.redeemed ? 'Here' : 'Not here yet'}</span>`,
@@ -396,13 +399,25 @@ const NBGate = {
       return `<div class="inv">
         <div><div class="who">${esc(t.name || 'Guest')}</div><div class="sub">Invited ${esc(day(t.createdAt))}</div></div>
         <div class="steps">${steps}</div>
-        <div class="actions">${t.email ? `<button class="btn ghost" data-fb="${esc(t.id)}" type="button" title="${t.surveySentAt ? 'Sent ' + esc(when(t.surveySentAt)) + '. Sends it again.' : 'Email the feedback survey now'}">${t.surveySentAt ? 'Resend feedback' : 'Send feedback'}</button>` : ''}${t.visit && !t.redeemed ? `<button class="btn ghost" data-cv="${esc(t.id)}" type="button">Clear visit</button>` : ''}<button class="btn ghost" data-copy="${esc(t.id)}" type="button">Copy link</button><a class="btn ghost open" href="/t/${esc(t.id)}" target="_blank" rel="noopener">Open</a><button class="x" data-del="${esc(t.id)}" type="button" title="Delete invite" aria-label="Delete invite for ${esc(t.name || 'guest')}">&times;</button></div>
+        <div class="actions"><button class="btn ghost" data-note="${esc(t.id)}" type="button" title="${t.note ? 'Edit the note' : 'Add a note for the team; it shows on the calendar'}">${t.note ? 'Edit note' : 'Note'}</button>${t.email ? `<button class="btn ghost" data-fb="${esc(t.id)}" type="button" title="${t.surveySentAt ? 'Sent ' + esc(when(t.surveySentAt)) + '. Sends it again.' : 'Email the feedback survey now'}">${t.surveySentAt ? 'Resend feedback' : 'Send feedback'}</button>` : ''}${t.visit && !t.redeemed ? `<button class="btn ghost" data-cv="${esc(t.id)}" type="button">Clear visit</button>` : ''}<button class="btn ghost" data-copy="${esc(t.id)}" type="button">Copy link</button><a class="btn ghost open" href="/t/${esc(t.id)}" target="_blank" rel="noopener">Open</a><button class="x" data-del="${esc(t.id)}" type="button" title="Delete invite" aria-label="Delete invite for ${esc(t.name || 'guest')}">&times;</button></div>
       </div>`;
     }).join('');
     $('list').querySelectorAll('[data-copy]').forEach((b) => b.onclick = () => copy(linkFor(b.dataset.copy), b, 'Copy link'));
     $('list').querySelectorAll('[data-del]').forEach((b) => b.onclick = () => del(b.dataset.del, b));
     $('list').querySelectorAll('[data-cv]').forEach((b) => b.onclick = () => clearVisit(b.dataset.cv, b));
     $('list').querySelectorAll('[data-fb]').forEach((b) => b.onclick = () => sendFeedback(b.dataset.fb, b));
+    $('list').querySelectorAll('[data-note]').forEach((b) => b.onclick = () => editNote(b.dataset.note, b));
+  }
+
+  // a note for the team: on the invite, on the hub calendar, and on to Google with the visit
+  async function editNote(id, btn) {
+    const t = state.tickets.find((x) => x.id === id);
+    if (!t) return;
+    const v = prompt('Note for ' + (t.name || 'this guest') + ' (shows on the calendar event). Leave empty to remove.', t.note || '');
+    if (v === null) return;
+    btn.disabled = true;
+    try { const { ticket } = await api('POST', { id, note: v }); state.tickets = state.tickets.map((x) => x.id === id ? ticket : x); render(); }
+    catch (e) { if (e.message !== 'unauthorized') alert(e.message); btn.disabled = false; }
   }
 
   // force the feedback email to one guest, whatever their state
@@ -468,8 +483,8 @@ const NBGate = {
   function exportCsv() {
     const cell = (v) => { const s = String(v == null ? '' : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
     const iso = (ms) => ms ? new Date(ms).toLocaleString() : '';
-    const lines = [['Guest', 'Email', 'Plus one', 'Visit date', 'Window', 'Link', 'Invited', 'Opened', 'Here', 'Redeemed', 'Drinks']].concat(
-      state.tickets.map((t) => [t.name, t.email || '', t.plusOne || '', t.visit ? t.visit.date : '', t.visit ? t.visit.label : '', linkFor(t.id), iso(t.createdAt), iso(t.openedAt), iso(t.hereAt), iso(t.redeemedAt), t.redeemed ? t.qty : '']));
+    const lines = [['Guest', 'Email', 'Plus one', 'Note', 'Visit date', 'Window', 'Link', 'Invited', 'Opened', 'Here', 'Redeemed', 'Drinks']].concat(
+      state.tickets.map((t) => [t.name, t.email || '', t.plusOne || '', t.note || '', t.visit ? t.visit.date : '', t.visit ? t.visit.label : '', linkFor(t.id), iso(t.createdAt), iso(t.openedAt), iso(t.hereAt), iso(t.redeemedAt), t.redeemed ? t.qty : '']));
     const url = URL.createObjectURL(new Blob(['﻿' + lines.map((r) => r.map(cell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' }));
     const a = document.createElement('a'); a.href = url; a.download = 'exclusive-preview-invites.csv'; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);

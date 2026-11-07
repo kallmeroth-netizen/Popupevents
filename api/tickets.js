@@ -1,4 +1,4 @@
-const { createTicket, createTickets, allTickets, loadAllFeedback, getTicket, clearVisit, deleteTicket, deleteAllTickets, json, readBody, safeEqual, ID_RE } = require('./_store');
+const { createTicket, createTickets, allTickets, loadAllFeedback, getTicket, clearVisit, setNote, deleteTicket, deleteAllTickets, json, readBody, safeEqual, ID_RE } = require('./_store');
 const { visitLabels } = require('./_slots');
 const { syncVisit, removeVisit, removeAll, reconcile } = require('./_hub');
 
@@ -24,6 +24,16 @@ module.exports = async (req, res) => {
       if (body.resync === true) {
         const result = await reconcile(await allTickets());
         return json(res, result.ok ? 200 : 502, result);
+      }
+      // Host's note on a guest: { id, note } (empty clears). Carried to the hub calendar with the visit.
+      if (Object.prototype.hasOwnProperty.call(body, 'note')) {
+        const id = String(body.id || '').toLowerCase();
+        if (!ID_RE.test(id)) return json(res, 400, { error: 'bad_id' });
+        const t = await getTicket(id);
+        if (!t) return json(res, 404, { error: 'not_found' });
+        const after = await setNote(id, String(body.note || '').replace(/\s+/g, ' ').trim().slice(0, 300));
+        const synced = after.visit && !after.redeemed ? await syncVisit(after).catch(() => false) : false;
+        return json(res, 200, { ticket: withLabels(after), synced });
       }
       // Host frees a window: { id, clearVisit: true }
       if (body.clearVisit === true) {

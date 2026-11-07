@@ -24,9 +24,9 @@ function eventFor(t) {
     name: `Bar Preview: ${who}`,
     start: v.date, end: v.date, time: v.time,
     cat: 'influencer', sub: 'Neighbors Only Preview',
-    notes: [`${LOCATION}, ${v.label}`, t.plusOne ? `Plus one: ${t.plusOne}` : 'No plus one yet', 'Booked from the drink ticket'].join('. ') + '.',
+    notes: [t.note ? t.note.trim().replace(/\.$/, '') : '', `${LOCATION}, ${v.label}`, t.plusOne ? `Plus one: ${t.plusOne}` : 'No plus one yet', 'Booked from the drink ticket'].filter(Boolean).join('. ') + '.',
     confirmed: true, hold: false, marketplace: false,
-    external: 'exclusivepreview', ticketId: t.id, guest: t.name, plusOne: t.plusOne || '', window: v.label,
+    external: 'exclusivepreview', ticketId: t.id, guest: t.name, plusOne: t.plusOne || '', window: v.label, note: t.note || '',
     updatedAt: Date.now(),
   };
 }
