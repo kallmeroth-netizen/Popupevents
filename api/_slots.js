@@ -23,7 +23,7 @@
 const TZ = 'America/Los_Angeles';
 const WINDOWS = [16, 17, 19, 20];
 const START = () => (process.env.VISIT_START || '2026-11-04').trim();
-const END = () => (process.env.VISIT_END || '2026-11-15').trim();
+const END = () => (process.env.VISIT_END || '2026-11-16').trim();
 const LOCATION = 'Brentwood';
 
 const windowCap = () => Math.max(1, parseInt(process.env.VISIT_WINDOW_CAP, 10) || 1);
