@@ -33,6 +33,7 @@
   .hdr{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .2s}
   .hdr.stuck{border-bottom-color:var(--line)}
   .hdr-in{max-width:1040px;margin:0 auto;padding:10px clamp(12px,3vw,24px);display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+  .standalone .back{display:none}
   .back{justify-self:start;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px 0 8px;border-radius:999px;color:var(--ink);text-decoration:none;font-family:var(--futura);font-weight:600;font-size:12px;text-transform:uppercase;transition:background .2s,color .2s}
   .back svg{width:22px;height:22px;transition:transform .2s}
   .back:hover{background:#F6F5F2;color:var(--ink)}
@@ -213,6 +214,9 @@
   // the ticket id rides along as ?t=<id>, so the back arrow lands on the right ticket
   const id = (new URLSearchParams(location.search).get('t') || '').toLowerCase().replace(/[^a-z0-9]/g, '');
   const home = id ? '/t/' + id : '/';
+  // /cocktails is the standalone menu (linked from emails): no ticket to go back to
+  const standalone = /^\/cocktails\/?$/.test(location.pathname) && !id;
+  if (standalone) { document.documentElement.classList.add('standalone'); document.querySelectorAll('#back, #back2').forEach((a) => a.remove()); }
   let cameFromTicket = false;
   try { const r = new URL(document.referrer); cameFromTicket = r.origin === location.origin && r.pathname.startsWith('/t/'); } catch {}
   document.querySelectorAll('#back, #back2').forEach((a) => {

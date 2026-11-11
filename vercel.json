@@ -11,6 +11,10 @@
     {
       "source": "/f/:id",
       "destination": "/survey.html"
+    },
+    {
+      "source": "/cocktails",
+      "destination": "/menu.html"
     }
   ],
   "headers": [
