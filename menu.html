@@ -216,7 +216,7 @@
   const home = id ? '/t/' + id : '/';
   // /cocktails is the standalone menu (linked from emails): no ticket to go back to
   const standalone = /^\/cocktails\/?$/.test(location.pathname) && !id;
-  if (standalone) { document.documentElement.classList.add('standalone'); document.querySelectorAll('#back, #back2').forEach((a) => a.remove()); }
+  if (standalone) { document.documentElement.classList.add('standalone'); document.querySelectorAll('#back, #back2, .close').forEach((a) => a.remove()); }
   let cameFromTicket = false;
   try { const r = new URL(document.referrer); cameFromTicket = r.origin === location.origin && r.pathname.startsWith('/t/'); } catch {}
   document.querySelectorAll('#back, #back2').forEach((a) => {
