@@ -190,7 +190,7 @@
       return sec;
     });
     const done = document.createElement('section'); done.className = 'step'; done.dataset.title = 'Thank You'; done.id = 'doneStep';
-    done.innerHTML = `<div class="done"><img class="houses" src="/assets/neighborly-wordmark-dark.png" alt="Neighborly"><div class="g1">Thank you, ${first}</div><div class="g2">cheers, neighbor.</div><p>Your notes go straight to our bar team as we finalize the menu. We look forward to serving the entire neighborhood on 11/11.</p><div class="home"><span class="ey" id="homeLine">Taking you home in a moment</span><a class="pill primary" href="https://beneighborly.com" id="homeBtn">Back to Neighborly</a><button type="button" class="link" id="again">Change an answer</button></div></div>`;
+    done.innerHTML = `<div class="done"><img class="houses" src="/assets/neighborly-wordmark-dark.png" alt="Neighborly"><div class="g1">Thank you, ${first}</div><div class="g2">cheers, neighbor.</div><p>Your notes go straight to our bar team as we finalize the menu. We look forward to serving the entire neighborhood soon.</p><div class="home"><span class="ey" id="homeLine">Taking you home in a moment</span><a class="pill primary" href="https://beneighborly.com" id="homeBtn">Back to Neighborly</a><button type="button" class="link" id="again">Change an answer</button></div></div>`;
     steps.push(done);
     stepsEl.innerHTML = ''; steps.forEach((s) => stepsEl.append(s));
     $('#actions').style.display = '';
