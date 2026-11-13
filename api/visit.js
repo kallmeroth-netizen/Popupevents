@@ -6,7 +6,7 @@
 // Every change is mirrored to the Marketing Hub calendar.
 const { getTicket, allTickets, setVisit, clearVisit, setPlusOne, setEmail, json, readBody, ID_RE } = require('./_store');
 const { sendConfirmation, EMAIL_RE, configured: mailConfigured } = require('./_mail');
-const { availability, WINDOWS, DATE_RE, ticketView } = require('./_slots');
+const { availability, windowsFor, DATE_RE, ticketView } = require('./_slots');
 const { syncVisit } = require('./_hub');
 
 module.exports = async (req, res) => {
@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
     const date = String(body.date || '');
     const hour = parseInt(body.hour, 10);
     if (!DATE_RE.test(date)) return json(res, 400, { error: 'bad_date' });
-    if (!WINDOWS.includes(hour)) return json(res, 400, { error: 'bad_hour' });
+    if (!windowsFor(date).includes(hour)) return json(res, 400, { error: 'bad_hour' });
     const days = availability(await allTickets(), id);
     const day = days.find((d) => d.date === date);
     if (!day) return json(res, 400, { error: 'bad_date' });

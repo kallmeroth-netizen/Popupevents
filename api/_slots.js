@@ -20,6 +20,8 @@
 //                     Set "off" to release them all once bookings fill up.
 //   VISIT_OPEN_DATES  days that are bookable no matter the horizon, comma list
 //                     (default 2026-11-12,2026-11-13: Thursday and Friday of the second week).
+//   VISIT_EXTRA_WINDOWS  one-off windows added on a date, "YYYY-MM-DD:HH,..." (default
+//                     2026-11-13:18, the 6 to 7 PM window on Friday the 13th).
 const TZ = 'America/Los_Angeles';
 const WINDOWS = [16, 17, 19, 20];
 const START = () => (process.env.VISIT_START || '2026-11-04').trim();
@@ -43,6 +45,9 @@ function holdsFor(date, todayDate) {
   return pick === 0 ? [] : [OFF_PEAK[pick - 1]];
 }
 const openDates = () => (process.env.VISIT_OPEN_DATES || '2026-11-12,2026-11-13').split(',').map((s) => s.trim()).filter(Boolean);
+// Extra windows on specific dates (the skipped 6 to 7 PM, opened by hand).
+const extraWindows = (date) => (process.env.VISIT_EXTRA_WINDOWS || '2026-11-13:18').split(',').map((s) => s.trim()).filter((s) => s.startsWith(date + ':')).map((s) => Number(s.split(':')[1])).filter((h) => h >= 12 && h <= 23);
+const windowsFor = (date) => [...new Set([...WINDOWS, ...extraWindows(date)])].sort((a, b) => a - b);
 const openThrough = (todayDate) => { const n = openDays(); const d = n > 0 ? addDays(todayDate, n - 1) : END(); return d < END() ? d : END(); };
 const dayCap = () => Math.max(1, parseInt(process.env.VISIT_DAY_CAP, 10) || 4);
 
@@ -85,8 +90,9 @@ function availability(tickets, excludeId, now = new Date()) {
     const c = counts[date] || { total: 0 };
     const dayFull = c.total >= dayCap();
     const later = date > through && !openDates().includes(date);
-    const held = later ? WINDOWS.slice() : holdsFor(date, t.date);
-    const windows = WINDOWS.map((hour) => {
+    const dayWindows = windowsFor(date);
+    const held = later ? dayWindows.slice() : holdsFor(date, t.date);
+    const windows = dayWindows.map((hour) => {
       const used = c[hour] || 0;
       const past = date === t.date && t.hour >= hour;
       const left = Math.max(0, windowCap() - used);
@@ -111,4 +117,4 @@ function ticketView(t) {
   return { id: t.id, name: t.name, redeemed: t.redeemed, qty: t.qty, redeemedAt: t.redeemedAt, visit: visitLabels(t.visit), plusOne: t.plusOne || '', email: t.email || '', today: laNow().date, wallet: walletConfigured() };
 }
 
-module.exports = { TZ, WINDOWS, START, END, LOCATION, openDays, openDates, openThrough, holdsFor, walletConfigured, DATE_RE, laNow, addDays, labels, windowLabel, windowCap, dayCap, availability, visitLabels, ticketView };
+module.exports = { TZ, WINDOWS, windowsFor, START, END, LOCATION, openDays, openDates, openThrough, holdsFor, walletConfigured, DATE_RE, laNow, addDays, labels, windowLabel, windowCap, dayCap, availability, visitLabels, ticketView };
