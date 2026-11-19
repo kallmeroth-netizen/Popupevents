@@ -278,7 +278,7 @@
       <button data-f="here">Here<i id="cHere"></i></button>
       <button data-f="redeemed">Redeemed<i id="cRedeemed"></i></button>
     </div>
-    <span><button class="linkbtn" id="resync" type="button" title="Rebuild the Marketing Hub calendar from this list">Resync calendars</button> &nbsp; <button class="linkbtn" id="exportCsv" type="button">Export CSV</button></span>
+    <span><button class="linkbtn hidden" id="redeemAll" type="button" title="Everyone who tapped I’m here but was never redeemed counts as attended"></button> &nbsp; <button class="linkbtn" id="resync" type="button" title="Rebuild the Marketing Hub calendar from this list">Resync calendars</button> &nbsp; <button class="linkbtn" id="exportCsv" type="button">Export CSV</button></span>
   </div>
   <div class="summary" id="summary"></div>
   <div class="track"><i id="bar" style="width:0"></i></div>
@@ -406,7 +406,7 @@ const NBGate = {
       return `<div class="inv">
         <div><div class="who">${esc(t.name || 'Guest')}</div><div class="sub">Invited ${esc(day(t.createdAt))}</div></div>
         <div class="steps">${steps}</div>
-        <div class="actions"><button class="btn ghost" data-note="${esc(t.id)}" type="button" title="${t.note ? 'Edit the note' : 'Add a note for the team; it shows on the calendar'}">${t.note ? 'Edit note' : 'Note'}</button>${t.email ? `<button class="btn ghost" data-fb="${esc(t.id)}" type="button" title="${t.surveySentAt ? 'Sent ' + esc(when(t.surveySentAt)) + '. Sends it again.' : 'Email the feedback survey now'}">${t.surveySentAt ? 'Resend feedback' : 'Send feedback'}</button>` : ''}${t.visit && !t.redeemed ? `<button class="btn ghost" data-cv="${esc(t.id)}" type="button">Clear visit</button>` : ''}<button class="btn ghost" data-copy="${esc(t.id)}" type="button">Copy link</button><a class="btn ghost open" href="/t/${esc(t.id)}" target="_blank" rel="noopener">Open</a><button class="x" data-del="${esc(t.id)}" type="button" title="Delete invite" aria-label="Delete invite for ${esc(t.name || 'guest')}">&times;</button></div>
+        <div class="actions">${t.hereAt && !t.redeemed ? `<button class="btn ghost" data-redeem="${esc(t.id)}" type="button" title="They checked in; count the visit as redeemed">Mark redeemed</button>` : ''}<button class="btn ghost" data-note="${esc(t.id)}" type="button" title="${t.note ? 'Edit the note' : 'Add a note for the team; it shows on the calendar'}">${t.note ? 'Edit note' : 'Note'}</button>${t.email ? `<button class="btn ghost" data-fb="${esc(t.id)}" type="button" title="${t.surveySentAt ? 'Sent ' + esc(when(t.surveySentAt)) + '. Sends it again.' : 'Email the feedback survey now'}">${t.surveySentAt ? 'Resend feedback' : 'Send feedback'}</button>` : ''}${t.visit && !t.redeemed ? `<button class="btn ghost" data-cv="${esc(t.id)}" type="button">Clear visit</button>` : ''}<button class="btn ghost" data-copy="${esc(t.id)}" type="button">Copy link</button><a class="btn ghost open" href="/t/${esc(t.id)}" target="_blank" rel="noopener">Open</a><button class="x" data-del="${esc(t.id)}" type="button" title="Delete invite" aria-label="Delete invite for ${esc(t.name || 'guest')}">&times;</button></div>
       </div>`;
     }).join('');
     $('list').querySelectorAll('[data-copy]').forEach((b) => b.onclick = () => copy(linkFor(b.dataset.copy), b, 'Copy link'));
@@ -414,7 +414,25 @@ const NBGate = {
     $('list').querySelectorAll('[data-cv]').forEach((b) => b.onclick = () => clearVisit(b.dataset.cv, b));
     $('list').querySelectorAll('[data-fb]').forEach((b) => b.onclick = () => sendFeedback(b.dataset.fb, b));
     $('list').querySelectorAll('[data-note]').forEach((b) => b.onclick = () => editNote(b.dataset.note, b));
+    $('list').querySelectorAll('[data-redeem]').forEach((b) => b.onclick = () => markRedeemed(b.dataset.redeem, b));
+    const waiting = T.filter((t) => t.hereAt && !t.redeemed).length;
+    $('redeemAll').classList.toggle('hidden', !waiting);
+    $('redeemAll').textContent = waiting ? `Mark ${waiting} checked-in as redeemed` : '';
   }
+
+  // a guest who checked in attended; count the visit without the bartender PIN
+  async function markRedeemed(id, btn) {
+    const t = state.tickets.find((x) => x.id === id);
+    if (!t || !confirm('Mark ' + (t.name || 'this guest') + ' as redeemed? They checked in' + (t.hereAt ? ' ' + when(t.hereAt) : '') + '.')) return;
+    btn.disabled = true;
+    try { const { ticket } = await api('POST', { id, redeem: true }); state.tickets = state.tickets.map((x) => x.id === id ? ticket : x); render(); loadSlots(); }
+    catch (e) { if (e.message !== 'unauthorized') alert(e.message); btn.disabled = false; }
+  }
+  $('redeemAll').onclick = async () => {
+    const n = state.tickets.filter((t) => t.hereAt && !t.redeemed).length;
+    if (!n || !confirm('Mark all ' + n + ' guests who checked in as redeemed? Their feedback emails will follow.')) return;
+    try { await api('POST', { redeemCheckedIn: true }); await load(); } catch (e) { if (e.message !== 'unauthorized') alert(e.message); }
+  };
 
   // a note for the team: on the invite, on the hub calendar, and on to Google with the visit
   async function editNote(id, btn) {

@@ -169,8 +169,8 @@ async function loadAllFeedback(tickets) {
   return tickets;
 }
 
-async function redeemTicket(id, qty) {
-  await marker(`tickets/${id}/redeemed~${qty}~${Date.now()}`);
+async function redeemTicket(id, qty, at) {
+  await marker(`tickets/${id}/redeemed~${qty}~${at || Date.now()}`);
   return getTicket(id);
 }
 

@@ -1,4 +1,4 @@
-const { createTicket, createTickets, allTickets, loadAllFeedback, getTicket, clearVisit, setNote, deleteTicket, deleteAllTickets, json, readBody, safeEqual, ID_RE } = require('./_store');
+const { createTicket, createTickets, allTickets, loadAllFeedback, getTicket, clearVisit, setNote, redeemTicket, deleteTicket, deleteAllTickets, json, readBody, safeEqual, ID_RE } = require('./_store');
 const { visitLabels } = require('./_slots');
 const { syncVisit, removeVisit, removeAll, reconcile } = require('./_hub');
 
@@ -24,6 +24,26 @@ module.exports = async (req, res) => {
       if (body.resync === true) {
         const result = await reconcile(await allTickets());
         return json(res, result.ok ? 200 : 502, result);
+      }
+      // Host marks a guest redeemed without the bartender PIN: { id, redeem: true }. The time is when
+      // they checked in (or booked), so the feedback email follows on the usual schedule.
+      if (body.redeem === true) {
+        const id = String(body.id || '').toLowerCase();
+        if (!ID_RE.test(id)) return json(res, 400, { error: 'bad_id' });
+        const t = await getTicket(id);
+        if (!t) return json(res, 404, { error: 'not_found' });
+        if (t.redeemed) return json(res, 200, { ticket: withLabels(t), already: true });
+        const after = await redeemTicket(id, 1, t.hereAt || Date.now());
+        syncVisit(after).catch(() => {});
+        return json(res, 200, { ticket: withLabels(after) });
+      }
+      // Everyone who checked in but was never redeemed counts as attended: { redeemCheckedIn: true }
+      if (body.redeemCheckedIn === true) {
+        const all = await allTickets();
+        const due = all.filter((t) => t.hereAt && !t.redeemed);
+        const done = [];
+        for (const t of due) { const after = await redeemTicket(t.id, 1, t.hereAt); syncVisit(after).catch(() => {}); done.push(withLabels(after)); }
+        return json(res, 200, { ok: true, redeemed: done.length, tickets: done });
       }
       // Host's note on a guest: { id, note } (empty clears). Carried to the hub calendar with the visit.
       if (Object.prototype.hasOwnProperty.call(body, 'note')) {
